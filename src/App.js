@@ -14,16 +14,24 @@ function App() {
   const [codeList, setCodeList] = useState([]);
 
   const rowData = [
-      { make: "Tesla",  model: "Model Y", price: 64950, electric: "Y" },
-      { make: "Ford",   model: "F-Series", price: 33850, electric: "N" },
-      { make: "Toyota", model: "Corolla", price: 29600, electric: "Y" },
+      { make: "Tesla",  model: "Model Y", price: 64950, electric: "Y", controller: "1A" },
+      { make: "Ford",   model: "F-Series", price: 33850, electric: "N", controller: "2A" },
+      { make: "Toyota", model: "Corolla", price: 29600, electric: "Y", controller: "3A" },
   ];
+
+  const controllerData = [
+    { cd: "1A", cdNm: "일A" },
+    { cd: "2A", cdNm: "둘A" },
+    { cd: "3A", cdNm: "셋A" },
+  ]
 
   const colDefs = [
       { field: "make", headerName: "Make", editable: true, },
       { field: "model", headerName: "Model", editable: true, },
       { field: "price", headerName: "Price", editable: true, cellDataType: "number" },
-      { field: "electric", headerName: "Electric", editable: true, cellDataType: "checkbox" }
+      { field: "electric", headerName: "Electric", editable: true, cellDataType: "checkbox" },
+      { field: "controller", headerName: "Controller", editable: true, cellDataType: "combo", 
+        cellEditorParams: { valueField: "cd", displayField: "cdNm", values: controllerData } }
   ];
 
   useEffect(() => {
