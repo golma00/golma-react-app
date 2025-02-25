@@ -9,29 +9,38 @@ function App() {
   const [gridApi, setGridApi] = useState(null);
 
   const [codeValue, setCodeValue] = useState("KR");
+  const [textValue, setTextValue] = useState("test");
 
   const [codeList, setCodeList] = useState([]);
 
   const rowData = [
-      { make: "Tesla",  model: "Model Y", price: 64950, electric: true },
-      { make: "Ford",   model: "F-Series", price: 33850, electric: false },
-      { make: "Toyota", model: "Corolla", price: 29600, electric: false },
+      { make: "Tesla",  model: "Model Y", price: 64950, electric: "Y" },
+      { make: "Ford",   model: "F-Series", price: 33850, electric: "N" },
+      { make: "Toyota", model: "Corolla", price: 29600, electric: "Y" },
   ];
 
   const colDefs = [
-      { field: "make", headerName: "Make", editable: true },
-      { field: "model", headerName: "Model", editable: true },
-      { field: "price", headerName: "Price", editable: true },
-      { field: "electric", headerName: "Electric", editable: true }
+      { field: "make", headerName: "Make", editable: true, },
+      { field: "model", headerName: "Model", editable: true, },
+      { field: "price", headerName: "Price", editable: true, cellDataType: "number" },
+      { field: "electric", headerName: "Electric", editable: true, cellDataType: "checkbox" }
   ];
 
   useEffect(() => {
     getCodeList();
   }, []);
 
+  useEffect(() => {
+    console.log(selectCeGroup.current);
+  }, [selectCeGroup.current]);
+
   const getCodeList = async () => {
-    const res = await axios.get("/api/v1/login/langCd?sysId=ADMIN&grpCd=LANG_CD");
-    setCodeList(res.data.data.result);
+    try {
+      const res = await axios.get("/api/v1/login/langCd?sysId=ADMIN&grpCd=LANG_CD");
+      setCodeList(res.data.data.result);
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   function loadData() {
@@ -50,7 +59,6 @@ function App() {
 
   async function allRowNodes() {
     console.log(await gridApi.getAllRowNodes());
-    setCodeValue("EN");
   }
 
   async function insertedRowNodes() {
@@ -65,6 +73,7 @@ function App() {
   async function search() {
     await searchArea.current.api.setValue("test", "Eeeee");
     console.log(await searchArea.current.api.get());
+    console.log(textValue);
   }
   
   return (
@@ -84,11 +93,11 @@ function App() {
       </div>
       <P2SearchArea onSearch={onSearch} ref={searchArea}>
         <label>계획연도</label>
-        <input type="text" name="planYear" className="bg-white border border-gray-200 rounded-md" value={"2025"}/>
+        <input type="text" name="planYear" className="bg-white border border-gray-200 rounded-md" value={textValue} onChange={(e) => setTextValue(e.target.value)}/>
         <label>제목</label>
         <input type="text" name="title" className="bg-white border border-gray-200 rounded-md"/>
         <label>기간</label>
-        <input type="checkbox" name="period" className="bg-white border border-gray-200 rounded-md" changeAfterSearch={true} checked={true}/>
+        <input type="checkbox" name="period" className="bg-white border border-gray-200 rounded-md" changeaftersearch="true" checked={true}/>
         <label>C/E 그룹</label>
         <P2Select name="ceGroup" className="w-40" ref={selectCeGroup}
           defaultOption="ALL"
@@ -102,6 +111,7 @@ function App() {
         <P2AgGrid 
           columnDefs={colDefs}
           showStatusColumn={true}
+          showCheckedColumn={true}
           api={setGridApi}
         />
       </div>

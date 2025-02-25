@@ -518,7 +518,7 @@ function P2AgGrid(props) {
   });
 
   let defaultColDef = props.defaultColDef || {
-    sortable: false,
+    sortable: true,
     filter: true,
   };
 
