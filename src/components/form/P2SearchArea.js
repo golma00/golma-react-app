@@ -101,7 +101,7 @@ function P2SearchArea(props, ref) {
           return (
             <React.Fragment key={index}>
               {React.cloneElement(child, {
-                value: searchData[child.props.name]?.value,
+                value: searchData[child.props.name]?.value || "",
                 onChange: (e) => {
                   if (child.props.onChange) {
                     child.props.onChange(e);
@@ -132,7 +132,7 @@ function P2SearchArea(props, ref) {
           return (
             <React.Fragment key={index}>
               {React.cloneElement(child, {
-                checked: searchData[child.props.name]?.value,
+                checked: searchData[child.props.name]?.value || false,
                 onChange: (e) => {
                   if (child.props.onChange) {
                     child.props.onChange(e);
@@ -142,7 +142,7 @@ function P2SearchArea(props, ref) {
                     ...prev,
                     [child.props.name]: { ...prev[child.props.name], value: targetValue },
                   }));
-                  if (child.props.changeAfterSearch) {
+                  if (child.props.changeaftersearch) {
                     setChangeAfterSearch(true);
                   }
                 },
@@ -153,7 +153,7 @@ function P2SearchArea(props, ref) {
           return (
             <React.Fragment key={index}>
               {React.cloneElement(child, {
-                value: searchData[child.props.name]?.value,
+                value: searchData[child.props.name]?.value || "",
                 onChange: (e) => {
                   if (child.props.onChange) {
                     child.props.onChange(e);
@@ -163,7 +163,7 @@ function P2SearchArea(props, ref) {
                     ...prev,
                     [child.props.name]: { ...prev[child.props.name], value: targetValue },
                   }));
-                  if (child.props.changeAfterSearch) {
+                  if (child.props.changeaftersearch) {
                     setChangeAfterSearch(true);
                   }
                 },
@@ -178,7 +178,7 @@ function P2SearchArea(props, ref) {
       return (
         <React.Fragment key={index}>
           {React.cloneElement(child, {
-            value: searchData[child.props.name]?.value,
+            value: searchData[child.props.name]?.value || "",
             onChange: (e) => {
               if (child.props.onChange) {
                 child.props.onChange(e);
@@ -188,7 +188,7 @@ function P2SearchArea(props, ref) {
                 ...prev,
                 [child.props.name]: { ...prev[child.props.name], value: targetValue },
               }));
-              if (child.props.changeAfterSearch) {
+              if (child.props.changeaftersearch) {
                 setChangeAfterSearch(true);
               }
             },
@@ -200,7 +200,7 @@ function P2SearchArea(props, ref) {
       return (
         <React.Fragment key={index}>
           {React.cloneElement(child, {
-            optionValue: searchData[child.props.name]?.value,
+            optionValue: searchData[child.props.name]?.value || "",
             onChange: (e) => {
               if (child.props.onChange) {
                 child.props.onChange(e);
@@ -210,7 +210,7 @@ function P2SearchArea(props, ref) {
                 ...prev,
                 [child.props.name]: { ...prev[child.props.name], value: targetValue },
               }));
-              if (child.props.changeAfterSearch) {
+              if (child.props.changeaftersearch) {
                 setChangeAfterSearch(true);
               }
             },

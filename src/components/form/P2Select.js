@@ -1,12 +1,27 @@
 import React, { useState, useEffect, useImperativeHandle, useCallback, forwardRef } from 'react';
-import Select from 'react-select';
+import Select, { components } from 'react-select';
 import PropTypes from 'prop-types';
 
 function P2Select(props, ref) {
-  const { valueField, labelField, datas, defaultOption } = props;
+  const { valueField, labelField, datas, defaultOption, isMulti } = props;
   const [value, setValue] = useState(props.value);
   const [selectedIndex, setSelectedIndex] = useState();
   const [options, setOptions] = useState([]);
+
+  const checkboxOption = (props) => {
+    return (
+      <div>
+        <components.Option {...props}>
+          <input
+            type="checkbox"
+            checked={props.isSelected}
+            onChange={() => null}
+          />{" "}
+          <label>{props.label}</label>
+        </components.Option>
+      </div>
+    );
+  };
 
   useImperativeHandle(ref, () => ({
     api: {
@@ -111,6 +126,15 @@ function P2Select(props, ref) {
         }
         setValue(e.value);
       }}
+      closeMenuOnSelect={props.isMulti ? props.closeMenuOnSelect || false : props.closeMenuOnSelect || true}
+      hideSelectedOptions={props.isMulti ? props.hideSelectedOptions || false : props.hideSelectedOptions || true}
+      {
+        ...(props.isMulti && {
+          components: {
+            Option: checkboxOption,
+          }
+        })
+      }
     />
   )
 }

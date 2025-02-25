@@ -1,6 +1,7 @@
 import React from "react";
 import { AgGridReact } from "ag-grid-react";
 import { themeQuartz } from "ag-grid-community";
+import { P2CheckboxCellRenderer, P2CheckboxCellEditor } from "components/index";
 
 export const insertStatus = "I"
 export const updateStatus = "U"
@@ -452,10 +453,11 @@ function P2AgGrid(props) {
       defaultHeaderHeight = undefined;
     }
     c.headerClass = "justify-center";
-    // if (c.cellDataType == "checkbox") {
-    //   c.cellRenderer = CheckboxRenderer;
-    //   c.cellEditor = CheckboxEditor;
-    // }
+    if (c.cellDataType === "checkbox") {
+      c.cellRenderer = P2CheckboxCellRenderer;
+      c.cellEditor = P2CheckboxCellEditor;
+      c.suppressKeyboardEvent = (params) => !!params.colDef.editable && params.event.key === KeyCode.SPACE;
+    }
     // else if (c.cellDataType == "combo") {
     //   c.cellEditor = ComboboxCellEditor;
     //   if (!c.cellEditorParams) {
@@ -525,6 +527,31 @@ function P2AgGrid(props) {
     }
   };
 
+  const KeyCode = {
+    BACKSPACE: 'Backspace',
+    TAB: 'Tab',
+    ENTER: 'Enter',
+    ESCAPE: 'Escape',
+    SPACE: ' ',
+    LEFT: 'ArrowLeft',
+    UP: 'ArrowUp',
+    RIGHT: 'ArrowRight',
+    DOWN: 'ArrowDown',
+    DELETE: 'Delete',
+    F2: 'F2',
+    PAGE_UP: 'PageUp',
+    PAGE_DOWN: 'PageDown',
+    PAGE_HOME: 'Home',
+    PAGE_END: 'End',
+    A: 'KeyA',
+    C: 'KeyC',
+    D: 'KeyD',
+    V: 'KeyV',
+    X: 'KeyX',
+    Y: 'KeyY',
+    Z: 'KeyZ',
+  };
+
   return (
     <AgGridReact
       {...props}
@@ -534,7 +561,7 @@ function P2AgGrid(props) {
       rowData={props.rowData || []}
       rowHeight={props.rowHeight || 35}
       headerHeight={props.headerHeight || defaultHeaderHeight}
-      rowSelection={props.rowSelection || 'single'}
+      rowSelection={props.rowSelection || {mode: 'singleRow'}}
       singleClickEdit={props.singleClickEdit || true}
       tooltipShowDelay={props.tooltipShowDelay || 500}
       stopEditingWhenCellsLoseFocus={props.stopEditingWhenCellsLoseFocus || true}
