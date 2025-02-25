@@ -1,6 +1,6 @@
-import { Component, PopupComponent, AgCheckboxSelector, _getActiveDomElement } from 'ag-grid-community';
+import { Component, PopupComponent, AgCheckboxSelector, AgSelectSelector, _getActiveDomElement, _missing, _warn } from 'ag-grid-community';
 
-class P2CheckboxCellEditor extends PopupComponent {
+export class P2CheckboxCellEditor extends PopupComponent {
   constructor() {
     super(
       `
@@ -46,7 +46,7 @@ class P2CheckboxCellEditor extends PopupComponent {
   }
 }
 
-class P2CheckboxCellRenderer extends Component {
+export class P2CheckboxCellRenderer extends Component {
   constructor() {
     super(
       `
@@ -159,7 +159,212 @@ class P2CheckboxCellRenderer extends Component {
   }
 }
 
-export { P2CheckboxCellEditor, P2CheckboxCellRenderer };
+export class P2ComboboxCellEditor extends PopupComponent {
+  constructor() {
+    super(
+      /* html */
+      `<div class="ag-cell-edit-wrapper">
+          <ag-select class="ag-cell-editor" data-ref="eSelect"></ag-select>
+      </div>`,
+      [AgSelectSelector]
+    );
+    this.eSelect = null;
+    this.startedByEnter = false;
+  }
+  wireBeans(beans) {
+    this.valueSvc = beans.valueSvc;
+  }
+  init(params) {
+    this.focusAfterAttached = params.cellStartedEdit;
+    const { eSelect, valueSvc, gos } = this;
+    const { values, value, eventKey, valueField, displayField } = params;
+    if (_missing(values)) {
+      _warn(58);
+      return;
+    }
+    this.startedByEnter = eventKey != null ? eventKey === KeyCode.ENTER : false;
+    let hasValue = false;
+    values.forEach((currentValue) => {
+      const option = { value: currentValue[valueField || "value"] };
+      const valueFormatted = valueSvc.formatValue(params.column, null, currentValue[valueField || "value"]);
+      const valueFormattedExits = valueFormatted !== null && valueFormatted !== void 0;
+      option.text = valueFormattedExits ? valueFormatted : currentValue[displayField || "text"];
+      eSelect.addOption(option);
+      hasValue = hasValue || value === currentValue[valueField || "value"];
+    });
+    if (hasValue) {
+      eSelect.setValue(params.value, true);
+    } 
+    else if (params.values.length) {
+      eSelect.setValue(params.values[0], true);
+    }
+    const { valueListGap, valueListMaxWidth, valueListMaxHeight } = params;
+    if (valueListGap != null) {
+      eSelect.setPickerGap(valueListGap);
+    }
+    if (valueListMaxHeight != null) {
+      eSelect.setPickerMaxHeight(valueListMaxHeight);
+    }
+    if (valueListMaxWidth != null) {
+      eSelect.setPickerMaxWidth(valueListMaxWidth);
+    }
+    if (gos.get("editType") !== "fullRow") {
+      this.addManagedListeners(this.eSelect, { selectedItem: () => params.stopEditing() });
+    }
+  }
+  afterGuiAttached() {
+    if (this.focusAfterAttached) {
+      this.eSelect.getFocusableElement().focus();
+    }
+    if (this.startedByEnter) {
+      setTimeout(() => {
+        if (this.isAlive()) {
+          this.eSelect.showPicker();
+        }
+      });
+    }
+  }
+  focusIn() {
+    this.eSelect.getFocusableElement().focus();
+  }
+  getValue() {
+    return this.eSelect.getValue();
+  }
+  isPopup() {
+    return false;
+  }
+};
+
+export class P2AjaxComboboxCellEditor extends P2ComboboxCellEditor {
+  async init(params) {
+    this.focusAfterAttached = params.cellStartedEdit;
+    const { eSelect, valueSvc, gos } = this;
+    const { ajax, value, eventKey, valueField, displayField } = params;
+    if (!ajax) {
+      console.warn("P2AjaxComboboxCellEditor: no ajax");
+      return;
+    }
+
+    const values = await ajax(params);
+
+    if (_missing(values)) {
+      _warn(58);
+      return;
+    }
+    this.startedByEnter = eventKey != null ? eventKey === KeyCode.ENTER : false;
+    let hasValue = false;
+    values.forEach((currentValue) => {
+      const option = { value: currentValue[valueField || "value"] };
+      const valueFormatted = valueSvc.formatValue(params.column, null, currentValue[valueField || "value"]);
+      const valueFormattedExits = valueFormatted !== null && valueFormatted !== void 0;
+      option.text = valueFormattedExits ? valueFormatted : currentValue[displayField || "text"];
+      eSelect.addOption(option);
+      hasValue = hasValue || value === currentValue[valueField || "value"];
+    });
+    if (hasValue) {
+      eSelect.setValue(params.value, true);
+    } 
+    else if (params.values.length) {
+      eSelect.setValue(params.values[0], true);
+    }
+    const { valueListGap, valueListMaxWidth, valueListMaxHeight } = params;
+    if (valueListGap != null) {
+      eSelect.setPickerGap(valueListGap);
+    }
+    if (valueListMaxHeight != null) {
+      eSelect.setPickerMaxHeight(valueListMaxHeight);
+    }
+    if (valueListMaxWidth != null) {
+      eSelect.setPickerMaxWidth(valueListMaxWidth);
+    }
+    if (gos.get("editType") !== "fullRow") {
+      this.addManagedListeners(this.eSelect, { selectedItem: () => params.stopEditing() });
+    }
+  }
+}
+
+//------------------ checked 컬럼 관련 ----------------------//
+
+export class CommonHeaderCheckedComponet {
+  init(params) {
+    this.params = params;
+    this.eGui = document.createElement('div');
+    this.eGui.className = "ag-wrapper ag-input-wrapper ag-checkbox-input-wrapper";
+
+    this.eCheckbox = document.createElement('input');
+    this.eCheckbox.type = "checkbox";
+    this.eCheckbox.className = "ag-input-field-input ag-checkbox-input";
+    this.eCheckbox.addEventListener("change", (e) => {
+        this.eGui.classList.toggle("ag-checked");
+        if (e.target.checked) {
+            this.params.api.allCheckedRows();
+        }
+        else {
+            this.params.api.allUncheckedRows();
+        }
+    });
+
+    this.eGui.appendChild(this.eCheckbox);
+  }
+  getGui() {
+    return this.eGui;
+  }
+  refresh(params) {
+    return false;
+  }
+  destroy() {
+  }
+}
+
+export class CommonCheckedEditor extends P2CheckboxCellEditor {
+  init(params) {
+    this.params = params;
+    const isSelected = params.node.isChecked === true;
+    const eCheckbox = this.eCheckbox;
+    eCheckbox.setValue(isSelected);
+    const inputEl = eCheckbox.getInputElement();
+    inputEl.setAttribute("tabindex", "-1");
+    this.setAriaLabel(isSelected);
+    this.addManagedListeners(eCheckbox, {
+      fieldValueChanged: (event) => this.setAriaLabel(event.selected)
+    });
+  }
+  getValue() {
+    return this.params.isChecked;
+  }
+}
+
+export class CommonCheckedRenderer extends P2CheckboxCellRenderer {
+  updateCheckbox(params) {
+    let isSelected;
+    let displayed = true;
+    const { column, node } = params;
+    if (params.node) {
+      isSelected = params.node.isChecked === true;
+    }
+    const { eCheckbox } = this;
+    if (!displayed) {
+      eCheckbox.setDisplayed(false);
+      return;
+    }
+    eCheckbox.setValue(isSelected);
+    const disabled = params.disabled ?? !column?.isCellEditable(node);
+    eCheckbox.setDisabled(disabled);
+    const translate = this.getLocaleTextFunc();
+    const stateName = _getAriaCheckboxStateName(translate, isSelected);
+    const ariaLabel = disabled ? stateName : `${translate("ariaToggleCellValue", "Press SPACE to toggle cell value")} (${stateName})`;
+    eCheckbox.setInputAriaLabel(ariaLabel);
+  }
+  onCheckboxChanged(isSelected) {
+    const { params } = this;
+    const { column, node } = params;
+    const valueChanged = node.setDataValue(column, isSelected, "edit");
+    if (!valueChanged) {
+      this.updateCheckbox(params);
+    }
+    params.node.isChecked = isSelected;
+  }
+}
 
 function _getAriaCheckboxStateName(translate, state) {
   return state === void 0 ? translate("ariaIndeterminate", "indeterminate") : state === true ? translate("ariaChecked", "checked") : translate("ariaUnchecked", "unchecked");
@@ -187,3 +392,28 @@ var AG_GRID_STOP_PROPAGATION = "__ag_Grid_Stop_Propagation";
 function _stopPropagationForAgGrid(event) {
   event[AG_GRID_STOP_PROPAGATION] = true;
 }
+
+const KeyCode = {
+  BACKSPACE: 'Backspace',
+  TAB: 'Tab',
+  ENTER: 'Enter',
+  ESCAPE: 'Escape',
+  SPACE: ' ',
+  LEFT: 'ArrowLeft',
+  UP: 'ArrowUp',
+  RIGHT: 'ArrowRight',
+  DOWN: 'ArrowDown',
+  DELETE: 'Delete',
+  F2: 'F2',
+  PAGE_UP: 'PageUp',
+  PAGE_DOWN: 'PageDown',
+  PAGE_HOME: 'Home',
+  PAGE_END: 'End',
+  A: 'KeyA',
+  C: 'KeyC',
+  D: 'KeyD',
+  V: 'KeyV',
+  X: 'KeyX',
+  Y: 'KeyY',
+  Z: 'KeyZ',
+};

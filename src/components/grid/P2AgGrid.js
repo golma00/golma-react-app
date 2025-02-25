@@ -1,7 +1,15 @@
 import React from "react";
 import { AgGridReact } from "ag-grid-react";
 import { themeQuartz } from "ag-grid-community";
-import { P2CheckboxCellRenderer, P2CheckboxCellEditor } from "components/index";
+import { 
+  P2CheckboxCellEditor, 
+  P2CheckboxCellRenderer, 
+  P2ComboboxCellEditor, 
+  P2AjaxComboboxCellEditor,
+  CommonHeaderCheckedComponet,
+  CommonCheckedEditor,
+  CommonCheckedRenderer
+ } from "components/index";
 
 export const insertStatus = "I"
 export const updateStatus = "U"
@@ -413,9 +421,10 @@ function P2AgGrid(props) {
         width: 50,
         sortable: false,
         filter: false,
-        // cellRenderer: CommonCheckedRenderer,
-        // cellEditor: CommonCheckedEditor,
-        // headerComponent: CommonHeaderCheckedComponet,
+        editable: true,
+        cellRenderer: CommonCheckedRenderer,
+        cellEditor: CommonCheckedEditor,
+        headerComponent: CommonHeaderCheckedComponet,
       };
 
       columnDefs = [checkColumn, ...columnDefs];
@@ -456,48 +465,48 @@ function P2AgGrid(props) {
     if (c.cellDataType === "checkbox") {
       c.cellRenderer = P2CheckboxCellRenderer;
       c.cellEditor = P2CheckboxCellEditor;
-      c.suppressKeyboardEvent = (params) => !!params.colDef.editable && params.event.key === KeyCode.SPACE;
+      c.suppressKeyboardEvent = (params) => !!params.colDef.editable && params.event.key === ' ';
     }
-    // else if (c.cellDataType == "combo") {
-    //   c.cellEditor = ComboboxCellEditor;
-    //   if (!c.cellEditorParams) {
-    //     c.cellEditorParams = {
-    //       valueField: "cd",
-    //       displayField: "cdNm",
-    //       values: [],
-    //     };
-    //   }
-    //   c.valueFormatter = function (params) {
-    //     const editorParams = params.colDef.cellEditorParams;
-    //     const matchDatas = editorParams.values.filter(
-    //       (v) => v[editorParams.valueField || "cd"] === params.value
-    //     );
-    //     if (matchDatas.length) {
-    //       return matchDatas[0][editorParams.displayField || "cdNm"];
-    //     }
-    //   };
-    // }
-    // else if (c.cellDataType == "ajaxCombo") {
-    //   c.cellEditor = AjaxComboboxCellEditor;
-    //   if (!c.cellEditorParams) {
-    //     c.cellEditorParams = {
-    //       valueField: "cd",
-    //       displayField: "cdNm",
-    //       values: [],
-    //     };
-    //   }
-    //   c.valueFormatter = function (params) {
-    //     const editorParams = params.colDef.cellEditorParams;
-    //     if (editorParams.values) {
-    //       const matchDatas = editorParams.values.filter(
-    //         (v) => v[editorParams.valueField || "cd"] === params.value
-    //       );
-    //       if (matchDatas.length) {
-    //         return matchDatas[0][editorParams.displayField || "cdNm"];
-    //       }
-    //     }
-    //   };
-    // }
+    else if (c.cellDataType === "combo") {
+      c.cellEditor = P2ComboboxCellEditor;
+      if (!c.cellEditorParams) {
+        c.cellEditorParams = {
+          valueField: "cd",
+          displayField: "cdNm",
+          values: [],
+        };
+      }
+      c.valueFormatter = function (params) {
+        const editorParams = params.colDef.cellEditorParams;
+        const matchDatas = editorParams.values.filter(
+          (v) => v[editorParams.valueField || "cd"] === params.value
+        );
+        if (matchDatas.length) {
+          return matchDatas[0][editorParams.displayField || "cdNm"];
+        }
+      };
+    }
+    else if (c.cellDataType === "ajaxCombo") {
+      c.cellEditor = P2AjaxComboboxCellEditor;
+      if (!c.cellEditorParams) {
+        c.cellEditorParams = {
+          valueField: "cd",
+          displayField: "cdNm",
+          values: [],
+        };
+      }
+      c.valueFormatter = function (params) {
+        const editorParams = params.colDef.cellEditorParams;
+        if (editorParams.values) {
+          const matchDatas = editorParams.values.filter(
+            (v) => v[editorParams.valueField || "cd"] === params.value
+          );
+          if (matchDatas.length) {
+            return matchDatas[0][editorParams.displayField || "cdNm"];
+          }
+        }
+      };
+    }
 
     if (c.required === true) {
       if (c.headerName) {
@@ -527,31 +536,6 @@ function P2AgGrid(props) {
     }
   };
 
-  const KeyCode = {
-    BACKSPACE: 'Backspace',
-    TAB: 'Tab',
-    ENTER: 'Enter',
-    ESCAPE: 'Escape',
-    SPACE: ' ',
-    LEFT: 'ArrowLeft',
-    UP: 'ArrowUp',
-    RIGHT: 'ArrowRight',
-    DOWN: 'ArrowDown',
-    DELETE: 'Delete',
-    F2: 'F2',
-    PAGE_UP: 'PageUp',
-    PAGE_DOWN: 'PageDown',
-    PAGE_HOME: 'Home',
-    PAGE_END: 'End',
-    A: 'KeyA',
-    C: 'KeyC',
-    D: 'KeyD',
-    V: 'KeyV',
-    X: 'KeyX',
-    Y: 'KeyY',
-    Z: 'KeyZ',
-  };
-
   return (
     <AgGridReact
       {...props}
@@ -561,7 +545,6 @@ function P2AgGrid(props) {
       rowData={props.rowData || []}
       rowHeight={props.rowHeight || 35}
       headerHeight={props.headerHeight || defaultHeaderHeight}
-      rowSelection={props.rowSelection || {mode: 'singleRow'}}
       singleClickEdit={props.singleClickEdit || true}
       tooltipShowDelay={props.tooltipShowDelay || 500}
       stopEditingWhenCellsLoseFocus={props.stopEditingWhenCellsLoseFocus || true}
