@@ -3,8 +3,8 @@ import App from './App';
 import axios from 'axios';
 import { render } from "react-dom"
 import { ModuleRegistry, AllCommunityModule } from 'ag-grid-community'
-import './index.css';
-
+import 'css/index.css';
+import 'css/ag-grid.css';
 const dependsModules = AllCommunityModule.dependsOn.filter(module => module.moduleName !== 'Validation');
 AllCommunityModule.dependsOn = dependsModules;
 
