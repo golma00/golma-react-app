@@ -79,7 +79,7 @@ function App() {
   }
 
   async function search() {
-    await searchArea.current.api.setValue("test", "Eeeee");
+    await searchArea.current.api.set("test", "Eeeee");
     console.log(await searchArea.current.api.get());
   }
   

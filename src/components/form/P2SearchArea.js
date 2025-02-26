@@ -13,18 +13,12 @@ function P2SearchArea(props, ref) {
       get() {
         return searchData;
       },
-      setValue(name, value) {
+      set(name, value) {
         setSearchData((prev) => ({
           ...prev,
-          [name]: { ...prev[name], value: value },
+          [name]: value,
         })); 
       },
-      setValueByKey(name, key, value) {
-        setSearchData((prev) => ({
-          ...prev,
-          [name]: { ...prev[name], [key]: value },
-        }));
-      }
     }
   }));
 
