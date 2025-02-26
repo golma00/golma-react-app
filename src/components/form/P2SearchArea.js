@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { P2Select } from "components/index";
 
 function P2SearchArea(props, ref) {
-  const className = props.className || "border border-gray-200 rounded-md p-2 bg-gray-100 flex flex-row gap-5";
+  const className = props.className || "h-12 border border-area-border-color rounded-md px-4 py-2 bg-area-bg-color flex flex-row gap-5";
 
   const [searchData, setSearchData] = useState({});
   const [changeAfterSearch, setChangeAfterSearch] = useState(false);

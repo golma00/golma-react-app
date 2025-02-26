@@ -2,7 +2,14 @@
 module.exports = {
   content: ["./src/**/*.{html,js}"],
   theme: {
-    extend: {},
+    extend: {
+      backgroundColor: {
+        "area-bg-color": "var(--area-bg-color)",
+      },
+      borderColor: {
+        "area-border-color": "var(--area-border-color)",
+      },
+    },
   },
   plugins: [],
 }

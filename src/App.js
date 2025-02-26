@@ -6,9 +6,9 @@ import './App.css'
 function App() {
   const searchArea = useRef(null);
   const selectCeGroup = useRef(null);
+  const selectCeGroup2 = useRef(null);
   const [gridApi, setGridApi] = useState(null);
 
-  const [codeValue, setCodeValue] = useState("KR");
   const [textValue, setTextValue] = useState("test");
 
   const [codeList, setCodeList] = useState([]);
@@ -81,49 +81,55 @@ function App() {
   async function search() {
     await searchArea.current.api.setValue("test", "Eeeee");
     console.log(await searchArea.current.api.get());
-    console.log(textValue);
   }
   
   return (
-    <>
-      <div className="flex flex-row w-full hd gap-2">
-        <button onClick={loadData}>Load Data</button>
-        <button onClick={addData}>Add Data</button>
-        <button onClick={allRowNodes}>All Data</button>
-        <button onClick={insertedRowNodes}>Insert Data</button>
-        <button onClick={search}>Search</button>
-        <P2Select name="ceGroup1" className="w-40" 
+    <div className="flex flex-col w-full gap-1 px-2 py-1">
+      <div className="flex flex-row w-full h-8 gap-1 justify-end">
+        <button className="common-btn" onClick={loadData}>Load Data</button>
+        <button className="common-btn" onClick={addData}>Add Data</button>
+        <button className="common-btn" onClick={allRowNodes}>All Data</button>
+        <button className="common-btn" onClick={insertedRowNodes}>Insert Data</button>
+        <button className="common-btn" onClick={search}>Search</button>
+        <P2Select name="ceGroup1" className="w-40 text-sm" 
           defaultOption="ALL"
-          value={codeValue}
+          isMulti={true}
+          value={["KR"]}
           datas={codeList}
         />
-        <input type="text" name="title111" className="bg-white border border-gray-200 rounded-md"/>
       </div>
       <P2SearchArea onSearch={onSearch} ref={searchArea}>
-        <label>계획연도</label>
-        <input type="text" name="planYear" className="bg-white border border-gray-200 rounded-md" value={textValue} onChange={(e) => setTextValue(e.target.value)}/>
+        <label class="text-xl">계획연도</label>
+        <input type="text" name="planYear" className="text-sm bg-white border border-gray-200 rounded-md" value={textValue} onChange={(e) => setTextValue(e.target.value)}/>
         <label>제목</label>
-        <input type="text" name="title" className="bg-white border border-gray-200 rounded-md"/>
+        <input type="text" name="title" className="text-sm bg-white border border-gray-200 rounded-md"/>
         <label>기간</label>
-        <input type="checkbox" name="period" className="bg-white border border-gray-200 rounded-md" changeaftersearch="true" checked={true}/>
+        <input type="checkbox" name="period" className="text-sm bg-white border border-gray-200 rounded-md" changeaftersearch="true" checked={true}/>
         <label>C/E 그룹</label>
-        <P2Select name="ceGroup" className="w-40" ref={selectCeGroup}
+        <P2Select name="ceGroup" className="w-40 text-sm" ref={selectCeGroup}
           defaultOption="ALL"
-          value="ALL"
+          value=""
+          datas={codeList}
+        />
+        <label>C/E 그룹2</label>
+        <P2Select name="ceGroup2" className="w-40 text-sm" ref={selectCeGroup2}
+          value={["KR"]}
+          isMulti={true}
           datas={codeList}
         />
         <label>테스트</label>
-        <input type="text" name="test" className="bg-white border border-gray-200 rounded-md"/>
+        <input type="text" name="test" className="text-sm bg-white border border-gray-200 rounded-md"/>
       </P2SearchArea>
-      <div style={{ flex: 0, width: "100%", height: "500px" }}>
+      <div className="w-full h-[500px]">
         <P2AgGrid 
+          debug={true}
           columnDefs={colDefs}
           showStatusColumn={true}
           showCheckedColumn={true}
           api={setGridApi}
         />
       </div>
-    </>
+    </div>
   )
 }
 
