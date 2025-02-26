@@ -2,6 +2,17 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer components {
+  .common-btn {
+    @apply text-sm bg-gray-100 border border-gray-200 rounded-md px-2 py-1
+  }
+}
+
+:root {
+  --area-border-color: #E5E7EB;
+  --area-bg-color: #FBFBFB;
+}
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -11,9 +22,28 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+label {
+  @apply text-sm;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  align-self: center;
+}
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+.P2Select__control {
+  @apply text-sm min-h-7 flex-nowrap !important;
+}
+
+.P2Select__value-container {
+  @apply py-0 flex-nowrap whitespace-nowrap !important;
+}
+
+.P2Select__indicator, .P2Select__clear-indicator {
+  @apply p-1 !important;
 }
 
 .P2Select__menu {
