@@ -3,11 +3,23 @@ import Select, { components } from 'react-select';
 import PropTypes from 'prop-types';
 
 function P2Select(props, ref) {
-  const { valueField, labelField, datas, defaultOption, isMulti } = props;
+  const { valueField, labelField, datas, defaultOption } = props;
   const [value, setValue] = useState(props.value);
-  const [selectedIndex, setSelectedIndex] = useState();
   const [options, setOptions] = useState([]);
+  const [selectedIndex, setSelectedIndex] = useState();
 
+  const groupOption = (props) => {
+    return (
+      <components.Option {...props}>
+        <input
+            type="checkbox"
+            checked={props.isSelected}
+            onChange={() => null}
+          />{" "}
+        <label>{props.label}</label>
+      </components.Option>
+    );
+  };
   const checkboxOption = (props) => {
     return (
       <div>
@@ -20,6 +32,22 @@ function P2Select(props, ref) {
           <label>{props.label}</label>
         </components.Option>
       </div>
+    );
+  };
+
+  const valueContainer = ({ children, getValue, ...props }) => {
+    var length = getValue().length;
+    return (
+      <components.ValueContainer {...props}>
+          {!props.selectProps.inputValue && length === 1 && `${getValue()[0]["label"]}`}
+          {!props.selectProps.inputValue && length > 1 && `${getValue()[0]["label"]} 외 ${length - 1}건`}
+              
+          {React.Children.map(children, child => {
+            if (child.key === null || child.key === "placeholder") {
+              return child;
+            }
+          })}
+      </components.ValueContainer>
     );
   };
 
@@ -64,7 +92,7 @@ function P2Select(props, ref) {
       switch (defaultOption.toUpperCase()) {
         case "ALL":
           optionArray.push({
-            value: "ALL",
+            value: "",
             label: "전체",
           });
           break;
@@ -88,20 +116,32 @@ function P2Select(props, ref) {
   }, [datas, defaultOption, valueField, labelField]);
 
   const optionFindValue = (value) => {
-    if (value === undefined) {
+    if (value === undefined || value === null) {
       if (selectedIndex !== -1) {
         setSelectedIndex(-1);
       }
       return undefined;
     }
-    return options.find((item, index) => {
-      if (item.value === value) {
-        if (selectedIndex !== index) {
-          setSelectedIndex(index);
-        }
+
+    let values = [];
+    if (value instanceof Array) {
+      values = value;
+    }
+    else if (value instanceof String && value.includes(",")) {
+      values = value.split(",");
+    }
+    else {
+      values.push(value);
+    }
+
+    let result = [];
+    options.forEach((item, index) => {
+      if (values.includes(item.value)) {
+        result.push(item);
       }
-      return item.value === value;
     });
+    
+    return result;
   }
   useEffect(() => {
     datasToOptions();
@@ -127,11 +167,12 @@ function P2Select(props, ref) {
         setValue(e.value);
       }}
       closeMenuOnSelect={props.isMulti ? props.closeMenuOnSelect || false : props.closeMenuOnSelect || true}
-      hideSelectedOptions={props.isMulti ? props.hideSelectedOptions || false : props.hideSelectedOptions || true}
+      hideSelectedOptions={false}
       {
         ...(props.isMulti && {
           components: {
             Option: checkboxOption,
+            ValueContainer: valueContainer,
           }
         })
       }
