@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { AgGridReact } from "ag-grid-react";
 import { themeQuartz } from "ag-grid-community";
 import { 
@@ -517,6 +517,31 @@ function P2AgGrid(props) {
     }
   });
 
+  const dataTypeDefinitions = useMemo(() => { 
+    return {
+      number: {
+        baseDataType: 'number',
+        extendsDataType: 'number',
+        valueFormatter: params => {
+          return params.value ? params.value.toLocaleString() : undefined;
+        },
+      },
+      checkbox: {
+        baseDataType: 'object',
+        extendsDataType: 'object',
+      },
+      combo: {
+        baseDataType: 'object',
+        extendsDataType: 'object',
+      },
+      ajaxCombo: {
+        baseDataType: 'object',
+        extendsDataType: 'object',
+      }
+    };
+  }, []);
+  
+
   let defaultColDef = props.defaultColDef || {
     sortable: true,
     filter: true,
@@ -549,6 +574,7 @@ function P2AgGrid(props) {
       tooltipShowDelay={props.tooltipShowDelay || 500}
       stopEditingWhenCellsLoseFocus={props.stopEditingWhenCellsLoseFocus || true}
       onGridReady={onGridReady}
+      dataTypeDefinitions={dataTypeDefinitions}
     />
   );
 }
