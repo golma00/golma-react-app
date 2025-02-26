@@ -44,17 +44,17 @@ function P2SearchArea(props, ref) {
             case "search":
             case "tel":
             case "time":
-              initData[child.props.name] = {value: child.props.value || ""};
+              initData[child.props.name] = child.props.value || "";
               break;
             case "number":
-              initData[child.props.name] = {value: child.props.value || 0};
+              initData[child.props.name] = child.props.value || 0;
               break;
             case "checkbox":
-              initData[child.props.name] = {value: child.props.checked || false};
+              initData[child.props.name] = child.props.checked || false;
               break;
             case "radio":
               if (child.props.checked) {
-                initData[child.props.name] = {value: child.props.value || ""};
+                initData[child.props.name] = child.props.value || "";
               }
               break;
             default:
@@ -62,10 +62,10 @@ function P2SearchArea(props, ref) {
           }
         }
         else if (child.type === "textarea") {
-          initData[child.props.name] = {value: child.props.value || ""};
+          initData[child.props.name] = child.props.value || "";
         }
         else if (child.type === P2Select) {
-          initData[child.props.name] = {value: child.props.value || ""};
+          initData[child.props.name] = child.props.value || "";
         }
       });
     }
@@ -101,7 +101,7 @@ function P2SearchArea(props, ref) {
           return (
             <React.Fragment key={index}>
               {React.cloneElement(child, {
-                value: searchData[child.props.name]?.value || "",
+                value: searchData[child.props.name] || "",
                 onChange: (e) => {
                   if (child.props.onChange) {
                     child.props.onChange(e);
@@ -109,7 +109,7 @@ function P2SearchArea(props, ref) {
                   const targetValue = e.target && e.target.value;
                   setSearchData((prev) => ({
                     ...prev,
-                    [child.props.name]: { ...prev[child.props.name], value: targetValue },
+                    [child.props.name]: targetValue,
                   }));
                 },
                 onKeyDown: (e) => {
@@ -119,7 +119,7 @@ function P2SearchArea(props, ref) {
                   const targetValue = e.target && e.target.value;
                   setSearchData((prev) => ({
                     ...prev,
-                    [child.props.name]: { ...prev[child.props.name], value: targetValue },
+                    [child.props.name]: targetValue,
                   }));
                   if (e.key === "Enter") {
                     setChangeAfterSearch(true);
@@ -132,7 +132,7 @@ function P2SearchArea(props, ref) {
           return (
             <React.Fragment key={index}>
               {React.cloneElement(child, {
-                checked: searchData[child.props.name]?.value || false,
+                checked: searchData[child.props.name] || false,
                 onChange: (e) => {
                   if (child.props.onChange) {
                     child.props.onChange(e);
@@ -140,7 +140,7 @@ function P2SearchArea(props, ref) {
                   const targetValue = e.target && e.target.checked;
                   setSearchData((prev) => ({
                     ...prev,
-                    [child.props.name]: { ...prev[child.props.name], value: targetValue },
+                    [child.props.name]: targetValue,
                   }));
                   if (child.props.changeaftersearch) {
                     setChangeAfterSearch(true);
@@ -153,7 +153,7 @@ function P2SearchArea(props, ref) {
           return (
             <React.Fragment key={index}>
               {React.cloneElement(child, {
-                value: searchData[child.props.name]?.value || "",
+                value: searchData[child.props.name] || "",
                 onChange: (e) => {
                   if (child.props.onChange) {
                     child.props.onChange(e);
@@ -161,7 +161,7 @@ function P2SearchArea(props, ref) {
                   const targetValue = e.target && e.target.value;
                   setSearchData((prev) => ({
                     ...prev,
-                    [child.props.name]: { ...prev[child.props.name], value: targetValue },
+                    [child.props.name]: targetValue,
                   }));
                   if (child.props.changeaftersearch) {
                     setChangeAfterSearch(true);
@@ -178,7 +178,7 @@ function P2SearchArea(props, ref) {
       return (
         <React.Fragment key={index}>
           {React.cloneElement(child, {
-            value: searchData[child.props.name]?.value || "",
+            value: searchData[child.props.name] || "",
             onChange: (e) => {
               if (child.props.onChange) {
                 child.props.onChange(e);
@@ -186,7 +186,7 @@ function P2SearchArea(props, ref) {
               const targetValue = e.target && e.target.value;
               setSearchData((prev) => ({
                 ...prev,
-                [child.props.name]: { ...prev[child.props.name], value: targetValue },
+                [child.props.name]: targetValue,
               }));
               if (child.props.changeaftersearch) {
                 setChangeAfterSearch(true);
@@ -200,15 +200,15 @@ function P2SearchArea(props, ref) {
       return (
         <React.Fragment key={index}>
           {React.cloneElement(child, {
-            optionValue: searchData[child.props.name]?.value || "",
+            optionValue: searchData[child.props.name] || "",
             onChange: (e) => {
               if (child.props.onChange) {
                 child.props.onChange(e);
               }
-              const targetValue = e.value;
+              const targetValue = child.props.isMulti ? e.map(item => item.value) : e.value;
               setSearchData((prev) => ({
                 ...prev,
-                [child.props.name]: { ...prev[child.props.name], value: targetValue },
+                [child.props.name]: targetValue,
               }));
               if (child.props.changeaftersearch) {
                 setChangeAfterSearch(true);
