@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState, useCallback } from "react";
 import { AgGridReact } from "ag-grid-react";
 import { themeQuartz } from "ag-grid-community";
 import { 
@@ -388,11 +388,16 @@ const P2AgGridModule = {
 }; 
 
 function P2AgGrid(props) {
+  const [columnDefs, setColumnDefs] = useState(props.columnDefs || []);
+  const [defaultColDef, setDefaultColDef] = useState(props.defaultColDef || {
+    sortable: true,
+    filter: true,
+  });
+  const [rowData, setRowData] = useState(props.rowData || []);
+
   const showRowNumColumn = props.showRowNumColumn || true;
   const showCheckedColumn = props.showCheckedColumn;
   const showStatusColumn = props.showStatusColumn;
-
-  let columnDefs = props.columnDefs || [];
 
   if (showStatusColumn) {
     const columns = columnDefs.filter((c) => c.field === statusField);
@@ -408,7 +413,7 @@ function P2AgGrid(props) {
         cellClass: "text-center",
       };
 
-      columnDefs = [statusColumn, ...props.columnDefs];
+      setColumnDefs((prev) => [statusColumn, ...prev]);
     }
   }
 
@@ -427,7 +432,7 @@ function P2AgGrid(props) {
         headerComponent: CommonHeaderCheckedComponet,
       };
 
-      columnDefs = [checkColumn, ...columnDefs];
+      setColumnDefs((prev) => [checkColumn, ...prev]);
     }
   }
 
@@ -448,7 +453,7 @@ function P2AgGrid(props) {
         },
       };
 
-      columnDefs = [rowNumColumn, ...columnDefs];
+      setColumnDefs((prev) => [rowNumColumn, ...prev]);
     }
   }
 
@@ -462,10 +467,24 @@ function P2AgGrid(props) {
       defaultHeaderHeight = undefined;
     }
     c.headerClass = "justify-center";
+
+    if (c.align) {
+      switch (c.align) {
+        case "center":
+          c.cellClass = `${c.cellClass} text-center`;
+          break;
+        case "right":
+          c.cellClass = `${c.cellClass} text-right`;
+          break;
+        default:
+          break;
+      }
+    }
     if (c.cellDataType === "checkbox") {
       c.cellRenderer = P2CheckboxCellRenderer;
       c.cellEditor = P2CheckboxCellEditor;
       c.suppressKeyboardEvent = (params) => !!params.colDef.editable && params.event.key === ' ';
+      c.cellClass = "text-center";
     }
     else if (c.cellDataType === "combo") {
       c.cellEditor = P2ComboboxCellEditor;
@@ -507,6 +526,9 @@ function P2AgGrid(props) {
         }
       };
     }
+    else if (c.cellDataType === "number") {
+      c.cellClass = c.cellClass || "text-right";
+    }
 
     if (c.required === true) {
       if (c.headerName) {
@@ -540,26 +562,34 @@ function P2AgGrid(props) {
       }
     };
   }, []);
-  
 
-  let defaultColDef = props.defaultColDef || {
-    sortable: true,
-    filter: true,
-  };
+    const onGridReady = useCallback((params) => {
+      if (props.api) {
+        props.api(params.api);
+      }
+      
+      Object.keys(P2AgGridModule.apiFunctions).forEach((key) => {
+        params.api[key] = P2AgGridModule.apiFunctions[key].bind(this, params.api);
+      });
+      
+      if (props.onGridReady) {
+        props.onGridReady(params);
+      }
+    }, []);
 
-  const onGridReady = (params) => {
-    if (props.api) {
-      props.api(params.api);
-    }
-    
-    Object.keys(P2AgGridModule.apiFunctions).forEach((key) => {
-      params.api[key] = P2AgGridModule.apiFunctions[key].bind(this, params.api);
-    });
-    
-    if (props.onGridReady) {
-      props.onGridReady(params);
-    }
-  };
+    const onCellValueChanged = useCallback((params) => {
+      if (props.onGridReady) {
+        props.onCellValueChanged(params);
+      }
+      if (showStatusColumn && params.oldValue !== params.newValue) {
+        if (
+          params.data[statusField] !== insertStatus &&
+          params.data[statusField] !== deleteStatus
+        ) {
+          params.node.setDataValue(statusField, updateStatus);
+        }
+      }
+    }, []);
 
   return (
     <AgGridReact
@@ -567,13 +597,14 @@ function P2AgGrid(props) {
       theme={themeQuartz}
       columnDefs={columnDefs}
       defaultColDef={defaultColDef}
-      rowData={props.rowData || []}
+      rowData={rowData}
       rowHeight={props.rowHeight || 35}
       headerHeight={props.headerHeight || defaultHeaderHeight}
       singleClickEdit={props.singleClickEdit || true}
       tooltipShowDelay={props.tooltipShowDelay || 500}
       stopEditingWhenCellsLoseFocus={props.stopEditingWhenCellsLoseFocus || true}
       onGridReady={onGridReady}
+      onCellValueChanged={onCellValueChanged}
       dataTypeDefinitions={dataTypeDefinitions}
     />
   );

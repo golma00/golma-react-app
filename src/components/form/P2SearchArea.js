@@ -24,44 +24,57 @@ function P2SearchArea(props, ref) {
 
   useEffect(() => {
     let initData = {};
-    if (props.children) {
-      props.children.forEach((child) => {
-        if (child.type === "input") {
-          switch (child.props.type) {
-            case "text":
-            case "email":
-            case "password":
-            case "color":
-            case "date":
-            case "datetime-local":
-            case "month":
-            case "search":
-            case "tel":
-            case "time":
-              initData[child.props.name] = child.props.value || "";
-              break;
-            case "number":
-              initData[child.props.name] = child.props.value || 0;
-              break;
-            case "checkbox":
-              initData[child.props.name] = child.props.checked || false;
-              break;
-            case "radio":
-              if (child.props.checked) {
+    function recursiveSearch(children) {
+      if (children) {
+        children.forEach((child) => {
+          if (child.type === "input") {
+            switch (child.props.type) {
+              case "text":
+              case "email":
+              case "password":
+              case "color":
+              case "date":
+              case "datetime-local":
+              case "month":
+              case "search":
+              case "tel":
+              case "time":
                 initData[child.props.name] = child.props.value || "";
-              }
-              break;
-            default:
-              break;
+                break;
+              case "number":
+                initData[child.props.name] = child.props.value || 0;
+                break;
+              case "checkbox":
+                initData[child.props.name] = child.props.checked || false;
+                break;
+              case "radio":
+                if (child.props.checked) {
+                  initData[child.props.name] = child.props.value || "";
+                }
+                break;
+              default:
+                break;
+            }
           }
-        }
-        else if (child.type === "textarea") {
-          initData[child.props.name] = child.props.value || "";
-        }
-        else if (child.type === P2Select) {
-          initData[child.props.name] = child.props.value || "";
-        }
-      });
+          else if (child.type === "textarea") {
+            initData[child.props.name] = child.props.value || "";
+          }
+          else if (child.type === P2Select) {
+            initData[child.props.name] = child.props.value || "";
+          }
+
+          if (child.props.children && child.props.children instanceof Array && child.props.children.length > 0) {
+            recursiveSearch(child.props.children);
+          }
+          else if (child.type === "div" && child.props.children instanceof Object) {
+            recursiveSearch([child.props.children]);
+          }
+        });
+      }
+    }
+
+    if (props.children.length > 0) {
+      recursiveSearch(props.children);
     }
     setSearchData(initData);
   }, [])
@@ -75,7 +88,13 @@ function P2SearchArea(props, ref) {
     };
   }, [changeAfterSearch]);
 
-  function renderChild(child, index) {
+  function recursiveRender(child, index) {
+    if (child.props.children && child.props.children instanceof Array && child.props.children.length > 0) {
+      return child.props.children.map((child, index) => {
+        return recursiveRender(child, index);
+      })
+    }
+
     if (child.type === "label") {
       return <label key={index}>{child.props.children}</label>;
     }
@@ -212,12 +231,15 @@ function P2SearchArea(props, ref) {
         </React.Fragment>
       );
     }
+    else {
+      return <React.Fragment key={index}>{child.props.children}</React.Fragment>;
+    }
   }
 
   return (
     <div className={className}>
       {props.children.map((child, index) => {
-        return renderChild(child, index);
+        return recursiveRender(child, index);
       })}
     </div>
   );

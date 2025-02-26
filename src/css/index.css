@@ -29,13 +29,17 @@ label {
   align-self: center;
 }
 
+input {
+  @apply px-2 border border-area-border-color !important;
+}
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
 
 .P2Select__control {
-  @apply text-sm min-h-7 flex-nowrap !important;
+  @apply text-sm min-h-7 flex-nowrap border-area-border-color !important;
 }
 
 .P2Select__value-container {

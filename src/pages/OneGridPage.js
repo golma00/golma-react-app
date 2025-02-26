@@ -25,7 +25,7 @@ function OneGridPage() {
   ]
 
   const colDefs = [
-      { field: "make", headerName: "Make", editable: true, },
+      { field: "make", headerName: "Make", editable: true, align: "center" },
       { field: "model", headerName: "Model", editable: true, },
       { field: "price", headerName: "Price", editable: true, cellDataType: "number" },
       { field: "electric", headerName: "Electric", editable: true, cellDataType: "checkbox" },
@@ -36,10 +36,6 @@ function OneGridPage() {
   useEffect(() => {
     getCodeList();
   }, []);
-
-  useEffect(() => {
-    console.log(selectCeGroup.current);
-  }, [selectCeGroup.current]);
 
   const getCodeList = async () => {
     try {
@@ -52,7 +48,7 @@ function OneGridPage() {
 
   function loadData() {
     gridApi.refresh();
-    gridApi.setGridOption("rowData", rowData);
+    gridApi.setGridOption("rowData", structuredClone(rowData));
   }
 
   function addData() {
@@ -99,7 +95,9 @@ function OneGridPage() {
       </div>
       <P2SearchArea onSearch={onSearch} ref={searchArea}>
         <label class="text-xl">계획연도</label>
-        <input type="text" name="planYear" className="text-sm bg-white border border-gray-200 rounded-md" value={textValue} onChange={(e) => setTextValue(e.target.value)}/>
+        <div>
+          <input type="text" name="planYear" className="text-sm bg-white border border-gray-200 rounded-md" value={textValue} onChange={(e) => setTextValue(e.target.value)}/>
+        </div>
         <label>제목</label>
         <input type="text" name="title" className="text-sm bg-white border border-gray-200 rounded-md"/>
         <label>기간</label>
