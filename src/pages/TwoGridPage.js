@@ -1,12 +1,15 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { P2AgGrid, P2SearchArea, P2Select } from 'components/index';
 import axios from 'axios';
+import SplitterLayout from 'react-splitter-layout';
+import "react-splitter-layout/lib/index.css";
 
 function TwoGridPage() {
   const searchArea = useRef(null);
   const selectCeGroup = useRef(null);
   const selectCeGroup2 = useRef(null);
   const [gridApi, setGridApi] = useState(null);
+  const [gridApi2, setGridApi2] = useState(null);
 
   const [textValue, setTextValue] = useState("test");
 
@@ -53,10 +56,18 @@ function TwoGridPage() {
   function loadData() {
     gridApi.refresh();
     gridApi.setGridOption("rowData", rowData);
+    gridApi2.refresh();
+    gridApi2.setGridOption("rowData", rowData);
   }
 
   function addData() {
     gridApi.addRow({
+      make: "123",
+      model: "RED",
+      price: 30000,
+      electric: false
+    });
+    gridApi2.addRow({
       make: "123",
       model: "RED",
       price: 30000,
@@ -120,13 +131,22 @@ function TwoGridPage() {
         <input type="text" name="test" className="text-sm bg-white border border-gray-200 rounded-md"/>
       </P2SearchArea>
       <div className="w-full h-[500px]">
-        <P2AgGrid 
-          debug={true}
-          columnDefs={colDefs}
-          showStatusColumn={true}
-          showCheckedColumn={true}
-          api={setGridApi}
-        />
+        <SplitterLayout split="vertical">
+          <P2AgGrid 
+            debug={true}
+            columnDefs={colDefs}
+            showStatusColumn={true}
+            showCheckedColumn={true}
+            api={setGridApi}
+          />
+          <P2AgGrid 
+            debug={true}
+            columnDefs={colDefs}
+            showStatusColumn={true}
+            showCheckedColumn={true}
+            api={setGridApi2}
+          />
+        </SplitterLayout>
       </div>
     </div>
   )
