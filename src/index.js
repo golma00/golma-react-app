@@ -5,6 +5,9 @@ import { render } from "react-dom"
 import { ModuleRegistry, AllCommunityModule } from 'ag-grid-community'
 import './index.css';
 
+const dependsModules = AllCommunityModule.dependsOn.filter(module => module.moduleName !== 'Validation');
+AllCommunityModule.dependsOn = dependsModules;
+
 ModuleRegistry.registerModules([AllCommunityModule])
 axios.defaults.baseURL = 'http://221.149.20.211:8090';
 
