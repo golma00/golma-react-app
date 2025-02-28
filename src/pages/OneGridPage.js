@@ -118,7 +118,7 @@ function OneGridPage() {
         <input type="text" name="test" className="text-sm bg-white border border-gray-200 rounded-md"/>
       </P2SearchArea>
       <div className="w-full h-[500px]">
-        <P2AgGrid 
+        <P2AgGrid  
           debug={true}
           columnDefs={colDefs}
           showStatusColumn={true}
