@@ -6,7 +6,6 @@ function ThreeGridPage() {
   const [dataone, setDataone] = useState([]); // JSON 데이터 저장
   const [msg, setMsg] = useState([]); // JSON 데이터 저장
   const [msgst, setMsgst] = useState(0); // JSON 데이터 저장
-  const [msgdataone, setMsgdataone] = useState(0); // JSON 데이터 저장
   const [empno, setEmpno] = useState(null); // JSON 데이터 저장
   const [name, setName] = useState(null); // JSON 데이터 저장
   const [hpno, setHpno] = useState(null); // JSON 데이터 저장
@@ -16,6 +15,7 @@ function ThreeGridPage() {
   const inqApi = async() => 
   {
     try {
+      await setMsgst(0);
       await setData([]);
       console.log('inqApi0=',data );
       let responce = await fetch("http://127.0.0.1:8080/list");
@@ -24,18 +24,19 @@ function ThreeGridPage() {
       console.log('inqApi2=',data );
       setData(responce_data?responce_data:[]);
       console.log('inqApi3=',data );
+      await setMsg({msg:'조회되었습니다.'});
       setMsgst(1);
       console.log('inqApi4=',data );
-      setMsg({msg:'조회되었습니다.'});
     } catch(e) {
       alert('error=>',e);
     }
   }
   
 
-  const inqApione = useCallback(async() => {
+  const inqApione =  (async() => {
     console.log('before dataone=',dataone );
     try {
+      await setMsgst(0);
       if (empno == null) {
         alert('사원번호를 입력하세요');
         return null;
@@ -47,51 +48,53 @@ function ThreeGridPage() {
       console.log('before dataone=2',dataone );
       await setDataone(responce_data?responce_data:[]);
       console.log('before dataone=3',dataone );
-      setMsgdataone(1);
-      setMsg({msg:'조회되었습니다.'});
+      await setMsg({msg:'조회되었습니다.'});
+      setMsgst(2);
     } catch(e) {
       alert('조회data가 없습니다.');
     }
-  },)
+  })
 
-const saveApi = useCallback(async() => {
+const saveApi = (async() => {
     try {
-            console.log('saveApi=0',dataone);  
+            await setMsgst(0);
             let responce = await fetch("http://127.0.0.1:8080/insert", {
                                     method: 'POST', 
                                     headers: {
                                       "Content-Type":"application/json; charset=utf-8"
                                     },
-                                    body: JSON.stringify(dataone)
+                                    body: JSON.stringify({empno:empno,name:name,hpno:hpno,email:email})
             });
             let responce_data = await responce.json();
             setMsg(await responce_data||[]);
-            setMsgst(1);
+            setMsgst(3);
             // alert(responce_data.msg);
       } catch (e) {
             alert('error=>',e);
       } 
-  },[dataone])
+  })
 
   useEffect(() => {
     
-    if (msg && msgst === 1) {
-      console.log("msg 변경됨:", msg);
+
+    if (msgst === 1) { // 전체조회시
       setMsgst(0);
       const timer = setTimeout(() => alert(msg.msg) , 100)
     }
-    if (msgdataone == 1) {
+    if (msgst == 3) { // 저장시
+      setMsgst(0); 
+      const timer = setTimeout(() => alert(msg.msg) , 100)
+    }
+    if (msgst == 2) {  //단건조회시
       setTimeout(() => {
-        console.log('dataone=',dataone);
-        setMsgdataone(0);
+        setMsgst(0);
         setName(dataone.name);
         setHpno(dataone.hpno);
         setEmail(dataone.email);
+        const timer = setTimeout(() => alert(msg.msg) , 100)
       } , 100)
-      
     }
-
-  }, [msg]);  // msg가 변경될 때마다 실행  
+  }, [msgst]);  // msg가 변경될 때마다 실행  
 
   const openNewWindow = () => {
     const newUrl = `http://localhost:3000/two?empno=${encodeURIComponent(empno)}`;
@@ -120,6 +123,9 @@ const saveApi = useCallback(async() => {
       </div>
     );
   };
+  useEffect(() => {
+    console.log('dataone been updated to:', dataone);
+  }, [dataone]);
 
   return (
     <div>
@@ -131,7 +137,7 @@ const saveApi = useCallback(async() => {
             </td>
              <td width={600}><h2>📌 직원 등록</h2>
              <button className="common-btn" onClick={inqApione}>조회</button>
-             <button className="common-btn" onClick={() => {saveApi()}}>저장</button>
+             <button className="common-btn" onClick={async() => {saveApi()}}>저장</button>
              </td>
         </tr>
         </tbody>             
@@ -180,7 +186,7 @@ const saveApi = useCallback(async() => {
             </tr>
             <tr>
               <td><label>email</label></td>
-              <td><input type="text" id="email" className="text-sm bg-white border border-gray-200 rounded-md" value={email} onChange={(e)=> setDataone(e.target.value)}>
+              <td><input type="text" id="email" className="text-sm bg-white border border-gray-200 rounded-md" value={email} onChange={(e)=> setEmail(e.target.value)}>
               </input></td>
             </tr>
             <tr />
