@@ -1,7 +1,4 @@
 import React, { useCallback, useState, useRef, useEffect } from 'react'
-import { P2AgGrid, P2SearchArea, P2Select } from 'components/index';
-import axios from 'axios';
-import SplitterLayout from 'react-splitter-layout';
 import "react-splitter-layout/lib/index.css";
 
 function ThreeGridPage() {
