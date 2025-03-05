@@ -11,6 +11,7 @@
     "@testing-library/react": "^12.1.5",
     "@testing-library/user-event": "^13.5.0",
     "ag-grid-react": "^33.1.1",
+    "antd": "^3.26.19",
     "axios": "^1.7.9",
     "golma-react-app": "file:",
     "i18next": "^19.9.2",
