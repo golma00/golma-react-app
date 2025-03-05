@@ -1,4 +1,5 @@
 import React, { useCallback, useState, useRef, useEffect } from 'react'
+import { P2AgGrid, P2SearchArea, P2Select } from 'components/index';
 import "react-splitter-layout/lib/index.css";
 
 function ThreeGridPage() {
@@ -11,6 +12,7 @@ function ThreeGridPage() {
   const [hpno, setHpno] = useState(null); // JSON 데이터 저장
   const [email, setEmail] = useState(null); // JSON 데이터 저장
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [gridApi, setGridApi] = useState(null);
 
   const inqApi = async() => 
   {
@@ -28,6 +30,7 @@ function ThreeGridPage() {
 
   const inqApione =  (async() => {
     try {
+  
       if (empno == null) {
         alert('사원번호를 입력하세요');
         return null;
@@ -63,6 +66,12 @@ const saveApi = (async() => {
             alert('error=>',e);
       } 
   })
+  const colDefs = [
+    { field: "empno", headerName: "사원번호", editable: true, },
+    { field: "name", headerName: "이름", editable: true, },
+    { field: "hpno", headerName: "휴대폰번호", editable: true, },
+    { field: "email", headerName: "EMAIL", editable: true, },
+];
 
   useEffect(() => {
     
@@ -75,6 +84,13 @@ const saveApi = (async() => {
     }
 
     if (msgst != 0) {
+      if (msgst == 1) {
+        console.log('gridApi=',data);
+        gridApi.refresh();
+        gridApi.setGridOption("rowData", data);
+        console.log("Grid Row Data:", gridApi.getDisplayedRowCount());
+        console.log("Selected Rows:", gridApi.getSelectedRows());
+      }
       setIsModalOpen(true);
     }
     setMsgst(0);
@@ -142,20 +158,6 @@ const saveApi = (async() => {
       <td width={600}>
         <table border={1} key="table1" >
           <tbody>
-          <tr>
-              <td width={100}>사원번호</td>
-              <td width={100}>이름</td>
-              <td width={100}>전화번호</td>
-              <td width={100}>email</td>
-          </tr>
-            {data.map((item) => (
-              <tr key={item.empno}>
-                  <td width={100}>{item.empno}</td>
-                  <td width={100}>{item.name}</td>
-                  <td width={100}>{item.hpno}</td>
-                  <td width={100}>{item.email}</td>
-              </tr>
-            ))}
           </tbody>
         </table>  
         </td>
@@ -190,6 +192,14 @@ const saveApi = (async() => {
           </tr>
     </tbody>   
     </table>
+
+        <P2AgGrid 
+                  debug={true}
+                  columnDefs={colDefs}
+                  showStatusColumn={true}
+                  showCheckedColumn={true}
+                  api={setGridApi}
+                />    
       </div>
   );
 }
