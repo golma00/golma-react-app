@@ -99,7 +99,7 @@ function P2Select(props, ref) {
         case "BLANK":
           optionArray.push({
             value: " ",
-            label: " ",
+            label: "\u00A0",
           });
           break;
         default:

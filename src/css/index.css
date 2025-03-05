@@ -24,6 +24,15 @@
   .p2-search-area > div > input, .p2-search-area > input {
     @apply px-2 h-7 border border-area-border-color !important;
   }
+
+  .p2-form-area {
+    @apply border border-area-border-color rounded-md p-4 bg-area-bg-color flex flex-col gap-x-5 gap-y-2 justify-start;
+  }
+
+  .p2-form-area > div > input, .p2-search-area > input {
+    @apply px-2 h-7 border border-area-border-color !important;
+  }
+
 }
 
 :root {
@@ -54,12 +63,4 @@ body {
 
 .P2Select__menu {
   z-index: 10 !important;
-}
-
-.splitter-layout > .layout-splitter {
-  flex: 0 0 auto;
-  width: 8px;
-  height: 100%;
-  cursor: col-resize;
-  background-color: #FFFFFF ;
 }
