@@ -1,8 +1,8 @@
-import React, { useState, useRef, useEffect, useLayoutEffect } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { P2Page, P2AgGrid, P2SearchArea, P2Select, P2GridButtonBar } from 'components/index';
 import axios from 'axios';
 
-function CommonPage() {
+function CommonPage(props) {
   const searchArea = useRef(null);
   const selectCeGroup = useRef(null);
   const selectCeGroup2 = useRef(null);
@@ -50,6 +50,7 @@ function CommonPage() {
   function loadData() {
     grid.current.api.refresh();
     grid.current.api.setGridOption("rowData", structuredClone(rowData));
+    grid.current.api.firstRowSelected();
 
     setCount(grid.current.api.getDisplayedRowCount());
   }
@@ -89,7 +90,7 @@ function CommonPage() {
   }
   
   return (
-    <P2Page onSearch={onSearch} onSave={onSave} onExtBtn1={onExtBtn1} onExtBtn2={onExtBtn2}>
+    <P2Page menuProps={props.menuProps} onSearch={onSearch} onSave={onSave} onExtBtn1={onExtBtn1} onExtBtn2={onExtBtn2}>
       <P2SearchArea onSearch={onSearch} ref={searchArea}>
         <div className="flex flex-row gap-2 justify-center">
           <label htmlFor='planYear'>계획연도</label>

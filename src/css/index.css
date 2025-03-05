@@ -24,6 +24,15 @@
   .p2-search-area > div > input, .p2-search-area > input {
     @apply px-2 h-7 border border-area-border-color !important;
   }
+
+  .p2-form-area {
+    @apply border border-area-border-color rounded-md p-4 bg-area-bg-color flex flex-col gap-x-5 gap-y-2 justify-start;
+  }
+
+  .p2-form-area > div > input, .p2-search-area > input {
+    @apply px-2 h-7 border border-area-border-color !important;
+  }
+
 }
 
 :root {

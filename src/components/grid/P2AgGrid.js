@@ -177,6 +177,14 @@ function P2AgGrid(props, ref) {
     }
   });
 
+  const rowSelection = useMemo(() => { 
+    return {
+          mode: 'singleRow',
+          checkboxes: false,
+          enableClickSelection: true,
+      };
+  }, []);
+
   const dataTypeDefinitions = useMemo(() => { 
     return {
       number: {
@@ -218,17 +226,17 @@ function P2AgGrid(props, ref) {
       }
     }, []);
 
-    const onCellValueChanged = useCallback((params) => {
-      if (props.onGridReady) {
-        props.onCellValueChanged(params);
+  const onCellValueChanged = useCallback((params) => {
+    if (props.onGridReady) {
+      props.onCellValueChanged(params);
+    }
+    if (showStatusColumn && params.oldValue !== params.newValue) {
+      if (
+        params.data[statusField] !== insertStatus &&
+        params.data[statusField] !== deleteStatus
+      ) {
+        params.node.setDataValue(statusField, updateStatus);
       }
-      if (showStatusColumn && params.oldValue !== params.newValue) {
-        if (
-          params.data[statusField] !== insertStatus &&
-          params.data[statusField] !== deleteStatus
-        ) {
-          params.node.setDataValue(statusField, updateStatus);
-        }
     }
   }, []);
 
@@ -242,6 +250,7 @@ function P2AgGrid(props, ref) {
       rowData={rowData}
       rowHeight={props.rowHeight || 35}
       headerHeight={props.headerHeight || defaultHeaderHeight}
+      rowSelection={props.rowSelection || rowSelection}
       singleClickEdit={props.singleClickEdit || true}
       tooltipShowDelay={props.tooltipShowDelay || 500}
       stopEditingWhenCellsLoseFocus={props.stopEditingWhenCellsLoseFocus || true}
