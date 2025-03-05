@@ -64,11 +64,3 @@ body {
 .P2Select__menu {
   z-index: 10 !important;
 }
-
-.splitter-layout > .layout-splitter {
-  flex: 0 0 auto;
-  width: 8px;
-  height: 100%;
-  cursor: col-resize;
-  background-color: #FFFFFF ;
-}
