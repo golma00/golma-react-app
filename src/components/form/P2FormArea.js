@@ -278,7 +278,7 @@ function P2FormArea(props, ref) {
           case deleteStatus:
             break;
           default:
-            props.rowNode.setDataValue(statusField, insertStatus);
+            props.rowNode.setDataValue(statusField, updateStatus);
             break;
         }
       }
