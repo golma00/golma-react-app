@@ -25,7 +25,6 @@ function ThreeGridPage() {
       alert('error=>',e);
     }
   }
-  
 
   const inqApione =  (async() => {
     try {
@@ -190,9 +189,6 @@ const saveApi = (async() => {
           </td>
           </tr>
     </tbody>   
-
-
-
     </table>
       </div>
   );
