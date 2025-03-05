@@ -116,12 +116,24 @@ const saveApi = (async() => {
         <tbody>
         <tr>
             <td width={600}><h2>📌 직원 현황</h2>
-            <button className="common-btn" onClick={inqApi}>조회</button>
+                <button className="common-btn" onClick={inqApi}>조회</button>
+                </td>
+                <td width={600}><h2>📌 직원 등록</h2>
+                <button className="common-btn" onClick={inqApione}>조회</button>
+                <button className="common-btn" onClick={async() => {saveApi()}}>저장</button>
+                    {/* 모달예시 */}
+                <button onClick={() => setIsModalOpen(true)} className="bg-blue-500 text-white px-4 py-2 rounded">
+                    모달 열기
+                </button>
+                <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+                  <p>{msg.msg}</p>
+                </Modal>     
+
+                {/* 세창예시 */}
+                <button  onClick={openNewWindow} className="bg-blue-500 text-white px-4 py-2 rounded">
+                    새 창 열기
+                </button>
             </td>
-             <td width={600}><h2>📌 직원 등록</h2>
-             <button className="common-btn" onClick={inqApione}>조회</button>
-             <button className="common-btn" onClick={async() => {saveApi()}}>저장</button>
-             </td>
         </tr>
         </tbody>             
       </table>
@@ -179,21 +191,7 @@ const saveApi = (async() => {
           </tr>
     </tbody>   
 
-    {/* 모달예시 */}
-    <button
-        onClick={() => setIsModalOpen(true)}
-        className="bg-blue-500 text-white px-4 py-2 rounded">
-        모달 열기
-      </button>
-      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
-        <p>{msg.msg}</p>
-      </Modal>     
 
-    {/* 세창예시 */}
-      <button
-        onClick={openNewWindow} className="bg-blue-500 text-white px-4 py-2 rounded">
-        새 창 열기
-      </button>
 
     </table>
       </div>
