@@ -5,6 +5,7 @@ import { render } from "react-dom"
 import { ModuleRegistry, AllCommunityModule } from 'ag-grid-community'
 import 'css/index.css';
 import 'css/ag-grid.css';
+import "locales/i18n";
 const dependsModules = AllCommunityModule.dependsOn.filter(module => module.moduleName !== 'Validation');
 AllCommunityModule.dependsOn = dependsModules;
 

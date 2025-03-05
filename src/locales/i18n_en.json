@@ -1,0 +1,11 @@
+{
+  "top-buttons": {
+    "modalPop"   : "Modal Popup",
+    "winPop"     : "New Window Popup",
+    "loadData"   : "Load Data",
+    "addData"    : "Add Data",
+    "allData"    : "All Data",
+    "insertData" : "Insert Data",
+    "searchData" : "Search"
+  }
+}
