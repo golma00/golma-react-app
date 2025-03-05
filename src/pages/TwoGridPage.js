@@ -1,10 +1,14 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { P2AgGrid, P2SearchArea, P2Select } from 'components/index';
+import Modal from '../components/modal/Modal';
+import { useSearchParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 import SplitterLayout from 'react-splitter-layout';
 import "react-splitter-layout/lib/index.css";
 
-function TwoGridPage() {
+function TwoGridPage(params) {
+  console.log("params => ", params);
   const searchArea = useRef(null);
   const selectCeGroup = useRef(null);
   const selectCeGroup2 = useRef(null);
@@ -14,6 +18,20 @@ function TwoGridPage() {
   const [textValue, setTextValue] = useState("test");
 
   const [codeList, setCodeList] = useState([]);
+  
+  // modal 팝업
+  const [modalOpen, setModalOpen] = useState(false);
+
+  // new window 팝업
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const lngs = [ // 2. 언어 구분을 위한 lng 객체 생성
+    { value: "ko", label: "한국어" },
+    { value: "en", label: "English" },
+  ];
+  const [language, setLanguage] = useState("ko");
+
+  const { t, i18n } = useTranslation();
 
   const rowData = [
       { make: "Tesla",  model: "Model Y", price: 64950, electric: "Y", controller: "1A" },
@@ -38,6 +56,7 @@ function TwoGridPage() {
 
   useEffect(() => {
     getCodeList();
+    hasLanguageCd();
   }, []);
 
   useEffect(() => {
@@ -59,6 +78,30 @@ function TwoGridPage() {
     gridApi2.refresh();
     gridApi2.setGridOption("rowData", rowData);
   }
+
+  const openModal = () => {
+    setModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setModalOpen(false);
+  };
+  
+  const openWindowPop = async () => {
+    const url = '../two' + '?' + 'languageId=en';
+    const date = new Date();
+    const popupId = "popup" + String(date.getHours()).padStart(2, "0")
+                            + String(date.getMinutes()).padStart(2, "0")
+                            + String(date.getSeconds()).padStart(2, "0");
+
+    const width = 1200; 
+    const height = 800; 
+    const left = window.screenX + (window.outerWidth - width) / 2;
+    const top = window.screenY + (window.outerHeight - height) / 2;
+    const windowFeatures = `width=${width},height=${height},left=${left},top=${top}`;
+
+    window.open(url, popupId, windowFeatures);
+  };
 
   function addData() {
     gridApi.addRow({
@@ -92,15 +135,44 @@ function TwoGridPage() {
     await searchArea.current.api.set("test", "Eeeee");
     console.log(await searchArea.current.api.get());
   }
+
+  const changeLanguageCd = (param) => {
+    var languageCd = "";
+    if (param.value) {
+      languageCd = param.value;
+    }
+    else {
+      languageCd = param;
+    }
+    setLanguage(languageCd);
+    i18n.changeLanguage(languageCd);
+  };
+
+  const hasLanguageCd = () => {
+    var languageId = searchParams.get("languageId");
+    if (languageId) {
+      changeLanguageCd(languageId);
+    }
+  }
   
   return (
     <div className="flex flex-col w-full gap-1 px-2 py-1">
       <div className="flex flex-row w-full h-8 gap-1 justify-end">
-        <button className="common-btn" onClick={loadData}>Load Data</button>
-        <button className="common-btn" onClick={addData}>Add Data</button>
-        <button className="common-btn" onClick={allRowNodes}>All Data</button>
-        <button className="common-btn" onClick={insertedRowNodes}>Insert Data</button>
-        <button className="common-btn" onClick={search}>Search</button>
+        <P2Select name="lngSelect" className="w-24 text-sm"
+          value={language} 
+          isMulti={false}
+          valueField="value"
+          labelField="label"
+          datas={lngs}
+          onChange={changeLanguageCd}
+        />
+        <button className="common-btn" onClick={openModal}>{t(`top-buttons.modalPop`)}</button>
+        <button className="common-btn" onClick={openWindowPop}>{t(`top-buttons.winPop`)}</button>
+        <button className="common-btn" onClick={loadData}>{t(`top-buttons.loadData`)}</button>
+        <button className="common-btn" onClick={addData}>{t(`top-buttons.addData`)}</button>
+        <button className="common-btn" onClick={allRowNodes}>{t(`top-buttons.allData`)}</button>
+        <button className="common-btn" onClick={insertedRowNodes}>{t(`top-buttons.insertData`)}</button>
+        <button className="common-btn" onClick={search}>{t(`top-buttons.searchData`)}</button>
         <P2Select name="ceGroup1" className="w-40 text-sm" 
           defaultOption="ALL"
           isMulti={true}
@@ -148,6 +220,9 @@ function TwoGridPage() {
           />
         </SplitterLayout>
       </div>
+      <Modal open={modalOpen} close={closeModal} header="Modal 헤더">
+        Modal 내용
+      </Modal>
     </div>
   )
 }

@@ -10,3 +10,6 @@ export {
   CommonCheckedEditor,
   CommonCheckedRenderer
 } from "components/grid/renderer/renderer";
+export { default as P2Page } from "components/form/P2Page";
+export { default as P2PageButtonBar } from "components/form/P2PageButtonBar";
+export { default as P2GridButtonBar } from "components/form/P2GridButtonBar";
