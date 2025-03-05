@@ -1,0 +1,11 @@
+{
+  "top-buttons": {
+    "modalPop"   : "모달 팝업",
+    "winPop"     : "새창 열기",
+    "loadData"   : "데이터 로드",
+    "addData"    : "데이터 추가",
+    "allData"    : "모든 데이터",
+    "insertData" : "데이터 입력",
+    "searchData" : "조회"
+  }
+}
