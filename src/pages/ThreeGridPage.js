@@ -15,18 +15,12 @@ function ThreeGridPage() {
   const inqApi = async() => 
   {
     try {
-      await setMsgst(0);
       await setData([]);
-      console.log('inqApi0=',data );
       let responce = await fetch("http://127.0.0.1:8080/list");
-      console.log('inqApi1=',data );
       let responce_data =await responce.json();
-      console.log('inqApi2=',data );
       setData(responce_data?responce_data:[]);
-      console.log('inqApi3=',data );
       await setMsg({msg:'조회되었습니다.'});
       setMsgst(1);
-      console.log('inqApi4=',data );
     } catch(e) {
       alert('error=>',e);
     }
@@ -34,24 +28,21 @@ function ThreeGridPage() {
   
 
   const inqApione =  (async() => {
-    console.log('before dataone=',dataone );
     try {
-      await setMsgst(0);
       if (empno == null) {
         alert('사원번호를 입력하세요');
         return null;
       }
-      console.log('empno=', empno)
       await setDataone([]);
       let responce = await fetch(`http://127.0.0.1:8080/listone?id=${empno}`)
       let responce_data = await responce.json();
-      console.log('before dataone=2',dataone );
       await setDataone(responce_data?responce_data:[]);
-      console.log('before dataone=3',dataone );
       await setMsg({msg:'조회되었습니다.'});
       setMsgst(2);
     } catch(e) {
-      alert('조회data가 없습니다.');
+      await setDataone((prevState) => ({...prevState, name:'',hpno:'',email:''  }) );
+      await setMsg({msg:'조회건이 없습니다.'});
+      setMsgst(2);
     }
   })
 
@@ -76,24 +67,19 @@ const saveApi = (async() => {
 
   useEffect(() => {
     
-
-    if (msgst === 1) { // 전체조회시
-      setMsgst(0);
-      const timer = setTimeout(() => alert(msg.msg) , 100)
-    }
-    if (msgst == 3) { // 저장시
-      setMsgst(0); 
-      const timer = setTimeout(() => alert(msg.msg) , 100)
-    }
     if (msgst == 2) {  //단건조회시
       setTimeout(() => {
-        setMsgst(0);
         setName(dataone.name);
         setHpno(dataone.hpno);
         setEmail(dataone.email);
-        const timer = setTimeout(() => alert(msg.msg) , 100)
       } , 100)
     }
+
+    if (msgst != 0) {
+      setIsModalOpen(true);
+    }
+    setMsgst(0);
+
   }, [msgst]);  // msg가 변경될 때마다 실행  
 
   const openNewWindow = () => {
@@ -111,7 +97,7 @@ const saveApi = (async() => {
     return (
       <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
         <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-          <h2 className="text-xl font-bold mb-4">모달 창</h2>
+          <h2 className="text-xl font-bold mb-4">처리결과</h2>
           <div>{children}</div>
           <button
             onClick={onClose}
@@ -123,9 +109,6 @@ const saveApi = (async() => {
       </div>
     );
   };
-  useEffect(() => {
-    console.log('dataone been updated to:', dataone);
-  }, [dataone]);
 
   return (
     <div>
@@ -195,16 +178,18 @@ const saveApi = (async() => {
           </td>
           </tr>
     </tbody>   
+
+    {/* 모달예시 */}
     <button
         onClick={() => setIsModalOpen(true)}
-        className="bg-blue-500 text-white px-4 py-2 rounded"
-      >
+        className="bg-blue-500 text-white px-4 py-2 rounded">
         모달 열기
       </button>
-
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
-        <p>이곳에 원하는 내용을 넣으세요!</p>
-      </Modal>         
+        <p>{msg.msg}</p>
+      </Modal>     
+
+    {/* 세창예시 */}
       <button
         onClick={openNewWindow} className="bg-blue-500 text-white px-4 py-2 rounded">
         새 창 열기
