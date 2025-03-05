@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useImperativeHandle, forwardRef } from "react";
+import React, { Children, useState, useEffect, useImperativeHandle, forwardRef } from "react";
 import PropTypes from "prop-types";
 import { P2Select } from "components/index";
 
 function P2SearchArea(props, ref) {
-  const className = props.className || "h-12 border border-area-border-color rounded-md px-4 py-2 bg-area-bg-color flex flex-row gap-5";
+  const className = props.className || "p2-search-area";
 
   const [searchData, setSearchData] = useState({});
   const [changeAfterSearch, setChangeAfterSearch] = useState(false);
@@ -90,13 +90,21 @@ function P2SearchArea(props, ref) {
 
   function recursiveRender(child, index) {
     if (child.props.children && child.props.children instanceof Array && child.props.children.length > 0) {
-      return child.props.children.map((child, index) => {
+
+      const children = [...Children.map(child.props.children, (child, index) => {
         return recursiveRender(child, index);
-      })
+      })];
+
+      if (child.type === "div") {
+        return <div key={index} {...child.props}>{children}</div>;
+      }
     }
 
     if (child.type === "label") {
-      return <label key={index}>{child.props.children}</label>;
+      return <label key={index} {...child.props}>{child.props.children}</label>;
+    }
+    else if (child.type === "div") {
+      return <div key={index}>{child.props.children}</div>;
     }
     else if (child.type === "input") {
       switch (child.props.type) {
@@ -238,7 +246,7 @@ function P2SearchArea(props, ref) {
 
   return (
     <div className={className}>
-      {props.children.map((child, index) => {
+      {Children.map(props.children, (child, index) => {
         return recursiveRender(child, index);
       })}
     </div>

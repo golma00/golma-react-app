@@ -4,7 +4,25 @@
 
 @layer components {
   .common-btn {
-    @apply text-sm bg-gray-100 border border-gray-200 rounded-md px-2 py-1
+    @apply text-sm bg-gray-100 border border-gray-200 rounded-md px-3 py-1 
+    text-ellipsis whitespace-nowrap hover:bg-orange-100;
+  }
+
+  .grid-btn {
+    @apply text-sm bg-gray-100 border border-gray-200 rounded-md px-3 py-1 
+    text-ellipsis whitespace-nowrap hover:bg-orange-100;
+  }
+
+  .p2-search-area {
+    @apply border border-area-border-color rounded-md px-4 py-2 bg-area-bg-color flex flex-row gap-x-5 gap-y-2 flex-wrap;
+  }
+
+  .p2-search-area > div > label, .p2-search-area > label {
+    @apply text-sm self-center text-ellipsis whitespace-nowrap !important;
+  }
+
+  .p2-search-area > div > input, .p2-search-area > input {
+    @apply px-2 h-7 border border-area-border-color !important;
   }
 }
 
@@ -22,24 +40,8 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-label {
-  @apply text-sm;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  align-self: center;
-}
-
-input {
-  @apply px-2 border border-area-border-color !important;
-}
-
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
-}
-
 .P2Select__control {
-  @apply text-sm min-h-7 flex-nowrap border-area-border-color !important;
+  @apply text-sm h-7 min-h-7 flex-nowrap border-area-border-color !important;
 }
 
 .P2Select__value-container {

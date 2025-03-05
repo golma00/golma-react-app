@@ -1,5 +1,6 @@
 import React from 'react'
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import CommonPage from 'pages/CommonPage';
 import OneGridPage from 'pages/OneGridPage';
 import TwoGridPage from 'pages/TwoGridPage';
 
@@ -19,7 +20,7 @@ function App() {
         </div>
         <div className='flex flex-row justify-between'>
           <Routes>
-            <Route path="/" element={<OneGridPage />} />
+            <Route path="/" element={<CommonPage />} />
             <Route path="/one" element={<OneGridPage />} />
             <Route path="/two" element={<TwoGridPage />} />
           </Routes>
