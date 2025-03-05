@@ -5,11 +5,14 @@ function P2GridButtonBar(props) {
 
   return (
     <div className="flex flex-row w-full justify-between">
-      {props.title && (
-        <div className="flex flex-row w-full h-8 gap-1 justify-start">
-          <span className="text-sm self-center text-ellipsis whitespace-nowrap">{props.title}</span>
-        </div>
-      )}
+      <div className="flex flex-row w-full h-8 gap-1 justify-start">
+        {props.title && (
+          <span className="text-base self-end text-ellipsis whitespace-nowrap">{props.title}</span>
+        )}
+        {props.count > 1 && (
+          <span className="text-base self-end text-ellipsis whitespace-nowrap">({props.count.toLocaleString()} 건)</span>
+        )}
+      </div>
       <div className="flex flex-row w-full h-8 gap-1 justify-end">
         {props.onAddRow && (
           <button className="grid-btn" onClick={props.onAddRow}>

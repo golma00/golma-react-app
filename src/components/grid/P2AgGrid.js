@@ -27,12 +27,11 @@ function P2AgGrid(props, ref) {
   });
   const [rowData] = useState(props.rowData || []);
   const [gridApi, setGridApi] = useState();
-  const [rowDataChanged, setRowDataChanged] = useState(() => {});
 
   useImperativeHandle(ref, () => ({
     api: gridApi,
+    rowDataChanged : false
   }));
-
 
   const showRowNumColumn = props.showRowNumColumn || true;
   const showCheckedColumn = props.showCheckedColumn;
@@ -233,9 +232,6 @@ function P2AgGrid(props, ref) {
     }
   }, []);
 
-  const onRowDataUpdated = useCallback((params) => {
-  }, []);
-
   return (
     <AgGridReact
       {...props}
@@ -252,7 +248,6 @@ function P2AgGrid(props, ref) {
       dataTypeDefinitions={dataTypeDefinitions}
       onGridReady={onGridReady}
       onCellValueChanged={onCellValueChanged}
-      onRowDataUpdated={onRowDataUpdated}
     />
   );
 }

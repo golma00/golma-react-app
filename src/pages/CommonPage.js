@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef, useEffect, useLayoutEffect } from 'react'
 import { P2Page, P2AgGrid, P2SearchArea, P2Select, P2GridButtonBar } from 'components/index';
 import axios from 'axios';
 
@@ -6,11 +6,12 @@ function CommonPage() {
   const searchArea = useRef(null);
   const selectCeGroup = useRef(null);
   const selectCeGroup2 = useRef(null);
-  const grid = useRef(null);
+  const grid = useRef(0);
 
   const [textValue, setTextValue] = useState("test");
 
   const [codeList, setCodeList] = useState([]);
+  const [count, setCount] = useState(0);
 
   const rowData = [
       { make: "Tesla",  model: "Model Y", price: 64950, electric: "Y", controller: "1A" },
@@ -49,6 +50,8 @@ function CommonPage() {
   function loadData() {
     grid.current.api.refresh();
     grid.current.api.setGridOption("rowData", structuredClone(rowData));
+
+    setCount(grid.current.api.getDisplayedRowCount());
   }
 
   async function onSearch() {
@@ -121,7 +124,7 @@ function CommonPage() {
           <input type="text" id="test" name="test" className="text-sm bg-white border border-gray-200 rounded-md"/>
         </div>
       </P2SearchArea>
-      <P2GridButtonBar title="테스트" onAddRow={onAddRow} onDeleteRow={onDeleteRow} gridRef={grid}>
+      <P2GridButtonBar title="테스트" onAddRow={onAddRow} onDeleteRow={onDeleteRow} count={count}>
         <button className="grid-btn">
           <span>임시버튼1</span>
         </button>
@@ -132,11 +135,10 @@ function CommonPage() {
       <div className="w-full h-[500px]">
         <P2AgGrid
           debug={true}
+          ref={grid}
           columnDefs={colDefs}
           showStatusColumn={true}
           showCheckedColumn={true}
-          rowData={[]}
-          ref={grid}
         />
       </div>
     </P2Page>
