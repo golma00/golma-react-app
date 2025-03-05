@@ -2,6 +2,7 @@ import React from 'react'
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import OneGridPage from 'pages/OneGridPage';
 import TwoGridPage from 'pages/TwoGridPage';
+import ThreeGridPage from 'pages/ThreeGridPage';
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
             <Link to="/"  className='px-2 cursor-pointer'>Home</Link>
             <Link to="/one" className='px-2 cursor-pointer'>One</Link>
             <Link to="/two" className='px-2 cursor-pointer'>Two</Link>
+            <Link to="/three" className='px-2 cursor-pointer'>Three</Link>
           </div>
         </div>
         <div className='flex flex-row justify-between'>
@@ -22,6 +24,7 @@ function App() {
             <Route path="/" element={<OneGridPage />} />
             <Route path="/one" element={<OneGridPage />} />
             <Route path="/two" element={<TwoGridPage />} />
+            <Route path="/three" element={<ThreeGridPage />} />
           </Routes>
         </div>
       </BrowserRouter>
