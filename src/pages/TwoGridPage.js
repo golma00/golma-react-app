@@ -1,11 +1,13 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { P2AgGrid, P2SearchArea, P2Select } from 'components/index';
 import Modal from '../components/modal/Modal';
+import ProgressBar from '../components/spinner/FadeLoader';
 import { useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 import SplitterLayout from 'react-splitter-layout';
 import "react-splitter-layout/lib/index.css";
+import "../css/splitter.css";
 
 function TwoGridPage(params) {
   console.log("params => ", params);
@@ -21,9 +23,11 @@ function TwoGridPage(params) {
   
   // modal 팝업
   const [modalOpen, setModalOpen] = useState(false);
-
   // new window 팝업
   const [searchParams, setSearchParams] = useSearchParams();
+
+  // Spinner - Clip Loader
+  let [loadingStatus, setLoadingStatus] = useState(false);
 
   const lngs = [ // 2. 언어 구분을 위한 lng 객체 생성
     { value: "ko", label: "한국어" },
@@ -72,11 +76,14 @@ function TwoGridPage(params) {
     }
   }
 
-  function loadData() {
+  async function loadData() {
+    await openClipLoader();
     gridApi.refresh();
     gridApi.setGridOption("rowData", rowData);
     gridApi2.refresh();
     gridApi2.setGridOption("rowData", rowData);
+
+    await setTimeout(() => closeClipLoader(), 1500);
   }
 
   const openModal = () => {
@@ -85,6 +92,14 @@ function TwoGridPage(params) {
 
   const closeModal = () => {
     setModalOpen(false);
+  };
+
+  const openClipLoader = () => {
+    setLoadingStatus(true);
+  };
+
+  const closeClipLoader = () => {
+    setLoadingStatus(false);
   };
   
   const openWindowPop = async () => {
@@ -181,7 +196,7 @@ function TwoGridPage(params) {
         />
       </div>
       <P2SearchArea onSearch={onSearch} ref={searchArea}>
-        <label class="text-xl">계획연도2</label>
+        <label className="text-xl">계획연도2</label>
         <input type="text" name="planYear" className="text-sm bg-white border border-gray-200 rounded-md" value={textValue} onChange={(e) => setTextValue(e.target.value)}/>
         <label>제목</label>
         <input type="text" name="title" className="text-sm bg-white border border-gray-200 rounded-md"/>
@@ -203,7 +218,7 @@ function TwoGridPage(params) {
         <input type="text" name="test" className="text-sm bg-white border border-gray-200 rounded-md"/>
       </P2SearchArea>
       <div className="w-full h-[500px]">
-        <SplitterLayout split="vertical">
+        <SplitterLayout split="vertical" primaryMinSize={300} secondaryMinSize={300}>
           <P2AgGrid 
             debug={true}
             columnDefs={colDefs}
@@ -223,6 +238,7 @@ function TwoGridPage(params) {
       <Modal open={modalOpen} close={closeModal} header="Modal 헤더">
         Modal 내용
       </Modal>
+      <ProgressBar loading={loadingStatus} />
     </div>
   )
 }
