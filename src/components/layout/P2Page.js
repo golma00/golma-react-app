@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { P2PageButtonBar } from 'components/index';
+import { P2PageButtonBar } from 'components/layout/index';
 
 function P2Page(props) {
 
@@ -8,8 +8,6 @@ function P2Page(props) {
   if (props.showButtonBar === false) {
     setShowButtonBar(false);
   }
-
-  console.log(props.menuProps);
 
   return (
     <div className="flex flex-col w-full h-full gap-1 px-2 py-1">

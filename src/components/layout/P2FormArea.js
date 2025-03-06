@@ -1,20 +1,30 @@
 import React, { Children, useState, useEffect, useImperativeHandle, forwardRef } from "react";
-import PropTypes from "prop-types";
-import { P2Select } from "components/index";
+import { P2Select } from "components/control/index";
+import { statusField, insertStatus, updateStatus, deleteStatus } from "components/grid/P2AgGrid";
 
-function P2SearchArea(props, ref) {
-  const className = props.className || "p2-search-area";
+function P2FormArea(props, ref) {
 
-  const [searchData, setSearchData] = useState({});
-  const [changeAfterSearch, setChangeAfterSearch] = useState(false);
+  const [formData, setFormData] = useState({});
+  const [childrenMap, setChildrenMap] = useState({});
+
+  useEffect(() => {
+    console.log(props.rowNode);
+    if (props.rowNode) {
+      Object.keys(props.rowNode.data).forEach((key) => {
+        if (childrenMap.hasOwnProperty(key)) {
+          setFormData(prev => ({ ...prev, [key]: props.rowNode.data[key] }));
+        }
+      });
+    }
+  }, [props.rowNode]);
 
   useImperativeHandle(ref, () => ({
     api: {
       get() {
-        return searchData;
+        return formData;
       },
       set(name, value) {
-        setSearchData((prev) => ({
+        setFormData((prev) => ({
           ...prev,
           [name]: value,
         })); 
@@ -39,17 +49,27 @@ function P2SearchArea(props, ref) {
               case "search":
               case "tel":
               case "time":
-                initData[child.props.name] = child.props.value || "";
+                if (child.props.name) {
+                  initData[child.props.name] = child.props.value || "";
+                  setChildrenMap(prev => ({ ...prev, [child.props.name]: child }));
+                }
                 break;
               case "number":
-                initData[child.props.name] = child.props.value || 0;
+                if (child.props.name) {
+                  initData[child.props.name] = child.props.value || 0;
+                  setChildrenMap(prev => ({ ...prev, [child.props.name]: child }));
+                }
                 break;
               case "checkbox":
-                initData[child.props.name] = child.props.checked || false;
+                if (child.props.name) {
+                  initData[child.props.name] = child.props.checked || false;
+                  setChildrenMap(prev => ({ ...prev, [child.props.name]: child }));
+                }
                 break;
               case "radio":
-                if (child.props.checked) {
+                if (child.props.name) {
                   initData[child.props.name] = child.props.value || "";
+                  setChildrenMap(prev => ({ ...prev, [child.props.name]: child }));
                 }
                 break;
               default:
@@ -57,10 +77,16 @@ function P2SearchArea(props, ref) {
             }
           }
           else if (child.type === "textarea") {
-            initData[child.props.name] = child.props.value || "";
+            if (child.props.name) {
+              initData[child.props.name] = child.props.value || "";
+              setChildrenMap(prev => ({ ...prev, [child.props.name]: child }));
+            }
           }
           else if (child.type === P2Select) {
-            initData[child.props.name] = child.props.value || "";
+            if (child.props.name) {
+              initData[child.props.name] = child.props.value || "";
+              setChildrenMap(prev => ({ ...prev, [child.props.name]: child }));
+            }
           }
 
           if (child.props.children && child.props.children instanceof Array && child.props.children.length > 0) {
@@ -76,17 +102,8 @@ function P2SearchArea(props, ref) {
     if (props.children && props.children.length > 0) {
       recursiveSearch(props.children);
     }
-    setSearchData(initData);
+    setFormData(initData);
   }, [])
-
-  useEffect(() => {
-    if (changeAfterSearch) {
-      props.onSearch(searchData);
-    }
-    return () => {
-      setChangeAfterSearch(false);
-    };
-  }, [changeAfterSearch]);
 
   function recursiveRender(child, index) {
     if (child.props.children && child.props.children instanceof Array && child.props.children.length > 0) {
@@ -122,28 +139,31 @@ function P2SearchArea(props, ref) {
           return (
             <React.Fragment key={index}>
               {React.cloneElement(child, {
-                value: searchData[child.props.name] || "",
+                value: formData[child.props.name] || "",
                 onChange: (e) => {
                   if (child.props.onChange) {
                     child.props.onChange(e);
                   }
                   const targetValue = e.target && e.target.value;
-                  setSearchData((prev) => ({
+                  setFormData((prev) => ({
                     ...prev,
                     [child.props.name]: targetValue,
                   }));
+                  if (props.rowNode) {
+                    updateData(child.props.name, targetValue);
+                  }
                 },
                 onKeyDown: (e) => {
                   if (child.props.onKeyDown) {
                     child.props.onKeyDown(e);
                   }
                   const targetValue = e.target && e.target.value;
-                  setSearchData((prev) => ({
+                  setFormData((prev) => ({
                     ...prev,
                     [child.props.name]: targetValue,
                   }));
-                  if (e.key === "Enter") {
-                    setChangeAfterSearch(true);
+                  if (props.rowNode) {
+                    updateData(child.props.name, targetValue);
                   }
                 },
               })}
@@ -153,18 +173,18 @@ function P2SearchArea(props, ref) {
           return (
             <React.Fragment key={index}>
               {React.cloneElement(child, {
-                checked: searchData[child.props.name] || false,
+                checked: formData[child.props.name] === "Y" || false,
                 onChange: (e) => {
                   if (child.props.onChange) {
                     child.props.onChange(e);
                   }
-                  const targetValue = e.target && e.target.checked;
-                  setSearchData((prev) => ({
+                  const targetValue = e.target && e.target.checked ? "Y" : "N";
+                  setFormData((prev) => ({
                     ...prev,
                     [child.props.name]: targetValue,
                   }));
-                  if (child.props.changeaftersearch) {
-                    setChangeAfterSearch(true);
+                  if (props.rowNode) {
+                    updateData(child.props.name, targetValue);
                   }
                 },
               })}
@@ -174,18 +194,18 @@ function P2SearchArea(props, ref) {
           return (
             <React.Fragment key={index}>
               {React.cloneElement(child, {
-                value: searchData[child.props.name] || "",
+                value: formData[child.props.name] || "",
                 onChange: (e) => {
                   if (child.props.onChange) {
                     child.props.onChange(e);
                   }
                   const targetValue = e.target && e.target.value;
-                  setSearchData((prev) => ({
+                  setFormData((prev) => ({
                     ...prev,
                     [child.props.name]: targetValue,
                   }));
-                  if (child.props.changeaftersearch) {
-                    setChangeAfterSearch(true);
+                  if (props.rowNode) {
+                    updateData(child.props.name, targetValue);
                   }
                 },
               })}
@@ -199,18 +219,18 @@ function P2SearchArea(props, ref) {
       return (
         <React.Fragment key={index}>
           {React.cloneElement(child, {
-            value: searchData[child.props.name] || "",
+            value: formData[child.props.name] || "",
             onChange: (e) => {
               if (child.props.onChange) {
                 child.props.onChange(e);
               }
               const targetValue = e.target && e.target.value;
-              setSearchData((prev) => ({
+              setFormData((prev) => ({
                 ...prev,
                 [child.props.name]: targetValue,
               }));
-              if (child.props.changeaftersearch) {
-                setChangeAfterSearch(true);
+              if (props.rowNode) {
+                updateData(child.props.name, targetValue);
               }
             },
           })}
@@ -221,18 +241,18 @@ function P2SearchArea(props, ref) {
       return (
         <React.Fragment key={index}>
           {React.cloneElement(child, {
-            optionValue: searchData[child.props.name] || "",
+            optionValue: formData[child.props.name] || "",
             onChange: (e) => {
               if (child.props.onChange) {
                 child.props.onChange(e);
               }
               const targetValue = child.props.isMulti ? e.map(item => item.value) : e.value;
-              setSearchData((prev) => ({
+              setFormData((prev) => ({
                 ...prev,
                 [child.props.name]: targetValue,
               }));
-              if (child.props.changeaftersearch) {
-                setChangeAfterSearch(true);
+              if (props.rowNode) {
+                updateData(child.props.name, targetValue);
               }
             },
           })}
@@ -244,20 +264,34 @@ function P2SearchArea(props, ref) {
     }
   }
 
+  function updateData(key, value) {
+    if (props.rowNode) {
+
+      const result = props.rowNode.setDataValue(key, value);
+
+      if (!result) {
+        props.rowNode.data[key] = value;
+
+        switch (props.rowNode.data[statusField]) {
+          case insertStatus:
+          case updateStatus:
+          case deleteStatus:
+            break;
+          default:
+            props.rowNode.setDataValue(statusField, updateStatus);
+            break;
+        }
+      }
+    }
+  }
+
   return (
-    <div className={className}>
+    <div className={props.className || "p2-form-area"}>
       {Children.map(props.children, (child, index) => {
         return recursiveRender(child, index);
       })}
     </div>
-  );
+  )
 }
 
-P2SearchArea.propTypes = {
-  children: PropTypes.node,
-  className: PropTypes.string,
-  onSearch: PropTypes.func,
-  ref: PropTypes.object,
-};
-
-export default forwardRef(P2SearchArea);
+export default forwardRef(P2FormArea);

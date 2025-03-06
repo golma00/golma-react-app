@@ -188,6 +188,7 @@ P2Select.propTypes = {
   datas: PropTypes.array,
   value: PropTypes.string,
   onChange: PropTypes.func,
+  changeAfterSearch: PropTypes.bool,
 };
 
 export default forwardRef(P2Select);

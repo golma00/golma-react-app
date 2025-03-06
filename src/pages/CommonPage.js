@@ -1,11 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react'
-import { P2Page, P2AgGrid, P2SearchArea, P2Select, P2GridButtonBar } from 'components/index';
+import { P2Page, P2SearchArea, P2GridButtonBar } from 'components/layout/index';
+import { P2Input, P2Switch, P2Select, P2DatePicker } from 'components/control/index';
+import { P2AgGrid } from 'components/grid/index';
 import axios from 'axios';
 
 function CommonPage(props) {
   const searchArea = useRef(null);
   const selectCeGroup = useRef(null);
-  const selectCeGroup2 = useRef(null);
   const grid = useRef(0);
 
   const [textValue, setTextValue] = useState("test");
@@ -98,11 +99,11 @@ function CommonPage(props) {
         </div>
         <div className="flex flex-row gap-2 justify-center">
           <label htmlFor='title'>제목</label>
-          <input type="text" id="title" name="title" className="text-sm bg-white border border-gray-200 rounded-md"/>
+          <P2Input type="text" id="title" name="title" className="text-sm bg-white border border-gray-200 rounded-md"/>
         </div>
         <div className="flex flex-row gap-2 justify-center">
           <label htmlFor='period'>기간</label>
-          <input type="checkbox" id="period" name="period" className="text-sm bg-white border border-gray-200 rounded-md" changeaftersearch="true" checked={true}/>
+          <P2Switch id="period" name="period" className="text-sm rounded-md" changeaftersearch="true" checked={true}/>
         </div>
         <div className="flex flex-row gap-2 justify-center">
           <label htmlFor='ceGroup'>C/E 그룹</label>
@@ -114,15 +115,11 @@ function CommonPage(props) {
         </div>
         <div className="flex flex-row gap-2 justify-center">
           <label htmlFor='ceGroup2'>C/E 그룹2</label>
-          <P2Select id="ceGroup2" name="ceGroup2" className="w-40 text-sm" ref={selectCeGroup2}
-            value={["KR"]}
-            isMulti={true}
-            datas={codeList}
-            />
+          <P2DatePicker id="ceGroup2" name="ceGroup2" className="w-40 text-sm" />
         </div>
         <div className="flex flex-row gap-2 justify-center">
           <label htmlFor='test'>테스트</label>
-          <input type="text" id="test" name="test" className="text-sm bg-white border border-gray-200 rounded-md"/>
+          <P2Input type="text" id="test" name="test" />
         </div>
       </P2SearchArea>
       <P2GridButtonBar title="테스트" onAddRow={onAddRow} onDeleteRow={onDeleteRow} count={count}>

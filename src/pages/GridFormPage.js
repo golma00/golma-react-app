@@ -1,5 +1,7 @@
-import React, { useState, useRef, useCallback } from 'react'
-import { P2Page, P2AgGrid, P2SearchArea, P2Select, P2GridButtonBar, P2FormArea } from 'components/index';
+import React, { useState, useRef } from 'react'
+import { P2Page, P2SearchArea, P2GridButtonBar, P2FormArea } from 'components/layout/index';
+import { P2AgGrid } from 'components/grid/index';
+import { P2Select } from 'components/control/index';
 import SplitterLayout from 'react-splitter-layout';
 import axios from 'axios';
 

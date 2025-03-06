@@ -8,6 +8,8 @@ import { fas } from '@fortawesome/free-solid-svg-icons';
 import 'css/index.css';
 import 'css/ag-grid.css';
 import "locales/i18n";
+import "antd/dist/antd.css";
+
 const dependsModules = AllCommunityModule.dependsOn.filter(module => module.moduleName !== 'Validation');
 AllCommunityModule.dependsOn = dependsModules;
 

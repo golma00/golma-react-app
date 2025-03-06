@@ -22,7 +22,7 @@
   }
 
   .p2-search-area > div > input, .p2-search-area > input {
-    @apply px-2 h-7 border border-area-border-color !important;
+    @apply px-2 h-7 border border-area-border-color text-sm bg-white border-gray-200 rounded-md !important;
   }
 
   .p2-form-area {

@@ -1,5 +1,5 @@
 import React, { useCallback, useState, useRef, useEffect } from 'react'
-import { P2AgGrid, P2SearchArea, P2Select } from 'components/index';
+import { P2AgGrid } from 'components/grid/index';
 import "react-splitter-layout/lib/index.css";
 
 function ThreeGridPage() {

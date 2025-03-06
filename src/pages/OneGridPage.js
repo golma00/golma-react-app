@@ -1,5 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react'
-import { P2AgGrid, P2SearchArea, P2Select } from 'components/index';
+import { P2SearchArea } from 'components/layout/index';
+import { P2AgGrid } from 'components/grid/index';
+import { P2Select } from 'components/control/index';
 import axios from 'axios';
 
 function OneGridPage() {

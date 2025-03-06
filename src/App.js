@@ -4,8 +4,8 @@ import CommonPage from 'pages/CommonPage';
 import OneGridPage from 'pages/OneGridPage';
 import TwoGridPage from 'pages/TwoGridPage';
 import GridFormPage from 'pages/GridFormPage';
-import P2PageWrapper from 'components/form/P2PageWrapper';
 import ThreeGridPage from 'pages/ThreeGridPage';
+import { P2PageWrapper } from 'components/layout/index';
 
 function App() {
   return (

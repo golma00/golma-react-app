@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useCallback, useImperativeHandle, forwardRef, useEffect } from "react";
+import React, { useMemo, useState, useCallback, useImperativeHandle, forwardRef } from "react";
 import { AgGridReact } from "ag-grid-react";
 import { themeQuartz } from "ag-grid-community";
 import { 
@@ -9,7 +9,8 @@ import {
   CommonHeaderCheckedComponet,
   CommonCheckedEditor,
   CommonCheckedRenderer
-} from "components/index";
+} from "components/grid/renderer/renderer";
+
 import P2AgGridModule from "components/grid/P2AgGridModule";
 
 export const insertStatus = "I"
