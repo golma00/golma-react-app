@@ -20,7 +20,7 @@ const TreePage = () => {
     {
       try {
         await setData([]);
-        let responce = await fetch("http://127.0.0.1:8080/menu");
+        let responce = await fetch("http://192.168.0.247:8080/menu");
         let responce_data =await responce.json();
         setData(responce_data?responce_data:[]);
         setMsgst(1);
