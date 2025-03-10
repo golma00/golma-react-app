@@ -95,7 +95,7 @@ function CommonPage(props) {
       <P2SearchArea onSearch={onSearch} ref={searchArea}>
         <div className="flex flex-row gap-2 justify-center">
           <label htmlFor='planYear'>계획연도</label>
-          <input type="text" id="planYear" name="planYear" className="text-sm bg-white border border-gray-200 rounded-md" value={textValue} onChange={(e) => setTextValue(e.target.value)}/>
+          <P2Input type="text" id="planYear" name="planYear" value={textValue} onChange={(e) => setTextValue(e.target.value)}/>
         </div>
         <div className="flex flex-row gap-2 justify-center">
           <label htmlFor='title'>제목</label>
@@ -103,7 +103,7 @@ function CommonPage(props) {
         </div>
         <div className="flex flex-row gap-2 justify-center">
           <label htmlFor='period'>기간</label>
-          <P2Switch id="period" name="period" className="text-sm rounded-md" changeaftersearch="true" checked={true}/>
+          <P2Switch id="period" name="period" className="text-sm rounded-md self-center" changeaftersearch="true" checked={true}/>
         </div>
         <div className="flex flex-row gap-2 justify-center">
           <label htmlFor='ceGroup'>C/E 그룹</label>

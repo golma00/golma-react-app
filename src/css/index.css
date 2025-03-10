@@ -5,16 +5,16 @@
 @layer components {
   .common-btn {
     @apply text-sm bg-gray-100 border border-gray-200 rounded-md px-3 py-1 
-    text-ellipsis whitespace-nowrap hover:bg-orange-100;
+    text-ellipsis whitespace-nowrap hover:bg-orange-100 !important;
   }
 
   .grid-btn {
     @apply text-sm bg-gray-100 border border-gray-200 rounded-md px-3 py-1 
-    text-ellipsis whitespace-nowrap hover:bg-orange-100;
+    text-ellipsis whitespace-nowrap hover:bg-orange-100 !important;
   }
 
   .p2-search-area {
-    @apply border border-area-border-color rounded-md px-4 py-2 bg-area-bg-color flex flex-row gap-x-5 gap-y-2 flex-wrap;
+    @apply border border-area-border-color rounded-md px-4 py-2 bg-area-bg-color flex flex-row gap-x-5 gap-y-2 flex-wrap !important;
   }
 
   .p2-search-area > div > label, .p2-search-area > label {
@@ -22,15 +22,19 @@
   }
 
   .p2-search-area > div > input, .p2-search-area > input {
-    @apply px-2 h-7 border border-area-border-color text-sm bg-white border-gray-200 rounded-md !important;
+    @apply px-2 h-8 text-sm bg-white border-gray-200 rounded-md !important;
   }
 
   .p2-form-area {
-    @apply border border-area-border-color rounded-md p-4 bg-area-bg-color flex flex-col gap-x-5 gap-y-2 justify-start;
+    @apply border border-area-border-color rounded-md p-4 bg-area-bg-color flex flex-col gap-x-5 gap-y-2 justify-start !important;
   }
 
-  .p2-form-area > div > input, .p2-search-area > input {
-    @apply px-2 h-7 border border-area-border-color !important;
+  .p2-form-area > div > label, .p2-form-area > label {
+    @apply text-sm self-center text-ellipsis whitespace-nowrap !important;
+  }
+
+  .p2-form-area > div > input, .p2-form-area > input {
+    @apply px-2 h-8 !important;
   }
 
 }
@@ -50,7 +54,7 @@ body {
 }
 
 .P2Select__control {
-  @apply text-sm h-7 min-h-7 flex-nowrap border-area-border-color !important;
+  @apply text-sm h-8 min-h-8 flex-nowrap border-area-border-color !important;
 }
 
 .P2Select__value-container {

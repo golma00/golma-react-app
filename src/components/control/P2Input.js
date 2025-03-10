@@ -30,15 +30,15 @@ export function P2InputNumber(props) {
     setValue(props.value || "");
   }, [props.value]);
 
-  const onChange = (e) => {
-    setValue(e.target.value);
+  const onChange = (value) => {
+    setValue(value);
     if (props.onChange) {
-      props.onChange(e);
+      props.onChange(value);
     }
   }
 
   return (
-    <InputNumber {...props} value={value} onChange={onChange} />
+    <InputNumber {...props} value={value} onChange={onChange}/>
   );
 }
 P2InputNumber.propTypes = {

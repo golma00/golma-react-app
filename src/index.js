@@ -20,7 +20,7 @@ library.add(fas);
 
 const root = document.getElementById('root');
 render(
-  <React.StrictMode>
+  <React.Fragment>
     <App />
-  </React.StrictMode>, root
+  </React.Fragment>, root
 );

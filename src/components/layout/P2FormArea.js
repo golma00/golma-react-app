@@ -1,5 +1,18 @@
 import React, { Children, useState, useEffect, useImperativeHandle, forwardRef } from "react";
-import { P2Select } from "components/control/index";
+import { 
+  P2Select, 
+  P2DatePicker, 
+  P2MonthPicker, 
+  P2RangePicker, 
+  P2TimePicker, 
+  P2Input,
+  P2InputNumber,
+  P2InputPassword,
+  P2InputTextArea,
+  P2Checkbox,
+  P2Switch,
+  P2RadioGroup 
+} from "components/control/index";
 import { statusField, insertStatus, updateStatus, deleteStatus } from "components/grid/P2AgGrid";
 
 function P2FormArea(props, ref) {
@@ -8,7 +21,6 @@ function P2FormArea(props, ref) {
   const [childrenMap, setChildrenMap] = useState({});
 
   useEffect(() => {
-    console.log(props.rowNode);
     if (props.rowNode) {
       Object.keys(props.rowNode.data).forEach((key) => {
         if (childrenMap.hasOwnProperty(key)) {
@@ -16,7 +28,17 @@ function P2FormArea(props, ref) {
         }
       });
     }
-  }, [props.rowNode]);
+  }, [props.rowNode, childrenMap]);
+
+  useEffect(() => {
+    if (props.treeNode) {
+      Object.keys(props.treeNode.props.dataRef).forEach((key) => {
+        if (childrenMap.hasOwnProperty(key)) {
+          setFormData(prev => ({ ...prev, [key]: props.treeNode.props.dataRef[key] }));
+        }
+      });
+    }
+  }, [props.treeNode, childrenMap]);
 
   useImperativeHandle(ref, () => ({
     api: {
@@ -76,7 +98,7 @@ function P2FormArea(props, ref) {
                 break;
             }
           }
-          else if (child.type === "textarea") {
+          else if (child.type === "textarea" || child.type === P2InputTextArea) {
             if (child.props.name) {
               initData[child.props.name] = child.props.value || "";
               setChildrenMap(prev => ({ ...prev, [child.props.name]: child }));
@@ -87,6 +109,24 @@ function P2FormArea(props, ref) {
               initData[child.props.name] = child.props.value || "";
               setChildrenMap(prev => ({ ...prev, [child.props.name]: child }));
             }
+          }
+          else if (child.type === P2Input 
+            || child.type === P2InputPassword 
+            || child.type === P2DatePicker 
+            || child.type === P2MonthPicker 
+            || child.type === P2TimePicker
+            || child.type === P2RadioGroup
+          ) {
+            initData[child.props.name] = child.props.value || "";
+            setChildrenMap(prev => ({ ...prev, [child.props.name]: child }));
+          }
+          else if (child.type === P2InputNumber) {
+            initData[child.props.name] = child.props.value || 0;
+            setChildrenMap(prev => ({ ...prev, [child.props.name]: child }));
+          }
+          else if (child.type === P2Checkbox || child.type === P2Switch) {
+            initData[child.props.name] = child.props.checked || false;
+            setChildrenMap(prev => ({ ...prev, [child.props.name]: child }));
           }
 
           if (child.props.children && child.props.children instanceof Array && child.props.children.length > 0) {
@@ -132,7 +172,6 @@ function P2FormArea(props, ref) {
         case "date":
         case "datetime-local":
         case "month":
-        case "number":
         case "search":
         case "tel":
         case "time":
@@ -150,7 +189,10 @@ function P2FormArea(props, ref) {
                     [child.props.name]: targetValue,
                   }));
                   if (props.rowNode) {
-                    updateData(child.props.name, targetValue);
+                    updateRowData(child.props.name, targetValue);
+                  }
+                  if (props.treeNode) {
+                    updateTreeNodeData(child.props.name, targetValue);
                   }
                 },
                 onKeyDown: (e) => {
@@ -163,12 +205,55 @@ function P2FormArea(props, ref) {
                     [child.props.name]: targetValue,
                   }));
                   if (props.rowNode) {
-                    updateData(child.props.name, targetValue);
+                    updateRowData(child.props.name, targetValue);
+                  }
+                  if (props.treeNode) {
+                    updateTreeNodeData(child.props.name, targetValue);
                   }
                 },
               })}
             </React.Fragment>
           );
+          case "number":
+            return (
+              <React.Fragment key={index}>
+                {React.cloneElement(child, {
+                  value: formData[child.props.name] || 0,
+                  onChange: (e) => {
+                    if (child.props.onChange) {
+                      child.props.onChange(e);
+                    }
+                    const targetValue = e.target && e.target.value;
+                    formData((prev) => ({
+                      ...prev,
+                      [child.props.name]: targetValue,
+                    }));
+                    if (props.rowNode) {
+                      updateRowData(child.props.name, targetValue);
+                    }
+                    if (props.treeNode) {
+                      updateTreeNodeData(child.props.name, targetValue);
+                    }
+                  },
+                  onKeyDown: (e) => {
+                    if (child.props.onKeyDown) {
+                      child.props.onKeyDown(e);
+                    }
+                    const targetValue = e.target && e.target.value;
+                    formData((prev) => ({
+                      ...prev,
+                      [child.props.name]: targetValue,
+                    }));
+                    if (props.rowNode) {
+                      updateRowData(child.props.name, targetValue);
+                    }
+                    if (props.treeNode) {
+                      updateTreeNodeData(child.props.name, targetValue);
+                    }
+                  },
+                })}
+              </React.Fragment>
+            );
         case "checkbox":
           return (
             <React.Fragment key={index}>
@@ -184,7 +269,10 @@ function P2FormArea(props, ref) {
                     [child.props.name]: targetValue,
                   }));
                   if (props.rowNode) {
-                    updateData(child.props.name, targetValue);
+                    updateRowData(child.props.name, targetValue);
+                  }
+                  if (props.treeNode) {
+                    updateTreeNodeData(child.props.name, targetValue);
                   }
                 },
               })}
@@ -205,7 +293,10 @@ function P2FormArea(props, ref) {
                     [child.props.name]: targetValue,
                   }));
                   if (props.rowNode) {
-                    updateData(child.props.name, targetValue);
+                    updateRowData(child.props.name, targetValue);
+                  }
+                  if (props.treeNode) {
+                    updateTreeNodeData(child.props.name, targetValue);
                   }
                 },
               })}
@@ -215,7 +306,7 @@ function P2FormArea(props, ref) {
           return <React.Fragment key={index}>{child}</React.Fragment>;
       }
     }
-    else if (child.type === "textarea") {
+    else if (child.type === "textarea" || child.type === P2InputTextArea) {
       return (
         <React.Fragment key={index}>
           {React.cloneElement(child, {
@@ -230,7 +321,10 @@ function P2FormArea(props, ref) {
                 [child.props.name]: targetValue,
               }));
               if (props.rowNode) {
-                updateData(child.props.name, targetValue);
+                updateRowData(child.props.name, targetValue);
+              }
+              if (props.treeNode) {
+                updateTreeNodeData(child.props.name, targetValue);
               }
             },
           })}
@@ -252,7 +346,161 @@ function P2FormArea(props, ref) {
                 [child.props.name]: targetValue,
               }));
               if (props.rowNode) {
-                updateData(child.props.name, targetValue);
+                updateRowData(child.props.name, targetValue);
+              }
+              if (props.treeNode) {
+                updateTreeNodeData(child.props.name, targetValue);
+              }
+            },
+          })}
+        </React.Fragment>
+      );
+    }
+    else if (child.type === P2Input) {
+      return (
+        <React.Fragment key={index}>
+          {React.cloneElement(child, {
+            value: formData[child.props.name] || "",
+            onChange: (e) => {
+              if (child.props.onChange) {
+                child.props.onChange(e);
+              }
+              const targetValue = e.target && e.target.value;
+              setFormData((prev) => ({
+                ...prev,
+                [child.props.name]: targetValue,
+              }));
+              if (props.rowNode) {
+                updateRowData(child.props.name, targetValue);
+              }
+              if (props.treeNode) {
+                updateTreeNodeData(child.props.name, targetValue);
+              }
+            },
+            
+          })}
+        </React.Fragment>
+      );
+    }
+    else if (child.type === P2DatePicker || child.type === P2MonthPicker || child.type === P2TimePicker) {
+      return (
+        <React.Fragment key={index}>
+          {React.cloneElement(child, {
+            value: formData[child.props.name] || "",
+            onChange: (e, formatString) => {
+              if (child.props.onChange) {
+                child.props.onChange(e, formatString);
+              }
+              const targetValue = formatString;
+              setFormData((prev) => ({
+                ...prev,
+                [child.props.name]: targetValue,
+              }));
+              if (props.rowNode) {
+                updateRowData(child.props.name, targetValue);
+              }
+              if (props.treeNode) {
+                updateTreeNodeData(child.props.name, targetValue);
+              }
+            }
+          })}
+        </React.Fragment>
+      );
+    }
+    else if (child.type === P2RangePicker) {
+      return (
+        <React.Fragment key={index}>
+          {React.cloneElement(child, {
+            value: formData[child.props.name] || [null, null],
+            onChange: (e, formatStrings) => {
+              if (child.props.onChange) {
+                child.props.onChange(e, formatStrings);
+              }
+              const targetValue = formatStrings;
+              setFormData((prev) => ({
+                ...prev,
+                [child.props.name]: targetValue,
+              }));
+              if (props.rowNode) {
+                updateRowData(child.props.name, targetValue);
+              }
+              if (props.treeNode) {
+                updateTreeNodeData(child.props.name, targetValue);
+              }
+            }
+          })}
+        </React.Fragment>
+      );
+    }
+    else if (child.type === P2InputNumber) {
+      return (
+        <React.Fragment key={index}>
+          {React.cloneElement(child, {
+            value: formData[child.props.name] || 0,
+            onChange: (value) => {
+              if (child.props.onChange) {
+                child.props.onChange(value);
+              }
+              const targetValue = value;
+              setFormData((prev) => ({
+                ...prev,
+                [child.props.name]: targetValue,
+              }));
+              if (props.rowNode) {
+                updateRowData(child.props.name, targetValue);
+              }
+              if (props.treeNode) {
+                updateTreeNodeData(child.props.name, targetValue);
+              }
+            },
+          })}
+        </React.Fragment>
+      );
+    }
+    else if (child.type === P2Checkbox || child.type === P2Switch) {
+      return (
+        <React.Fragment key={index}>
+          {React.cloneElement(child, {
+            checked: formData[child.props.name] || false,
+            onChange: (checked) => {
+              if (child.props.onChange) {
+                child.props.onChange(checked);
+              }
+              const targetValue = checked;
+              setFormData((prev) => ({
+                ...prev,
+                [child.props.name]: targetValue,
+              }));
+              if (props.rowNode) {
+                updateRowData(child.props.name, targetValue);
+              }
+              if (props.treeNode) {
+                updateTreeNodeData(child.props.name, targetValue);
+              }
+            },
+          })}
+        </React.Fragment>
+      );
+    }
+    else if (child.type === P2RadioGroup) {
+      return (
+        <React.Fragment key={index}>
+          {React.cloneElement(child, {
+            value: formData[child.props.name] || "",
+            onChange: (e) => {
+              if (child.props.onChange) {
+                child.props.onChange(e);
+              }
+              const targetValue = e.target && e.target.value;
+              setFormData((prev) => ({
+                ...prev,
+                [child.props.name]: targetValue,
+              }));
+              if (props.rowNode) {
+                updateRowData(child.props.name, targetValue);
+              }
+              if (props.treeNode) {
+                updateTreeNodeData(child.props.name, targetValue);
               }
             },
           })}
@@ -264,7 +512,7 @@ function P2FormArea(props, ref) {
     }
   }
 
-  function updateData(key, value) {
+  function updateRowData(key, value) {
     if (props.rowNode) {
 
       const result = props.rowNode.setDataValue(key, value);
@@ -282,6 +530,16 @@ function P2FormArea(props, ref) {
             break;
         }
       }
+    }
+  }
+
+  function updateTreeNodeData(key, value) {
+    if (props.treeNode) {
+      props.treeNode.props.dataRef[key] = value;
+      if (props.treeNode.props.dataRef["_state"] === "") {
+        props.treeNode.props.dataRef["_state"] = "U";
+      }
+      props.treeNode.props.update();
     }
   }
 

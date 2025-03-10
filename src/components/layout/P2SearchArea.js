@@ -1,7 +1,19 @@
 import React, { Children, useState, useEffect, useImperativeHandle, forwardRef } from "react";
 import PropTypes from "prop-types";
-import { P2Select, P2DatePicker, P2MonthPicker, P2RangePicker, P2TimePicker, 
-  P2Input, P2InputNumber, P2InputPassword, P2InputTextArea, P2Checkbox, P2Switch, P2RadioGroup } from "components/control/index";
+import { 
+  P2Select, 
+  P2DatePicker, 
+  P2MonthPicker, 
+  P2RangePicker, 
+  P2TimePicker, 
+  P2Input,
+  P2InputNumber,
+  P2InputPassword,
+  P2InputTextArea,
+  P2Checkbox,
+  P2Switch,
+  P2RadioGroup 
+} from "components/control/index";
 
 function P2SearchArea(props, ref) {
   const className = props.className || "p2-search-area";
@@ -40,16 +52,22 @@ function P2SearchArea(props, ref) {
               case "search":
               case "tel":
               case "time":
-                initData[child.props.name] = child.props.value || "";
+                if (child.props.name) {
+                  initData[child.props.name] = child.props.value || "";
+                }
                 break;
               case "number":
-                initData[child.props.name] = child.props.value || 0;
+                if (child.props.name) {
+                  initData[child.props.name] = child.props.value || 0;
+                }
                 break;
               case "checkbox":
-                initData[child.props.name] = child.props.checked || false;
+                if (child.props.name) {
+                  initData[child.props.name] = child.props.checked || false;
+                }
                 break;
               case "radio":
-                if (child.props.checked) {
+                if (child.props.name) {
                   initData[child.props.name] = child.props.value || "";
                 }
                 break;
@@ -58,10 +76,14 @@ function P2SearchArea(props, ref) {
             }
           }
           else if (child.type === "textarea" || child.type === P2InputTextArea) {
-            initData[child.props.name] = child.props.value || "";
+            if (child.props.name) {
+              initData[child.props.name] = child.props.value || "";
+            }
           }
           else if (child.type === P2Select) {
-            initData[child.props.name] = child.props.value || "";
+            if (child.props.name) {
+              initData[child.props.name] = child.props.value || "";
+            }
           }
           else if (child.type === P2Input 
             || child.type === P2InputPassword 
@@ -366,28 +388,15 @@ function P2SearchArea(props, ref) {
         <React.Fragment key={index}>
           {React.cloneElement(child, {
             value: searchData[child.props.name] || 0,
-            onChange: (e) => {
+            onChange: (value) => {
               if (child.props.onChange) {
-                child.props.onChange(e);
+                child.props.onChange(value);
               }
-              const targetValue = e.target && e.target.value;
+              const targetValue = value;
               setSearchData((prev) => ({
                 ...prev,
                 [child.props.name]: targetValue,
               }));
-            },
-            onKeyDown: (e) => {
-              if (child.props.onKeyDown) {
-                child.props.onKeyDown(e);
-              }
-              const targetValue = e.target && e.target.value;
-              setSearchData((prev) => ({
-                ...prev,
-                [child.props.name]: targetValue,
-              }));
-              if (e.key === "Enter") {
-                setChangeAfterSearch(true);
-              }
             },
           })}
         </React.Fragment>
