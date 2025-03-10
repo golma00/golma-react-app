@@ -12,7 +12,7 @@ function P2Tree(props, ref) {
   const [parentKeyField, setParentKeyField] = useState(props.parentKeyField || "parentKey");
   const [nodeTitleField, setNodeTitleField] = useState(props.nodeTitleField || "title");
   const [nodeSeqField, setNodeSeqField] = useState(props.nodeSeqField || "alignSeq");
-  const [rowData, setRowData] = useState();
+  const [rowData, setRowData] = useState(props.rowData || []);
   const [treeData, setTreeData] = useState();
   const [selectedTreeNode, setSelectedTreeNode] = useState();
   const [newNodeCount, setNewNodeCount] = useState(1);
