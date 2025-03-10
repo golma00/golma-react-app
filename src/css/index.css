@@ -68,3 +68,7 @@ body {
 .P2Select__menu {
   z-index: 10 !important;
 }
+
+.ant-spin-nested-loading {
+  @apply w-full h-full !important;
+}
