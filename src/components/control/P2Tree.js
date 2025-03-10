@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useCallback, useImperativeHandle, useMemo, forwardRef } from "react";
-import { Tree, Icon } from "antd";
+import React, { useState, useEffect, useCallback, useImperativeHandle, forwardRef } from "react";
+import { Tree, } from "antd";
 
 function P2Tree(props, ref) {
   const [nodeKeyField, setNodeKeyField] = useState(props.nodeKeyField || "key");
@@ -122,17 +122,25 @@ function P2Tree(props, ref) {
           item["_state"] = "";
           item["_oldState"] = "";
         }
+
+        let title = "";
+        if (typeof nodeTitleField === "function") {
+          title = nodeTitleField(item);
+        }
+        else {
+          title = item[nodeTitleField];
+        }
+
         const node = <Tree.TreeNode 
           key={item[nodeKeyField]} 
           title={
-            item["_state"] === "I" ? <span className="text-blue-500">{item[nodeTitleField]}</span> :
-            item["_state"] === "U" ? <span className="text-red-500">{item[nodeTitleField]}</span> :
-            item["_state"] === "D" ? <span className="line-through">{item[nodeTitleField]}</span> :
-            item[nodeTitleField]
+            item["_state"] === "I" ? <span className="text-blue-500">{title}</span> :
+            item["_state"] === "U" ? <span className="text-red-500">{title}</span> :
+            item["_state"] === "D" ? <span className="line-through">{title}</span> :
+            title
           }
           children={[]}
           dataRef={item}
-          titleField={nodeTitleField}
           update={update}
         />;
   
@@ -167,7 +175,7 @@ function P2Tree(props, ref) {
       setKeyByTreeNode({});
       setTreeData([]);
     }
-  }, [rowData, nodeKeyField, parentKeyField, nodeTitleField, newNodeKey]);
+  }, [rowData, nodeKeyField, parentKeyField, nodeTitleField, nodeSeqField, newNodeKey]);
 
   const update = useCallback(() => {
     setRowData([...rowData]);

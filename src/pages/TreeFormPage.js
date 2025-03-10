@@ -1,6 +1,5 @@
 import React, { useState, useRef } from 'react'
 import { P2Page, P2SearchArea, P2GridButtonBar, P2FormArea } from 'components/layout/index';
-import { P2AgGrid } from 'components/grid/index';
 import { P2Select, P2Input, P2Checkbox, P2Tree, P2InputNumber } from 'components/control/index';
 import SplitterLayout from 'react-splitter-layout';
 import axios from 'axios';
@@ -49,6 +48,12 @@ function TreeFormPage(props) {
     tree.current.api.deleteTreeNode(tree.current.api.getSelectedTreeNodeKey());
   }
 
+  function nodeTitleFunc(item) {
+    // string 이나 function 이나 둘 중 하나만 사용 가능
+    // return "make";
+    return (item) => `${item["make"]} (${item["model"]})`;
+  }
+
   return (
     <P2Page menuProps={props.menuProps} onSearch={onSearch} onSave={onSave}>
       <P2SearchArea onSearch={onSearch} ref={searchArea}>
@@ -88,8 +93,13 @@ function TreeFormPage(props) {
                 노드 삭제
               </button>
             </P2GridButtonBar>
-            <P2Tree rowData={rowData} nodeKeyField={"model"} parentKeyField={"parentModel"} nodeTitleField={"make"} ref={tree}
-              onSelect={(selectedRow, e) => setTreeNode(e.node) } defaultExpandedKeys={['ROOT']}
+            <P2Tree ref={tree} 
+              rowData={rowData}
+              nodeKeyField={"model"}
+              parentKeyField={"parentModel"}
+              nodeTitleField={nodeTitleFunc}
+              onSelect={(selectedRow, e) => setTreeNode(e.node)}
+              defaultExpandedKeys={['ROOT']}
             />
           </div>
           <div className="h-[550px] flex flex-col gap-1">

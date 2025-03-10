@@ -4,8 +4,7 @@ import { P2AgGrid } from 'components/grid/index';
 import SearchTree from '../components/tree/SearchTree.js';
 import axios from 'axios';
 import SplitterLayout from 'react-splitter-layout';
-import "react-splitter-layout/lib/index.css";
-import "../css/splitter.css";
+
 
 function AttributeMng(props) {
   const searchArea = useRef(null);

@@ -7,8 +7,10 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 import { fas } from '@fortawesome/free-solid-svg-icons';
 import 'css/index.css';
 import 'css/ag-grid.css';
+import "css/splitter.css";
 import "locales/i18n";
 import "antd/dist/antd.css";
+import "react-splitter-layout/lib/index.css";
 
 const dependsModules = AllCommunityModule.dependsOn.filter(module => module.moduleName !== 'Validation');
 AllCommunityModule.dependsOn = dependsModules;
