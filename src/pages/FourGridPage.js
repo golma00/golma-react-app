@@ -45,7 +45,7 @@ function FourGridPage(props) {
               let iempno = await searchArea.current.api.get('inputEmpno').inputEmpno;
               if (iempno === undefined ) {iempno=""};
               console.log('1111');
-              let responce = await axios.get(`http://127.0.0.1:8080/list?id=${iempno}`);
+              let responce = await axios.get(`http://192.168.0.247:8080/list?id=${iempno}`);
               console.log('responce=',responce.data);
               await setRowData(responce.data?responce.data:[]);
               await setMsg({msg:'조회되었습니다.'});
@@ -64,7 +64,7 @@ function FourGridPage(props) {
     const onSave = async () => {
       try {
         console.log('modifiedRows)',modifiedRows);
-        const response = await axios.post("http://127.0.0.1:8080/insert", modifiedRows);
+        const response = await axios.post("http://192.168.0.247:8080/insert", modifiedRows);
         console.log("서버 응답:", response.data);
         alert("저장 완료!");
       } catch (err) {
