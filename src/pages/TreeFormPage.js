@@ -55,15 +55,15 @@ function TreeFormPage(props) {
       <P2SearchArea onSearch={onSearch} ref={searchArea}>
         <div className="flex flex-row gap-2 justify-center">
           <label htmlFor='planYear'>계획연도</label>
-          <input type="text" id="planYear" name="planYear" className="text-sm bg-white border border-gray-200 rounded-md" />
+          <P2Input type="text" id="planYear" name="planYear" className="text-sm bg-white border border-gray-200 rounded-md" />
         </div>
         <div className="flex flex-row gap-2 justify-center">
           <label htmlFor='title'>제목</label>
-          <input type="text" id="title" name="title" className="text-sm bg-white border border-gray-200 rounded-md"/>
+          <P2Input type="text" id="title" name="title" className="text-sm bg-white border border-gray-200 rounded-md"/>
         </div>
         <div className="flex flex-row gap-2 justify-center">
           <label htmlFor='period'>기간</label>
-          <input type="checkbox" id="period" name="period" className="text-sm bg-white border border-gray-200 rounded-md" changeaftersearch="true" checked={true}/>
+          <P2Input type="checkbox" id="period" name="period" className="text-sm bg-white border border-gray-200 rounded-md" changeaftersearch="true" checked={true}/>
         </div>
         <div className="flex flex-row gap-2 justify-center">
           <label htmlFor='ceGroup'>C/E 그룹</label>
@@ -75,7 +75,7 @@ function TreeFormPage(props) {
         </div>
         <div className="flex flex-row gap-2 justify-center">
           <label htmlFor='test'>테스트</label>
-          <input type="text" id="test" name="test" className="text-sm bg-white border border-gray-200 rounded-md"/>
+          <P2Input type="text" id="test" name="test" className="text-sm bg-white border border-gray-200 rounded-md"/>
         </div>
       </P2SearchArea>
       <div className="w-full">
