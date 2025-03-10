@@ -13,7 +13,6 @@ const generateList = data => {
     const node = data[i];
     const key = node.CD;
     const title = node;
-    console.log("key => ", key);
     dataList.push({ key, title: title });
     if (node.children) {
       generateList(node.children);
@@ -75,9 +74,9 @@ class SearchTree extends React.Component {
     const { searchValue, expandedKeys, autoExpandParent } = this.state;
     const loop = data =>
       data.map(item => {
-        const index = item.CD.indexOf(searchValue);
-        const beforeStr = item.CD.substr(0, index);
-        const afterStr = item.CD_NM.substr(index + searchValue.length);
+        const index = item.cd.indexOf(searchValue);
+        const beforeStr = item.cd.substr(0, index);
+        const afterStr = item.cdNm.substr(index + searchValue.length);
         const title =
           index > -1 ? (
             <span>
@@ -87,16 +86,16 @@ class SearchTree extends React.Component {
               {afterStr}
             </span>
           ) : (
-            <span>{item.CD_NM}</span>
+            <span>{item.cdNm}</span>
           );
         if (item.children) {
           return (
-            <TreeNode key={item.CD} title={title}>
+            <TreeNode key={item.cd} secondKey={item.grpCd} title={title}>
               {loop(item.children)}
             </TreeNode>
           );
         }
-        return <TreeNode key={item.CD} title={title} />;
+        return <TreeNode key={item.cd} secondKey={item.grpCd} title={title} />;
       });
     return (
       <>
