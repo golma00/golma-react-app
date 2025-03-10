@@ -16,7 +16,6 @@ function FourGridPage(props) {
     const [rowNode, setRowNode] = useState();
     const [rowData, setRowData] = useState();
     const [msg, setMsg] = useState([]); // JSON 데이터 저장
-    const [modifiedRows, setModifiedRows] = useState([]);  
 
     useEffect(() => {
       if (msgst === 1) {
@@ -38,22 +37,20 @@ function FourGridPage(props) {
 
     const [count, setCount] = useState(0);
 
-
-    const inqApi = async() => 
-    {
-            try {
-              let iempno = await searchArea.current.api.get('inputEmpno').inputEmpno;
-              if (iempno === undefined ) {iempno=""};
-              console.log('1111');
-              let responce = await axios.get(`http://192.168.0.247:8080/list?id=${iempno}`);
-              console.log('responce=',responce.data);
-              await setRowData(responce.data?responce.data:[]);
-              await setMsg({msg:'조회되었습니다.'});
-              // console.log("사원번호 : ", $('#inputEmpno').val());
-              setMsgst(1);
-            } catch(e) {
-              alert('error=>',e);
-            }
+    const inqApi = async() => {
+      try {
+        let iempno = await searchArea.current.api.get('inputEmpno').inputEmpno;
+        if (iempno === undefined ) {iempno=""};
+        console.log('1111');
+        let responce = await axios.get(`http://192.168.0.247:8080/list?id=${iempno}`);
+        console.log('responce=',responce.data);
+        await setRowData(responce.data?responce.data:[]);
+        await setMsg({msg:'조회되었습니다.'});
+        // console.log("사원번호 : ", $('#inputEmpno').val());
+        setMsgst(1);
+      } catch(e) {
+        alert('error=>',e);
+      }
     }
 
     async function onSearch() {
@@ -63,11 +60,13 @@ function FourGridPage(props) {
     // 저장 버튼 클릭 시 서버로 전송
     const onSave = async () => {
       try {
-        console.log('modifiedRows)',modifiedRows);
+        const modifiedRows = await grid.current.api.getModifiedRows();
+        console.log("modifiedRows: {}", modifiedRows);
         const response = await axios.post("http://192.168.0.247:8080/insert", modifiedRows);
         console.log("서버 응답:", response.data);
         alert("저장 완료!");
-      } catch (err) {
+      } 
+      catch (err) {
         console.error("저장 오류:", err);
         alert("저장 실패!");
       }
@@ -76,18 +75,6 @@ function FourGridPage(props) {
     async function onSelectionChanged(event) {
         setRowNode(await event.api.getSelectedNode());
     }
-
-    // 셀 값 변경 시 수정된 행 저장
-    const onCellValueChanged = (params) => {
-      console.log('onCellValueChanged=',params);
-      const updatedRow = params.data;
-      setModifiedRows((prev) => {
-        const exists = prev.find((row) => row.id === updatedRow.id);
-        return exists
-          ? prev.map((row) => (row.id === updatedRow.id ? updatedRow : row))
-          : [...prev, updatedRow];
-      });
-    };
 
     const Modal = ({ isOpen, onClose, children }) => {
       if (!isOpen) return null; // 모달이 닫혀 있으면 렌더링하지 않음
@@ -128,7 +115,6 @@ function FourGridPage(props) {
                 showStatusColumn={true}
                 showCheckedColumn={true}
                 onSelectionChanged={onSelectionChanged}
-                cellValueChanged={onCellValueChanged}
               />
             </div>
             <div className="h-[550px]">
