@@ -17,6 +17,9 @@ function P2Tree(props, ref) {
 
   const [keyByTreeNode, setKeyByTreeNode] = useState({});
 
+  const statusField = "_status";
+  const oldStatusField = "_oldStatus";
+
   useImperativeHandle(ref, () => ({
     api: {
       getTreeData: () => {
@@ -26,7 +29,7 @@ function P2Tree(props, ref) {
         return rowData;
       },
       getModifiedRowData: () => {
-        return rowData.filter((item) => item["_status"] !== "");
+        return rowData.filter((item) => item[statusField] !== "");
       },
       addChildTreeNode: (data) => {
         if (selectedTreeNode) {
@@ -35,16 +38,21 @@ function P2Tree(props, ref) {
           const newNodeId = `new${newNodeCount}`;
           setNewNodeKey(newNodeId);
 
+          let newNode = { 
+            [oldStatusField]: "I",
+            [statusField]: "I", 
+            [nodeKeyField]: newNodeId, 
+            [parentKeyField]: selectedTreeNode.key||selectedTreeNode.props.eventKey, 
+            ...data 
+          };
+
+          if (typeof nodeTitleField === "string") {
+            newNode[nodeTitleField] = `신규 ${newNodeCount}`;
+          }
+
           setRowData([
             ...rowData.slice(0, rowData.indexOf(selectedTreeNode.props.dataRef) + 1),
-            { 
-              _oldStatus: "I",
-              _status: "I", 
-              [nodeTitleField]: `신규 ${newNodeCount}`, 
-              [nodeKeyField]: newNodeId, 
-              [parentKeyField]: selectedTreeNode.key||selectedTreeNode.props.eventKey, 
-              ...data 
-            },
+            newNode,
             ...rowData.slice(rowData.indexOf(selectedTreeNode.props.dataRef) + 1)
           ]);
 
@@ -81,7 +89,7 @@ function P2Tree(props, ref) {
     }
 
     if ((!treeNode.props.children || treeNode.props.children.length === 0)) {
-      if (treeNode.props.dataRef["_status"] === "I") {
+      if (treeNode.props.dataRef[statusField] === "I") {
         const index = rowData.indexOf(treeNode.props.dataRef);
         if (index > -1) {
           rowData.splice(index, 1);
@@ -94,11 +102,11 @@ function P2Tree(props, ref) {
         }
       }
       else {
-        treeNode.props.dataRef["_status"] = "D";
+        treeNode.props.dataRef[statusField] = "D";
       }
     }
     else {
-      treeNode.props.dataRef["_status"] = "D";
+      treeNode.props.dataRef[statusField] = "D";
     }
 
     return deleted;
@@ -106,11 +114,14 @@ function P2Tree(props, ref) {
 
   useEffect(() => {
     setRowData(props.rowData);
+  }, [props.rowData]);
+
+  useEffect(() => {
     setNodeKeyField(props.nodeKeyField || "key");
     setParentKeyField(props.parentKeyField || "parentKey");
     setNodeTitleField(props.nodeTitleField || "title");
     setNodeSeqField(props.nodeSeqField || "alignSeq");
-  }, [props.rowData, props.nodeKeyField, props.parentKeyField, props.nodeTitleField, props.nodeSeqField]);
+  }, [props.nodeKeyField, props.parentKeyField, props.nodeTitleField, props.nodeSeqField]);
 
   useEffect(() => {
     const createTree = (data) => {
@@ -134,9 +145,9 @@ function P2Tree(props, ref) {
         const node = <Tree.TreeNode 
           key={item[nodeKeyField]} 
           title={
-            item["_status"] === "I" ? <span className="text-blue-500">{title}</span> :
-            item["_status"] === "U" ? <span className="text-red-500">{title}</span> :
-            item["_status"] === "D" ? <span className="line-through">{title}</span> :
+            item[statusField] === "I" ? <span className="text-blue-500">{title}</span> :
+            item[statusField] === "U" ? <span className="text-red-500">{title}</span> :
+            item[statusField] === "D" ? <span className="line-through">{title}</span> :
             title
           }
           children={[]}
@@ -241,16 +252,16 @@ function P2Tree(props, ref) {
 
       // 새로운 부모에 추가
       dragNode.props.dataRef[parentKeyField] = targetNode.props.dataRef[nodeKeyField];
-      if (dragNode.props.dataRef["_status"] === "") {
-        dragNode.props.dataRef["_status"] = "U";
+      if (dragNode.props.dataRef[statusField] === "") {
+        dragNode.props.dataRef[statusField] = "U";
       }
       rowData.splice(targetIndex + 1, 0, rowData.splice(dragIndex, 1)[0]);
 
       let i = 2;
       dragNodesKeys.forEach((key) => {
         if (key !== dragNode.props.dataRef[nodeKeyField]) {
-          if (keyByTreeNode[key].props.dataRef["_status"] === "") {
-            keyByTreeNode[key].props.dataRef["_status"] = "U";
+          if (keyByTreeNode[key].props.dataRef[statusField] === "") {
+            keyByTreeNode[key].props.dataRef[statusField] = "U";
           }
           rowData.splice(targetIndex + i, 0, rowData.splice(rowData.indexOf(keyByTreeNode[key].props.dataRef), 1)[0]);
           i++;

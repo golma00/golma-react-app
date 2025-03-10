@@ -5,11 +5,11 @@ import SplitterLayout from 'react-splitter-layout';
 import axios from 'axios';
 
 function TreeFormPage(props) {
-
   const searchArea = useRef(null);
   const formArea = useRef(null);
   const tree = useRef(null);
 
+  const [loading, setLoading] = useState(false);
   const [codeList, setCodeList] = useState([]);
   const [treeNode, setTreeNode] = useState(null);
 
@@ -25,11 +25,7 @@ function TreeFormPage(props) {
       { make: "Toyota", model: "Corolla", price: 29600, electric: "Y", controller: "3A", color: "green", parentModel: "ROOT" },
   ]);
 
-  function loadData() {
-  }
-
   async function onSearch() {
-    loadData();
     console.log(await searchArea.current.api.get());
   }
 
@@ -40,7 +36,7 @@ function TreeFormPage(props) {
 
   function onAddTreeNode() {
     tree.current.api.addChildTreeNode({
-      price: 500, electric: "Y", controller: "1A", color: "yellow"
+      price: 500, electric: "Y", controller: "1A", color: "yellow", make: "신규"
     });
   }
 
@@ -55,7 +51,7 @@ function TreeFormPage(props) {
   }
 
   return (
-    <P2Page menuProps={props.menuProps} onSearch={onSearch} onSave={onSave}>
+    <P2Page menuProps={props.menuProps} onSearch={onSearch} onSave={onSave} loading={loading}>
       <P2SearchArea onSearch={onSearch} ref={searchArea}>
         <div className="flex flex-row gap-2 justify-center">
           <label htmlFor='planYear'>계획연도</label>

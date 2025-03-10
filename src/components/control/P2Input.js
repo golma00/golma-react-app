@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Input, InputNumber } from "antd";
 import PropTypes from "prop-types";
 export function P2Input(props) {
@@ -37,8 +37,12 @@ export function P2InputNumber(props) {
     }
   }
 
+  const formatter = useCallback((value) => {
+    return (value === undefined || value === null || value === "") ? "" : parseFloat(value).toLocaleString();
+  }, []);
+
   return (
-    <InputNumber {...props} value={value} onChange={onChange}/>
+    <InputNumber formatter={formatter} {...props} value={value} onChange={onChange} />
   );
 }
 P2InputNumber.propTypes = {

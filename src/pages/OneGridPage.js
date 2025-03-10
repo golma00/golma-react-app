@@ -1,134 +1,122 @@
 import React, { useState, useRef, useEffect } from 'react'
-import { P2SearchArea } from 'components/layout/index';
+import { P2Page, P2SearchArea, P2GridButtonBar } from 'components/layout/index';
 import { P2AgGrid } from 'components/grid/index';
-import { P2Select } from 'components/control/index';
+import { P2Input, P2MessageBox } from 'components/control/index';
 import axios from 'axios';
 
-function OneGridPage() {
+function OneGridPage(props) {
   const searchArea = useRef(null);
-  const selectCeGroup = useRef(null);
-  const selectCeGroup2 = useRef(null);
-  const [gridApi, setGridApi] = useState(null);
-
-  const [textValue, setTextValue] = useState("test");
-
-  const [codeList, setCodeList] = useState([]);
-
-  const rowData = [
-      { make: "Tesla",  model: "Model Y", price: 64950, electric: "Y", controller: "1A" },
-      { make: "Ford",   model: "F-Series", price: 33850, electric: "N", controller: "2A" },
-      { make: "Toyota", model: "Corolla", price: 29600, electric: "Y", controller: "3A" },
-  ];
-
-  const controllerData = [
-    { cd: "1A", cdNm: "일A" },
-    { cd: "2A", cdNm: "둘A" },
-    { cd: "3A", cdNm: "셋A" },
-  ]
+  const grid = useRef(0);
+  const [count, setCount] = useState(0);
+  const [loading, setLoading] = useState(false);
 
   const colDefs = [
-      { field: "make", headerName: "Make", editable: true, align: "center" },
-      { field: "model", headerName: "Model", editable: true, },
-      { field: "price", headerName: "Price", editable: true, cellDataType: "number" },
-      { field: "electric", headerName: "Electric", editable: true, cellDataType: "checkbox" },
-      { field: "controller", headerName: "Controller", editable: true, cellDataType: "combo", 
-        cellEditorParams: { valueField: "cd", displayField: "cdNm", values: controllerData } }
+    { field: "authGrpId", headerName: "권한그룹ID", width: 150, align: "center" },
+    { field: "authGrpNm", headerName: "권한그룹명", width: 400, editable: true, },
+    { field: "alignSeq",  headerName: "정렬순서",   width: 120,  editable: true, cellDataType: "number" },
+    { field: "chgUserId", headerName: "수정자ID",   width: 150, },
+    { field: "chgDate",   headerName: "수정일시",   width: 200, },
   ];
 
-  useEffect(() => {
-    getCodeList();
-  }, []);
-
-  const getCodeList = async () => {
+  async function onSearch() {
     try {
-      const res = await axios.get("/api/v1/login/langCd?sysId=ADMIN&grpCd=LANG_CD");
-      setCodeList(res.data.data.result);
-    } catch (error) {
+      setLoading(true);
+      grid.current.api.refresh();
+
+      const searchData = searchArea.current.api.get();
+      const res = await axios.post("/api/v1/auth/list", searchData);
+
+      setLoading(false);
+      if (res.data.code === "00") {
+        grid.current.api.setGridOption("rowData", res.data.data.result);
+        setCount(res.data.data.result.length);
+      }
+      else {
+        P2MessageBox.error(res.data.message || '조회 중 오류가 발생했습니다.');
+      }
+    }
+    catch (error) {
+      setLoading(false);
+      P2MessageBox.error('조회 중 오류가 발생했습니다.');
       console.log(error);
     }
   }
 
-  function loadData() {
-    gridApi.refresh();
-    gridApi.setGridOption("rowData", structuredClone(rowData));
-  }
+  async function onSave() {
 
-  function addData() {
-    gridApi.addRow({
-      make: "123",
-      model: "RED",
-      price: 30000,
-      electric: false
+    const saveDatas = await grid.current.api.getModifiedRows();
+    if (saveDatas.length === 0) {
+      P2MessageBox.warning('저장할 데이터가 없습니다.');
+      return;
+    }
+
+    P2MessageBox.confirm({
+      title: '저장 하시겠습니까?',
+      onOk: () => onSaveAction(saveDatas),
+      onCancel() {},
     });
   }
 
-  async function allRowNodes() {
-    console.log(await gridApi.getAllRowNodes());
+  async function onSaveAction(saveDatas) {
+    setLoading(true);
+    try {
+      const res = await axios.put("/api/v1/auth/save", {
+        saveDatas: saveDatas
+      });
+
+      setLoading(false);
+      if (res.data.code === "00") {
+        P2MessageBox.success('저장이 완료 되었습니다.');
+        onSearch();
+      }
+      else {
+        P2MessageBox.error(res.data.message || '저장 중 오류가 발생했습니다.');
+      }
+    }
+    catch (error) {
+      setLoading(false);
+      P2MessageBox.error('저장 중 오류가 발생했습니다.');
+      console.log(error);
+    }
   }
 
-  async function insertedRowNodes() {
-    console.log(await gridApi.getInsertedRowNodes());
-    console.log(selectCeGroup.current.api.setSelectedIndex(2));
+  function onAddRow() {
+    grid.current.api.addRow({}, "authGrpNm");
   }
 
-  function onSearch(searchData) {
-    console.log(searchData);
+  function onDeleteRow() {
+    grid.current.api.deleteRow(true);
   }
 
-  async function search() {
-    await searchArea.current.api.set("test", "Eeeee");
-    console.log(await searchArea.current.api.get());
+  function onGridReady() {
+    onSearch();
   }
-  
+
   return (
-    <div className="flex flex-col w-full gap-1 px-2 py-1">
-      <div className="flex flex-row w-full h-8 gap-1 justify-end">
-        <button className="common-btn" onClick={loadData}>Load Data</button>
-        <button className="common-btn" onClick={addData}>Add Data</button>
-        <button className="common-btn" onClick={allRowNodes}>All Data</button>
-        <button className="common-btn" onClick={insertedRowNodes}>Insert Data</button>
-        <button className="common-btn" onClick={search}>Search</button>
-        <P2Select name="ceGroup1" className="w-40 text-sm" 
-          defaultOption="ALL"
-          isMulti={true}
-          value={["KR"]}
-          datas={codeList}
-        />
-      </div>
+    <P2Page menuProps={props.menuProps} onSearch={onSearch} onSave={onSave} loading={loading}>
       <P2SearchArea onSearch={onSearch} ref={searchArea}>
-        <label class="text-xl">계획연도</label>
-        <div>
-          <input type="text" name="planYear" className="text-sm bg-white border border-gray-200 rounded-md" value={textValue} onChange={(e) => setTextValue(e.target.value)}/>
+        <div className="flex flex-row gap-1">
+          <label class="text-xl" htmlFor='authGrpId'>권한그룹ID</label>
+          <P2Input type="text" id="authGrpId" name="authGrpId" className="text-sm bg-white border border-gray-200 rounded-md"/>
         </div>
-        <label>제목</label>
-        <input type="text" name="title" className="text-sm bg-white border border-gray-200 rounded-md"/>
-        <label>기간</label>
-        <input type="checkbox" name="period" className="text-sm bg-white border border-gray-200 rounded-md" changeaftersearch="true" checked={true}/>
-        <label>C/E 그룹</label>
-        <P2Select name="ceGroup" className="w-40 text-sm" ref={selectCeGroup}
-          defaultOption="ALL"
-          value=""
-          datas={codeList}
-        />
-        <label>C/E 그룹2</label>
-        <P2Select name="ceGroup2" className="w-40 text-sm" ref={selectCeGroup2}
-          value={["KR"]}
-          isMulti={true}
-          datas={codeList}
-        />
-        <label>테스트</label>
-        <input type="text" name="test" className="text-sm bg-white border border-gray-200 rounded-md"/>
+        <div className="flex flex-row gap-1">
+          <label class="text-xl" htmlFor='authGrpNm'>권한그룹명</label>
+          <P2Input type="text" id="authGrpNm" name="authGrpNm" className="text-sm bg-white border border-gray-200 rounded-md"/>
+        </div>
       </P2SearchArea>
+      <P2GridButtonBar title="테스트" onAddRow={onAddRow} onDeleteRow={onDeleteRow} count={count}>
+      </P2GridButtonBar>
       <div className="w-full h-[500px]">
         <P2AgGrid  
           debug={true}
+          ref={grid}
           columnDefs={colDefs}
           showStatusColumn={true}
           showCheckedColumn={true}
-          api={setGridApi}
+          onGridReady={onGridReady}
         />
       </div>
-    </div>
+    </P2Page>
   )
 }
 
