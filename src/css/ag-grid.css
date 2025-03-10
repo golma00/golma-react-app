@@ -6,6 +6,14 @@
   white-space: pre-wrap;
 }
 
+.ag-cell-wrapper.ag-checkbox-cell {
+  justify-content: center;
+}
+
+.ag-header-cell-comp-wrapper {
+  justify-content: center;
+}
+
 .error-cell {
   border: 1px solid red !important;
 }
