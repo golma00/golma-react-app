@@ -12,6 +12,7 @@ import {
 } from "components/grid/renderer/renderer";
 
 import P2AgGridModule from "components/grid/P2AgGridModule";
+import * as Utils from "utils/Utils";
 
 export const insertStatus = "I"
 export const updateStatus = "U"
@@ -173,7 +174,7 @@ function P2AgGrid(props, ref) {
       if (c.headerName) {
         c.headerName = "* " + c.headerName;
         c.cellClassRules = required;
-        c.tooltipValueGetter = (params) => !params.value ? "필수입력" : "";
+        c.tooltipValueGetter = (params) => Utils.isEmpty(params.value) ? "필수입력" : "";
       }
     }
   });
