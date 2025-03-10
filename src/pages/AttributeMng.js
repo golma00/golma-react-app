@@ -2,9 +2,10 @@ import React, { useState, useRef, useEffect } from 'react'
 import { P2Page, P2GridButtonBar } from 'components/layout/index';
 import { P2AgGrid } from 'components/grid/index';
 import SearchTree from '../components/tree/SearchTree.js';
-import axios from 'axios';
 import SplitterLayout from 'react-splitter-layout';
-
+import "react-splitter-layout/lib/index.css";
+import "../css/splitter.css";
+import axios from 'axios';
 
 function AttributeMng(props) {
   const searchArea = useRef(null);
@@ -14,130 +15,131 @@ function AttributeMng(props) {
   const [count, setCount] = useState(0);
 
   const [rowData, setRowData] = useState([]);
+  const [rowNode, setRowNode] = useState();
   const [attributeCodeList, setAttributeCodeList] = useState(null);
 
   const [msgst, setMsgst] = useState(0); // JSON 데이터 저장
 
   const colDefs = [
-      { field: "GRP_CD",
+      { field: "grpCd",
         headerName: "속성그룹", 
-        editable: true, 
+        editable: false, 
         width: 120,
-        align: "left" 
-      },
-      { field: "GRP_NM",
-        headerName: "속성그룹명", 
-        editable: true, 
         hide: true,
         align: "left" 
       },
-      { field: "CD",
-        headerName: "속성", 
+      { field: "grpNm",
+        headerName: "속성그룹명", 
+        editable: false, 
+        align: "left" 
+      },
+      { field: "cd",
+        headerName: "속성코드", 
         editable: true, 
         width: 120,
         align: "left" 
       },
-      { field: "CD_NM",
+      { field: "cdNm",
         headerName: "속성명", 
         editable: true, 
         width: 150,
         align: "left" 
       },
-      { field: "CD_DESC",
+      { field: "cdDesc",
         headerName: "속성 설명", 
         editable: true, 
         width: 250,
         align: "left" 
       },
-      { field: "CD_REF_VAL_01",
+      { field: "cdRefVal01",
         headerName: "비고 1", 
         editable: true, 
         width: 200,
         align: "left" 
       },
-      { field: "CD_REF_VAL_02",
+      { field: "cdRefVal02",
         headerName: "비고 2", 
         editable: true, 
         width: 200,
         align: "left" 
       },
-      { field: "CD_REF_VAL_03",
+      { field: "cdRefVal03",
         headerName: "비고 3", 
         editable: true, 
         width: 200,
         align: "left" 
       },
-      { field: "CD_REF_VAL_04",
+      { field: "cdRefVal04",
         headerName: "비고 4", 
         editable: true, 
         width: 200,
         align: "left" 
       },
-      { field: "CD_REF_VAL_05",
+      { field: "cdRefVal05",
         headerName: "비고 5", 
         editable: true, 
         width: 200,
         align: "left" 
       },
-      { field: "CD_REF_VAL_06",
+      { field: "cdRefVal06",
         headerName: "비고 6", 
         editable: true, 
         width: 200,
         align: "left" 
       },
-      { field: "CD_REF_VAL_07",
+      { field: "cdRefVal07",
         headerName: "비고 7", 
         editable: true, 
         width: 200,
         align: "left" 
       },
-      { field: "CD_REF_VAL_08",
+      { field: "cdRefVal08",
         headerName: "비고 8", 
         editable: true, 
         width: 200,
         align: "left" 
       },
-      { field: "CD_REF_VAL_09",
+      { field: "cdRefVal09",
         headerName: "비고 9", 
         editable: true, 
         width: 200,
         align: "left" 
       },
-      { field: "CD_REF_VAL_10",
+      { field: "cdRefVal10",
         headerName: "비고 10", 
         editable: true, 
         width: 200,
         align: "left" 
       },
-      { field: "ALIGN_SEQ",
+      { field: "alignSeq",
         headerName: "순서", 
         editable: true, 
         width: 100,
         align: "right" 
       },
-      { field: "USE_YN",
+      { field: "useYn",
         headerName: "사용유무", 
         editable: true, 
         width: 100,
         align: "center" 
       },
-      { field: "UPPPER_GRP_CD",
-        headerName: "종속 속성그룹", 
+      { field: "uppperGrpCd",
+        headerName: "종속속성 그룹", 
         editable: true, 
         width: 120,
         align: "left" 
       },
-      { field: "UPPPER_CD",
-        headerName: "종속 속성", 
+      { field: "uppperCd",
+        headerName: "종속속성 코드", 
         editable: true, 
         width: 120,
         align: "left" 
       },
-      { field: "CD_TYPE",
+      { field: "cdType",
         headerName: "속성 타입", 
         editable: true, 
         width: 100,
-        align: "left" 
+        align: "center" 
       },
   ];
 
@@ -149,6 +151,8 @@ function AttributeMng(props) {
       setMsgst(0);
     }
     else if (msgst === 2) {
+      grid.current.api.setGridOption("rowData", structuredClone(rowNode));
+      setCount(grid.current.api.getDisplayedRowCount());
       setMsgst(0);
     }
   }, [msgst]);
@@ -167,36 +171,27 @@ function AttributeMng(props) {
       let params = {
         tmp: "temp",
       }
-      let responce = await fetch("/api/v1/code/attributeGrpList", {
-                             method: 'POST',
-                             headers: {
-                               "Content-Type":"application/json; charset=utf-8"
-                             },
-                             body: JSON.stringify(params)
-                           })
-                           .then(async (res) => {
-                             let res_data = await res.json();
-                             setRowData(res_data.data.result);
-                             setMsgst(1);
-                           });
+      const res = await axios.post("/api/v1/code/attributeGrpList", params);
+      setRowData(res.data.data.result);
+      setMsgst(1);
     }
     catch (error) {
-      alert('error => ',error);
+      alert('error => ', error);
     }
   }
 
   function setAttritubeGrpList() {
     var dataList = {rowData}.rowData;
     var rowDataMap = dataList.reduce(function(map, node) {
-      map[node.CD] = node;
-      map[node.CD].children = [];
+      map[node.cd] = node;
+      map[node.cd].children = [];
       return map;
     }, {});
 
     var tree = [];
     dataList.forEach(function(node) {
-      if (node.GRP_CD && node.CD !== "ROOT") {
-        var parent = rowDataMap[node.GRP_CD];
+      if (node.grpCd && node.cd !== "ROOT") {
+        var parent = rowDataMap[node.grpCd];
         if (parent) {
           parent.children.push(node);
         }
@@ -208,12 +203,22 @@ function AttributeMng(props) {
         tree.push(node);
       }
     });
-    console.log("tree => ", tree);
     setRowData(tree);
   }
 
-  async function getAttributeList(a) {
-    console.log("a => ", a);
+  async function getAttributeList(selectedAttributeId, item) {
+    try {
+      const params = {
+        attributeGrpId: item.selectedNodes[0].props.secondKey,
+        attributeId: selectedAttributeId[0],
+      }
+      const res = await axios.post("/api/v1/code/attributeCodeList", params);
+      setRowNode(res.data.data.result);
+      setMsgst(2);
+    }
+    catch (error) {
+      alert('error => ', error);
+    }
   }
 
   async function onSearch() {
@@ -237,10 +242,6 @@ function AttributeMng(props) {
   function onAddRow() {
     console.log("onAddRow!!!!");
     grid.current.api.addRow({
-      make: "123",
-      model: "RED",
-      price: 30000,
-      electric: false
     });
   }
 
