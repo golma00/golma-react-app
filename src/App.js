@@ -9,6 +9,7 @@ import TreeFormPage from 'pages/TreeFormPage';
 import TreePage from 'pages/TreePage';
 import AttributeMng from 'pages/AttributeMng';
 import { P2PageWrapper } from 'components/layout/index';
+import FourGridPage from 'pages/FourGridPage';
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
             <Link to="/treeForm" className='px-2 cursor-pointer'>TreeForm</Link>
             <Link to="/tree" className='px-2 cursor-pointer'>tree</Link>
             <Link to="/attributeMng" className='px-2 cursor-pointer'>AttributeMng</Link>
+            <Link to="/four" className='px-2 cursor-pointer'>four</Link>
           </div>
         </div>
         <div className='flex flex-row justify-between'>
@@ -39,9 +41,10 @@ function App() {
             <Route path="/treeForm" element={<P2PageWrapper><TreeFormPage /></P2PageWrapper>} />
             <Route path="/tree" element={<P2PageWrapper><TreePage /></P2PageWrapper>} />
             <Route path="/attributeMng" element={<P2PageWrapper><AttributeMng /></P2PageWrapper>} />
+            <Route path="/four" element={<P2PageWrapper><FourGridPage /></P2PageWrapper>} />
           </Routes>
         </div>
-      </BrowserRouter>
+      </BrowserRouter>  
     </div>
   )
 }
