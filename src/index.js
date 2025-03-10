@@ -16,7 +16,7 @@ const dependsModules = AllCommunityModule.dependsOn.filter(module => module.modu
 AllCommunityModule.dependsOn = dependsModules;
 
 ModuleRegistry.registerModules([AllCommunityModule])
-axios.defaults.baseURL = 'http://221.149.20.211:8090';
+axios.defaults.baseURL = 'http://localhost:8090';
 
 library.add(fas);
 
