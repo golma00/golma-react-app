@@ -536,8 +536,8 @@ function P2FormArea(props, ref) {
   function updateTreeNodeData(key, value) {
     if (props.treeNode) {
       props.treeNode.props.dataRef[key] = value;
-      if (props.treeNode.props.dataRef["_state"] === "") {
-        props.treeNode.props.dataRef["_state"] = "U";
+      if (props.treeNode.props.dataRef["_status"] === "") {
+        props.treeNode.props.dataRef["_status"] = "U";
       }
       props.treeNode.props.update();
     }
