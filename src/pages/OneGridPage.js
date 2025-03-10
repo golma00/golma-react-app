@@ -12,8 +12,8 @@ function OneGridPage(props) {
 
   const colDefs = [
     { field: "authGrpId", headerName: "권한그룹ID", width: 150, align: "center" },
-    { field: "authGrpNm", headerName: "권한그룹명", width: 400, editable: true, },
-    { field: "alignSeq",  headerName: "정렬순서",   width: 120,  editable: true, cellDataType: "number" },
+    { field: "authGrpNm", headerName: "권한그룹명", width: 400, editable: true, required: true },
+    { field: "alignSeq",  headerName: "정렬순서",   width: 120, editable: true, cellDataType: "number" },
     { field: "chgUserId", headerName: "수정자ID",   width: 150, },
     { field: "chgDate",   headerName: "수정일시",   width: 200, },
   ];
@@ -32,12 +32,12 @@ function OneGridPage(props) {
         setCount(res.data.data.result.length);
       }
       else {
-        P2MessageBox.error(res.data.message || '조회 중 오류가 발생했습니다.');
+        P2MessageBox.error(res.data.message || '시스템 오류가 발생했습니다.');
       }
     }
     catch (error) {
       setLoading(false);
-      P2MessageBox.error('조회 중 오류가 발생했습니다.');
+      P2MessageBox.error('시스템 오류가 발생했습니다.');
       console.log(error);
     }
   }
@@ -70,12 +70,12 @@ function OneGridPage(props) {
         onSearch();
       }
       else {
-        P2MessageBox.error(res.data.message || '저장 중 오류가 발생했습니다.');
+        P2MessageBox.error(res.data.message || '시스템 오류가 발생했습니다.');
       }
     }
     catch (error) {
       setLoading(false);
-      P2MessageBox.error('저장 중 오류가 발생했습니다.');
+      P2MessageBox.error('시스템 오류가 발생했습니다.');
       console.log(error);
     }
   }
