@@ -6,6 +6,7 @@ import TwoGridPage from 'pages/TwoGridPage';
 import GridFormPage from 'pages/GridFormPage';
 import ThreeGridPage from 'pages/ThreeGridPage';
 import TreePage from 'pages/TreePage';
+import AttributeMng from 'pages/AttributeMng';
 import { P2PageWrapper } from 'components/layout/index';
 
 function App() {
@@ -23,6 +24,7 @@ function App() {
             <Link to="/three" className='px-2 cursor-pointer'>Three</Link>
             <Link to="/gridForm" className='px-2 cursor-pointer'>GridForm</Link>
             <Link to="/tree" className='px-2 cursor-pointer'>tree</Link>
+            <Link to="/attributeMng" className='px-2 cursor-pointer'>AttributeMng</Link>
           </div>
         </div>
         <div className='flex flex-row justify-between'>
@@ -33,6 +35,7 @@ function App() {
             <Route path="/three" element={<P2PageWrapper><ThreeGridPage /></P2PageWrapper>} />
             <Route path="/gridForm" element={<P2PageWrapper><GridFormPage /></P2PageWrapper>} />
             <Route path="/tree" element={<P2PageWrapper><TreePage /></P2PageWrapper>} />
+            <Route path="/attributeMng" element={<P2PageWrapper><AttributeMng /></P2PageWrapper>} />
           </Routes>
         </div>
       </BrowserRouter>
