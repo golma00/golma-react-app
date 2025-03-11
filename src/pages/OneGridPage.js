@@ -66,8 +66,10 @@ function OneGridPage(props) {
 
       setLoading(false);
       if (res.data.code === "00") {
-        P2MessageBox.success('저장이 완료 되었습니다.');
-        onSearch();
+        P2MessageBox.success({
+          title: '저장이 완료 되었습니다.',
+          onOk: () => onSearch(),
+        });
       }
       else {
         P2MessageBox.error(res.data.message || '시스템 오류가 발생했습니다.');
@@ -80,8 +82,8 @@ function OneGridPage(props) {
     }
   }
 
-  function onAddRow() {
-    grid.current.api.addRow({}, "authGrpNm");
+  async function onAddRow() {
+    await grid.current.api.addRow({}, "authGrpNm");
   }
 
   function onDeleteRow() {

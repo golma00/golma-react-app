@@ -21,7 +21,7 @@ const P2AgGridModule = {
      *
      * @return 신규 노드
      */
-    addRow: function (beans, rowData, startEditingColId, addIndex) {
+    addRow: async function (beans, rowData, startEditingColId, addIndex) {
       let newRowIndex = addIndex || beans.getDisplayedRowCount();
 
       const transaction = beans.applyTransaction({
@@ -35,9 +35,12 @@ const P2AgGridModule = {
       newRowNode.setDataValue(statusField, insertStatus);
 
       if (startEditingColId) {
+        await beans.wait(100);
+
         beans.startEditingCell({
           rowIndex: newRowIndex,
           colKey: startEditingColId,
+          key: startEditingColId,
         });
       }
 
