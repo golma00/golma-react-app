@@ -125,7 +125,7 @@ function P2FormArea(props, ref) {
             setChildrenMap(prev => ({ ...prev, [child.props.name]: child }));
           }
           else if (child.type === P2Checkbox || child.type === P2Switch) {
-            initData[child.props.name] = child.props.checked || false;
+            initData[child.props.name] = child.props.checked ? "Y" : "N";
             setChildrenMap(prev => ({ ...prev, [child.props.name]: child }));
           }
 
@@ -461,12 +461,12 @@ function P2FormArea(props, ref) {
       return (
         <React.Fragment key={index}>
           {React.cloneElement(child, {
-            checked: formData[child.props.name] || false,
+            checked: formData[child.props.name] === "Y" || false,
             onChange: (checked) => {
               if (child.props.onChange) {
                 child.props.onChange(checked);
               }
-              const targetValue = checked;
+              const targetValue = checked ? "Y" : "N";
               setFormData((prev) => ({
                 ...prev,
                 [child.props.name]: targetValue,
