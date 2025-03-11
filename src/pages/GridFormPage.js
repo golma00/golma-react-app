@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react'
 import { P2Page, P2SearchArea, P2GridButtonBar, P2FormArea } from 'components/layout/index';
 import { P2AgGrid } from 'components/grid/index';
-import { P2Select } from 'components/control/index';
+import { P2Select, P2Input } from 'components/control/index';
 import SplitterLayout from 'react-splitter-layout';
 import axios from 'axios';
 
@@ -102,22 +102,22 @@ function GridFormPage(props) {
           </div>
           <div className="h-[550px]">
             <P2GridButtonBar title="그리드 상세"/>
-            <P2FormArea ref={formArea} className="p2-form-area h-[550px]" rowNode={rowNode} gridRef={grid}>
+            <P2FormArea ref={formArea} className="p2-form-area h-[550px]" rowNode={rowNode}>
               <div className="flex flex-row gap-2">
                 <label htmlFor='make' className="w-20">Make</label>
-                <input type="text" id="make" name="make" className="text-sm bg-white border border-gray-200 rounded-md" />
+                <P2Input type="text" id="make" name="make" className="text-sm bg-white border border-gray-200 rounded-md" />
               </div>
               <div className="flex flex-row gap-2">
                 <label htmlFor='model' className="w-20">Model</label>
-                <input type="text" id="model" name="model" className="text-sm bg-white border border-gray-200 rounded-md" />
+                <P2Input type="text" id="model" name="model" className="text-sm bg-white border border-gray-200 rounded-md" />
               </div>
               <div className="flex flex-row gap-2">
                 <label htmlFor='price' className="w-20">Price</label>
-                <input type="text" id="price" name="price" className="text-sm bg-white border border-gray-200 rounded-md" />
+                <P2Input type="text" id="price" name="price" className="text-sm bg-white border border-gray-200 rounded-md" />
               </div>
               <div className="flex flex-row gap-2">
                 <label htmlFor='electric' className="w-20">Electric</label>
-                <input type="checkbox" id="electric" name="electric" className="text-sm bg-white border border-gray-200 rounded-md" />
+                <P2Input type="checkbox" id="electric" name="electric" className="text-sm bg-white border border-gray-200 rounded-md" />
               </div>
               <div className="flex flex-row gap-2">
                 <label htmlFor='controller' className="w-20">Controller</label>
@@ -129,7 +129,7 @@ function GridFormPage(props) {
               </div>
               <div className="flex flex-row gap-2">
                 <label htmlFor='color' className="w-20">Color</label>
-                <input type="text" id="color" name="color" className="text-sm bg-white border border-gray-200 rounded-md" />
+                <P2Input type="text" id="color" name="color" className="text-sm bg-white border border-gray-200 rounded-md" />
               </div>
             </P2FormArea>
           </div>
