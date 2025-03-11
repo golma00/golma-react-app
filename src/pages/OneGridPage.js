@@ -46,7 +46,7 @@ function OneGridPage(props) {
 
     const saveDatas = await grid.current.api.getModifiedRows();
     if (saveDatas.length === 0) {
-      P2MessageBox.warning('저장할 데이터가 없습니다.');
+      P2MessageBox.warn('저장할 데이터가 없습니다.');
       return;
     }
 
