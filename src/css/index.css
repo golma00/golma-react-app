@@ -69,6 +69,9 @@ body {
   z-index: 10 !important;
 }
 
+.ant-tabs {
+  @apply w-full h-full !important;
+}
 .ant-spin-nested-loading {
   @apply w-full h-full !important;
 }

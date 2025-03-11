@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react'
-import { useLocation } from 'react-router-dom';
 import axios from 'axios';
 
 function P2PageWrapper(props) {
-  const location = useLocation();
   const [success, setSuccess] = useState(false);
   const [menuProps, setMenuProps] = useState({});
 
