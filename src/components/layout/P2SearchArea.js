@@ -231,7 +231,7 @@ function P2SearchArea(props, ref) {
                     ...prev,
                     [child.props.name]: targetValue,
                   }));
-                  if (child.props.changeaftersearch) {
+                  if (child.props.changeAfterSearch) {
                     setChangeAfterSearch(true);
                   }
                 },
@@ -252,7 +252,7 @@ function P2SearchArea(props, ref) {
                     ...prev,
                     [child.props.name]: targetValue,
                   }));
-                  if (child.props.changeaftersearch) {
+                  if (child.props.changeAfterSearch) {
                     setChangeAfterSearch(true);
                   }
                 },
@@ -277,7 +277,7 @@ function P2SearchArea(props, ref) {
                 ...prev,
                 [child.props.name]: targetValue,
               }));
-              if (child.props.changeaftersearch) {
+              if (child.props.changeAfterSearch) {
                 setChangeAfterSearch(true);
               }
             },
@@ -299,7 +299,7 @@ function P2SearchArea(props, ref) {
                 ...prev,
                 [child.props.name]: targetValue,
               }));
-              if (child.props.changeaftersearch) {
+              if (child.props.changeAfterSearch) {
                 setChangeAfterSearch(true);
               }
             },
@@ -353,7 +353,7 @@ function P2SearchArea(props, ref) {
                 ...prev,
                 [child.props.name]: targetValue,
               }));
-              if (child.props.changeaftersearch) {
+              if (child.props.changeAfterSearch) {
                 setChangeAfterSearch(true);
               }
             }
@@ -375,7 +375,7 @@ function P2SearchArea(props, ref) {
                 ...prev,
                 [child.props.name]: targetValue,
               }));
-              if (child.props.changeaftersearch) {
+              if (child.props.changeAfterSearch) {
                 setChangeAfterSearch(true);
               }
             }
@@ -416,7 +416,7 @@ function P2SearchArea(props, ref) {
                 ...prev,
                 [child.props.name]: targetValue,
               }));
-              if (child.props.changeaftersearch) {
+              if (child.props.changeAfterSearch) {
                 setChangeAfterSearch(true);
               }
             },
@@ -438,7 +438,7 @@ function P2SearchArea(props, ref) {
                 ...prev,
                 [child.props.name]: targetValue,
               }));
-              if (child.props.changeaftersearch) {
+              if (child.props.changeAfterSearch) {
                 setChangeAfterSearch(true);
               }
             },

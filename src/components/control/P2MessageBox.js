@@ -1,5 +1,9 @@
 import { Modal } from 'antd';
 
+/**
+ * antd Modal 메서드를 래핑한 메서드
+ * https://3x.ant.design/components/modal/
+ */
 const P2MessageBox = {
   info: (props) => {
     if (typeof props === 'string') {

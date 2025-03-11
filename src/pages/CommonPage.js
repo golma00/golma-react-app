@@ -103,7 +103,7 @@ function CommonPage(props) {
         </div>
         <div className="flex flex-row gap-2 justify-center">
           <label htmlFor='period'>기간</label>
-          <P2Switch id="period" name="period" className="text-sm rounded-md self-center" changeaftersearch="true" checked={true}/>
+          <P2Switch id="period" name="period" className="text-sm rounded-md self-center" changeAfterSearch="true" checked={true}/>
         </div>
         <div className="flex flex-row gap-2 justify-center">
           <label htmlFor='ceGroup'>C/E 그룹</label>
