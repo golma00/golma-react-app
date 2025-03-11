@@ -51,7 +51,7 @@ function OneGridPage(props) {
     }
 
     P2MessageBox.confirm({
-      title: '저장 하시겠습니까?',
+      content: '저장 하시겠습니까?',
       onOk: () => onSaveAction(saveDatas),
       onCancel() {},
     });
@@ -67,7 +67,7 @@ function OneGridPage(props) {
       setLoading(false);
       if (res.data.code === "00") {
         P2MessageBox.success({
-          title: '저장이 완료 되었습니다.',
+          content: '저장이 완료 되었습니다.',
           onOk: () => onSearch(),
         });
       }
