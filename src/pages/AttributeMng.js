@@ -20,6 +20,7 @@ function AttributeMng(props) {
   const [treeNode, setTreeNode] = useState(null);
   const [rowData, setRowData] = useState([]);
   const [selectedRow, setSelectedRow] = useState(null);
+  const [selectionNode, setSectionNode] = useState({selectedRow: [], e: []});
 
   // 임시사용
   const cdTypeCombo = [
@@ -182,8 +183,7 @@ function AttributeMng(props) {
 
   useEffect(() => {
     //getCodeList();
-    console.log("selectedRow", selectedRow);
-  }, [selectedRow]);
+  }, []);
 
   const getCodeList = async () => {
     try {
@@ -197,7 +197,6 @@ function AttributeMng(props) {
   async function onSearch() {
     try {
       setLoading(true);
-      //grid.current.api.refresh();
 
       const searchData = searchArea.current.api.get();
       const res = await axios.post("/api/v1/code/attributeGrpList", searchData);
@@ -205,7 +204,6 @@ function AttributeMng(props) {
       setLoading(false);
       if (res.data.code === "00") {
         setRowData(res.data.data.result);
-        //setAttritubeGrpList(res.data.data.result);
         setCount(res.data.data.result.length);
       }
       else {
@@ -225,7 +223,20 @@ function AttributeMng(props) {
       P2MessageBox.warn('저장할 데이터가 없습니다.');
       return;
     }
-    console.log("saveDatas => ", saveDatas);
+    
+    const allRowDatas = await grid.current.api.getAllRowNodes();
+    for (let saveData of saveDatas) {
+      let checkCnt = 0;
+      for (let data of allRowDatas) {
+        if (data.data._status != "D" && (data.data.cd == saveData.cd)) {
+          checkCnt++;
+          if (checkCnt > 1) {
+            P2MessageBox.warn('중복된 코드를 등록할 수 없습니다. 확인 후 다시 시도해 주십시오.');
+            return;
+          }
+        }
+      }
+    }
 
     P2MessageBox.confirm({
       title: '저장 하시겠습니까?',
@@ -247,7 +258,11 @@ function AttributeMng(props) {
       if (res.data.code === "00") {
         P2MessageBox.success({
           title: '저장이 완료 되었습니다.',
-          onOk: () => onSearch(),
+          onOk: () => {
+            onSearch();
+            getAttributeList(selectionNode.selectedRow, selectionNode.e);
+            setTreeNode(selectionNode.e.node);
+          }
         });
       }
       else {
@@ -262,7 +277,6 @@ function AttributeMng(props) {
   }
 
   function onAddRow() {
-
     grid.current.api.addRow({
       grpCd: selectedRow.cd,
       grpNm: selectedRow.cdNm,
@@ -274,32 +288,6 @@ function AttributeMng(props) {
   function onDeleteRow() {
     grid.current.api.deleteRow(true);
   }
-
-  // function setAttritubeGrpList(attributeGrpList) {
-  //   var rowDataMap = attributeGrpList.reduce(function(map, node) {
-  //     map[node.cd] = node;
-  //     map[node.cd].children = [];
-  //     return map;
-  //   }, {});
-
-  //   var tree = [];
-  //   attributeGrpList.forEach(function(node) {
-  //     console.log ("node => ", node);
-  //     if (node.grpCd && node.cd !== "ROOT") {
-  //       var parent = rowDataMap[node.grpCd];
-  //       if (parent) {
-  //         parent.children.push(node);
-  //       }
-  //       else {
-  //         tree.push(node);
-  //       }
-  //     }
-  //     else {
-  //       tree.push(node);
-  //     }
-  //   });
-  //   setRowData(tree);
-  // }
 
   async function getAttributeList(selectedAttributeId, item) {
     try {
@@ -315,7 +303,6 @@ function AttributeMng(props) {
 
       if (res.data.code === "00") {
         grid.current.api.setGridOption("rowData", structuredClone(res.data.data.result));
-        console.log("res_result => ", res.data.data.result);
         setCount(grid.current.api.getDisplayedRowCount());
       }
     }
@@ -326,9 +313,11 @@ function AttributeMng(props) {
   }
 
   function nodeTitleFunc(item) {
-    // string 이나 function 이나 둘 중 하나만 사용 가능
-    // return "make";
     return (item) => item["cd"] === "ROOT" ? item["cd"] : item["cdNm"] + " (" + item["cd"] + ")";
+  }
+
+  function onGridReady() {
+    onSearch();
   }
   
   return (
@@ -356,8 +345,15 @@ function AttributeMng(props) {
             parentKeyField={"parentCd"}
             nodeTitleField={nodeTitleFunc}
             onSelect={(selectedRow, e) => {
-              getAttributeList(selectedRow, e);
-              setTreeNode(e.node);
+              if (e.selectedNodes.length > 0) {
+                setSectionNode({selectedRow: selectedRow, e: e});
+                getAttributeList(selectedRow, e);
+                setTreeNode(e.node);
+              }
+              else {
+                getAttributeList(selectionNode.selectedRow, selectionNode.e);
+                setTreeNode(selectionNode.e.node);
+              }
             }}
             defaultExpandedKeys={['ROOT']}
           />
@@ -367,6 +363,7 @@ function AttributeMng(props) {
             columnDefs={colDefs}
             showStatusColumn={true}
             showCheckedColumn={true}
+            onGridReady={onGridReady}
           />
         </SplitterLayout>
       </div>
