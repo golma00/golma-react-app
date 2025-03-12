@@ -231,8 +231,8 @@ function MenuMng(props) {
                   <P2Checkbox id="useYn" name="useYn" className="text-sm self-center w-full" />
                 </div>
                 <div className="flex flex-row gap-2 w-2/3">
-                  <label htmlFor='menualUrl' className="w-28 self-center text-right">매뉴얼URL</label>
-                  <P2Input id="menualUrl" name="menualUrl" className="text-sm bg-white border border-gray-200 rounded-md" />
+                  <label htmlFor='manualUrl' className="w-28 self-center text-right">매뉴얼URL</label>
+                  <P2Input id="manualUrl" name="manualUrl" className="text-sm bg-white border border-gray-200 rounded-md" />
                 </div>
               </div>
               <Divider orientation="left" className="text-xs">공통 버튼</Divider>
