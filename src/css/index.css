@@ -7,6 +7,14 @@
     @apply text-sm bg-gray-100 border border-gray-200 rounded-md px-3 py-1 
     text-ellipsis whitespace-nowrap hover:bg-orange-100 !important;
   }
+  .bug-btn {
+    @apply text-sm bg-gray-100 border border-gray-200 rounded-md px-2 py-1 
+    text-ellipsis whitespace-nowrap hover:bg-orange-100 !important;
+  }
+  .manual-btn {
+    @apply text-sm bg-gray-100 border border-gray-200 rounded-md px-[10px] py-1 
+    text-ellipsis whitespace-nowrap hover:bg-orange-100 !important;
+  }
 
   .grid-btn {
     @apply text-sm bg-gray-100 border border-gray-200 rounded-md px-3 py-1 
@@ -67,6 +75,27 @@ body {
 
 .P2Select__menu {
   z-index: 10 !important;
+}
+
+.ant-menu-horizontal {
+  @apply bg-primary-900 border-b-2 border-primary-900 !important;
+}
+.ant-menu-horizontal > .ant-menu-item, .ant-menu-horizontal > .ant-menu-submenu {
+  @apply text-white font-bold !important;
+}
+
+.ant-menu-horizontal > .ant-menu-item:hover, 
+.ant-menu-horizontal > .ant-menu-submenu:hover, 
+.ant-menu-horizontal > .ant-menu-item-active, 
+.ant-menu-horizontal > .ant-menu-submenu-active, 
+.ant-menu-horizontal > .ant-menu-item-open, 
+.ant-menu-horizontal > .ant-menu-submenu-open, 
+.ant-menu-horizontal > .ant-menu-item-selected, 
+.ant-menu-horizontal > .ant-menu-submenu-selected {
+  @apply text-white border-b-2 border-primary-600 !important;
+}
+.ant-menu-submenu-title:hover {
+  @apply text-white !important;
 }
 
 .ant-tabs {
