@@ -30,7 +30,7 @@ function TreeFormPage(props) {
   }
 
   async function onSave() {
-    const rowData = tree.current.api.getModifiedRowData();
+    const rowData = tree.current.api.getModifiedRows();
     console.log(rowData);
   }
 
