@@ -18,6 +18,8 @@ import { statusField, insertStatus, updateStatus, deleteStatus } from "component
 function P2FormArea(props, ref) {
 
   const [formData, setFormData] = useState({});
+  const [formHide, setFormHide] = useState({});
+  const [formDisabled, setFormDisabled] = useState({});
   const [childrenMap, setChildrenMap] = useState({});
 
   useEffect(() => {
@@ -36,6 +38,7 @@ function P2FormArea(props, ref) {
         if (childrenMap.hasOwnProperty(key)) {
           setFormData(prev => ({ ...prev, [key]: props.treeNode.props.dataRef[key] }));
         }
+
       });
     }
   }, [props.treeNode, childrenMap]);
@@ -51,11 +54,49 @@ function P2FormArea(props, ref) {
           [name]: value,
         })); 
       },
+      hide(name, hide) {
+        setFormHide((prev) => ({
+          ...prev,
+          [name]: hide,
+        }));
+      },
+      allHide(hide) {
+        Object.keys(formData).forEach((key) => {
+          setFormHide((prev) => ({
+            ...prev,
+            [key]: hide,
+          }));
+        });
+      },
+      disabled(name, disabled) {
+        setFormDisabled((prev) => ({
+          ...prev,
+          [name]: disabled,
+        }));
+      },
+      allDisabled(disabled) {
+        Object.keys(formData).forEach((key) => {
+          setFormDisabled((prev) => ({
+            ...prev,
+            [key]: disabled,
+          }));
+        });
+      },
+      clear() {
+        Object.keys(formData).forEach((key) => {
+          setFormData((prev) => ({
+            ...prev,
+            [key]: undefined,
+          }));
+        });
+      },
     }
   }));
 
   useEffect(() => {
     let initData = {};
+    let initHide = {};
+    let initDisabled = {};
     function recursiveSearch(children) {
       if (children) {
         children.forEach((child) => {
@@ -73,24 +114,32 @@ function P2FormArea(props, ref) {
               case "time":
                 if (child.props.name) {
                   initData[child.props.name] = child.props.value || "";
+                  initHide[child.props.name] = child.props.hide || false;
+                  initDisabled[child.props.name] = child.props.disabled || false;
                   setChildrenMap(prev => ({ ...prev, [child.props.name]: child }));
                 }
                 break;
               case "number":
                 if (child.props.name) {
                   initData[child.props.name] = child.props.value || 0;
+                  initHide[child.props.name] = child.props.hide || false;
+                  initDisabled[child.props.name] = child.props.disabled || false;
                   setChildrenMap(prev => ({ ...prev, [child.props.name]: child }));
                 }
                 break;
               case "checkbox":
                 if (child.props.name) {
                   initData[child.props.name] = child.props.checked || false;
+                  initHide[child.props.name] = child.props.hide || false;
+                  initDisabled[child.props.name] = child.props.disabled || false;
                   setChildrenMap(prev => ({ ...prev, [child.props.name]: child }));
                 }
                 break;
               case "radio":
                 if (child.props.name) {
                   initData[child.props.name] = child.props.value || "";
+                  initHide[child.props.name] = child.props.hide || false;
+                  initDisabled[child.props.name] = child.props.disabled || false;
                   setChildrenMap(prev => ({ ...prev, [child.props.name]: child }));
                 }
                 break;
@@ -101,12 +150,16 @@ function P2FormArea(props, ref) {
           else if (child.type === "textarea" || child.type === P2InputTextArea) {
             if (child.props.name) {
               initData[child.props.name] = child.props.value || "";
+              initHide[child.props.name] = child.props.hide || false;
+              initDisabled[child.props.name] = child.props.disabled || false;
               setChildrenMap(prev => ({ ...prev, [child.props.name]: child }));
             }
           }
           else if (child.type === P2Select) {
             if (child.props.name) {
               initData[child.props.name] = child.props.value || "";
+              initHide[child.props.name] = child.props.hide || false;
+              initDisabled[child.props.name] = child.props.disabled || false;
               setChildrenMap(prev => ({ ...prev, [child.props.name]: child }));
             }
           }
@@ -118,18 +171,24 @@ function P2FormArea(props, ref) {
             || child.type === P2RadioGroup
           ) {
             initData[child.props.name] = child.props.value || "";
+            initHide[child.props.name] = child.props.hide || false;
+            initDisabled[child.props.name] = child.props.disabled || false;
             setChildrenMap(prev => ({ ...prev, [child.props.name]: child }));
           }
           else if (child.type === P2InputNumber) {
             initData[child.props.name] = child.props.value || 0;
+            initHide[child.props.name] = child.props.hide || false;
+            initDisabled[child.props.name] = child.props.disabled || false;
             setChildrenMap(prev => ({ ...prev, [child.props.name]: child }));
           }
           else if (child.type === P2Checkbox || child.type === P2Switch) {
             initData[child.props.name] = child.props.checked ? "Y" : "N";
+            initHide[child.props.name] = child.props.hide || false;
+            initDisabled[child.props.name] = child.props.disabled || false;
             setChildrenMap(prev => ({ ...prev, [child.props.name]: child }));
           }
 
-          if (child.props.children && child.props.children instanceof Array && child.props.children.length > 0) {
+          if (child.props.children && child.props.children instanceof Array) {
             recursiveSearch(child.props.children);
           }
           else if (child.type === "div" && child.props.children instanceof Object) {
@@ -146,8 +205,7 @@ function P2FormArea(props, ref) {
   }, [])
 
   function recursiveRender(child, index) {
-    if (child.props.children && child.props.children instanceof Array && child.props.children.length > 0) {
-
+    if (child.props.children && (child.props.children instanceof Object || child.props.children instanceof Array)) {
       const children = [...Children.map(child.props.children, (child, index) => {
         return recursiveRender(child, index);
       })];
@@ -179,6 +237,8 @@ function P2FormArea(props, ref) {
             <React.Fragment key={index}>
               {React.cloneElement(child, {
                 value: formData[child.props.name] || "",
+                hide: formHide[child.props.name] || false,
+                disabled: formDisabled[child.props.name] || false,
                 onChange: (e) => {
                   if (child.props.onChange) {
                     child.props.onChange(e);
@@ -219,6 +279,8 @@ function P2FormArea(props, ref) {
               <React.Fragment key={index}>
                 {React.cloneElement(child, {
                   value: formData[child.props.name] || 0,
+                  hide: formHide[child.props.name] || false,
+                  disabled: formDisabled[child.props.name] || false,
                   onChange: (e) => {
                     if (child.props.onChange) {
                       child.props.onChange(e);
@@ -283,6 +345,8 @@ function P2FormArea(props, ref) {
             <React.Fragment key={index}>
               {React.cloneElement(child, {
                 value: formData[child.props.name] || "",
+                hide: formHide[child.props.name] || false,
+                disabled: formDisabled[child.props.name] || false,
                 onChange: (e) => {
                   if (child.props.onChange) {
                     child.props.onChange(e);
@@ -311,6 +375,8 @@ function P2FormArea(props, ref) {
         <React.Fragment key={index}>
           {React.cloneElement(child, {
             value: formData[child.props.name] || "",
+            hide: formHide[child.props.name] || false,
+            disabled: formDisabled[child.props.name] || false,
             onChange: (e) => {
               if (child.props.onChange) {
                 child.props.onChange(e);
@@ -336,6 +402,8 @@ function P2FormArea(props, ref) {
         <React.Fragment key={index}>
           {React.cloneElement(child, {
             optionValue: formData[child.props.name] || "",
+            hide: formHide[child.props.name] || false,
+            disabled: formDisabled[child.props.name] || false,
             onChange: (e) => {
               if (child.props.onChange) {
                 child.props.onChange(e);
@@ -361,6 +429,8 @@ function P2FormArea(props, ref) {
         <React.Fragment key={index}>
           {React.cloneElement(child, {
             value: formData[child.props.name] || "",
+            hide: formHide[child.props.name] || false,
+            disabled: formDisabled[child.props.name] || false,
             onChange: (e) => {
               if (child.props.onChange) {
                 child.props.onChange(e);
@@ -387,6 +457,8 @@ function P2FormArea(props, ref) {
         <React.Fragment key={index}>
           {React.cloneElement(child, {
             value: formData[child.props.name] || "",
+            hide: formHide[child.props.name] || false,
+            disabled: formDisabled[child.props.name] || false,
             onChange: (e, formatString) => {
               if (child.props.onChange) {
                 child.props.onChange(e, formatString);
@@ -412,6 +484,8 @@ function P2FormArea(props, ref) {
         <React.Fragment key={index}>
           {React.cloneElement(child, {
             value: formData[child.props.name] || [null, null],
+            hide: formHide[child.props.name] || false,
+            disabled: formDisabled[child.props.name] || false,
             onChange: (e, formatStrings) => {
               if (child.props.onChange) {
                 child.props.onChange(e, formatStrings);
@@ -437,6 +511,8 @@ function P2FormArea(props, ref) {
         <React.Fragment key={index}>
           {React.cloneElement(child, {
             value: formData[child.props.name] || 0,
+            hide: formHide[child.props.name] || false,
+            disabled: formDisabled[child.props.name] || false,
             onChange: (value) => {
               if (child.props.onChange) {
                 child.props.onChange(value);
@@ -461,7 +537,9 @@ function P2FormArea(props, ref) {
       return (
         <React.Fragment key={index}>
           {React.cloneElement(child, {
-            checked: formData[child.props.name] === "Y" || false,
+            value: formData[child.props.name] === "Y" || false,
+            hide: formHide[child.props.name] || false,
+            disabled: formDisabled[child.props.name] || false,
             onChange: (checked) => {
               if (child.props.onChange) {
                 child.props.onChange(checked);
@@ -487,6 +565,8 @@ function P2FormArea(props, ref) {
         <React.Fragment key={index}>
           {React.cloneElement(child, {
             value: formData[child.props.name] || "",
+            hide: formHide[child.props.name] || false,
+            disabled: formDisabled[child.props.name] || false,
             onChange: (e) => {
               if (child.props.onChange) {
                 child.props.onChange(e);
@@ -508,7 +588,7 @@ function P2FormArea(props, ref) {
       );
     }
     else {
-      return <React.Fragment key={index}>{child.props.children}</React.Fragment>;
+      return <React.Fragment key={index}>{child}</React.Fragment>;
     }
   }
 
