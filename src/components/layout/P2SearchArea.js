@@ -32,6 +32,14 @@ function P2SearchArea(props, ref) {
           [name]: value,
         })); 
       },
+      clear() {
+        Object.keys(searchData).forEach((key) => {
+          setSearchData((prev) => ({
+            ...prev,
+            [key]: undefined,
+          }));
+        });
+      }
     }
   }));
 
@@ -101,7 +109,7 @@ function P2SearchArea(props, ref) {
             initData[child.props.name] = child.props.checked || false;
           }
 
-          if (child.props.children && child.props.children instanceof Array && child.props.children.length > 0) {
+          if (child.props.children && child.props.children instanceof Array) {
             recursiveSearch(child.props.children);
           }
           else if (child.type === "div" && child.props.children instanceof Object) {
@@ -127,7 +135,7 @@ function P2SearchArea(props, ref) {
   }, [changeAfterSearch]);
 
   function recursiveRender(child, index) {
-    if (child.props.children && child.props.children instanceof Array && child.props.children.length > 0) {
+    if (child.props.children && (child.props.children instanceof Object || child.props.children instanceof Array)) {
 
       const children = [...Children.map(child.props.children, (child, index) => {
         return recursiveRender(child, index);
