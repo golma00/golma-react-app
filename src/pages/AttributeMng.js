@@ -281,7 +281,7 @@ function AttributeMng(props) {
       grpCd: selectedRow.cd,
       grpNm: selectedRow.cdNm,
       useYn: "Y",
-      cdType: selectedRow.level == "1" ? "G" : "C",
+      cdType: selectedRow.cd == "ROOT" ? "G" : "C",
     });
   }
 
@@ -324,8 +324,8 @@ function AttributeMng(props) {
     <P2Page menuProps={props.menuProps} onSearch={onSearch} onSave={onSave} loading={loading}>
       <P2SearchArea onSearch={onSearch} ref={searchArea}>
         <div className="flex flex-row gap-1">
-          <label className="text-xl" htmlFor='authGrpId'>권한그룹ID</label>
-          <P2Input type="combo" id="authGrpId" name="authGrpId" className="text-sm bg-white border border-gray-200 rounded-md"/>
+          <label className="text-xl" htmlFor='attribGrpId'>속성그룹ID</label>
+          <P2Input type="combo" id="attribGrpId" name="attribGrpId" className="text-sm bg-white border border-gray-200 rounded-md"/>
         </div>
       </P2SearchArea>
       <P2GridButtonBar title="속성관리" onAddRow={onAddRow} onDeleteRow={onDeleteRow} count={count}>
@@ -338,7 +338,6 @@ function AttributeMng(props) {
       </P2GridButtonBar>
       <div className="w-full h-[500px]">
         <SplitterLayout split="vertical" percentage={true} primaryMinSize={20} secondaryMinSize={20} secondaryInitialSize={75} customClassName='border border-solid '>
-          {/* <SearchTree rowData={rowData} change={getAttributeList}/> */}
           <P2Tree ref={tree} 
             rowData={rowData}
             nodeKeyField={"cd"}
