@@ -13,18 +13,6 @@ function App() {
   ]);
 
   const [pagePaths, setPagePaths] = useState({
-<<<<<<< Updated upstream
-    "pages/CommonPage": <pages.CommonPage />,
-    "pages/OneGridPage": <pages.OneGridPage />,
-    "pages/TwoGridPage": <pages.TwoGridPage />,
-    "pages/ThreeGridPage": <pages.ThreeGridPage />,
-    "pages/FourGridPage": <pages.FourGridPage />,
-    "pages/GridFormPage": <pages.GridFormPage />,
-    "pages/TreeFormPage": <pages.TreeFormPage />,
-    "pages/TreePage": <pages.TreePage />,
-    "pages/AttributeMng": <pages.AttributeMng />,
-    "pages/admin/MenuMng": <pages.MenuMng />,
-=======
     "pages/CommonPage": <P2PageWrapper><pages.CommonPage /></P2PageWrapper>,
     "pages/OneGridPage": <P2PageWrapper><pages.OneGridPage /></P2PageWrapper>,
     "pages/TwoGridPage": <P2PageWrapper><pages.TwoGridPage /></P2PageWrapper>,
@@ -35,7 +23,6 @@ function App() {
     "pages/FiveGridPage": <P2PageWrapper><pages.FiveGridPage /></P2PageWrapper>,
     "pages/TreePage": <P2PageWrapper><pages.TreePage /></P2PageWrapper>,
     "pages/AttributeMng": <P2PageWrapper><pages.AttributeMng /></P2PageWrapper>,
->>>>>>> Stashed changes
   });
 
   const [menuList, setMenuList] = useState([]);
@@ -60,7 +47,7 @@ function App() {
               keyByMenu[row.menuId] = menu;
               menus.push(menu);
             }
-          });
+          }); 
           setMenuList(menus);
         }
         else {
@@ -121,12 +108,6 @@ function App() {
             </Menu>
           </div>
         </div>
-<<<<<<< Updated upstream
-        <div className='flex flex-row p-2'>
-          <Tabs hideAdd activeKey={currentTab} onChange={onTabChange} onEdit={onTabEdit} type="editable-card">
-            {tabs}
-          </Tabs>
-=======
         <div className='flex flex-row self-center'>
           <Menu onClick={onMenuClick} mode="horizontal">
             <Menu.Item key="pages/CommonPage" path="pages/CommonPage" title="Home">Home</Menu.Item>
@@ -142,7 +123,6 @@ function App() {
               <Menu.Item key="pages/AttributeMng" path="pages/AttributeMng" title="AttributeMng">AttributeMng</Menu.Item>
             </Menu.SubMenu>
           </Menu>
->>>>>>> Stashed changes
         </div>
       </div>
     </BrowserRouter>
