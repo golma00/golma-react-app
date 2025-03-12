@@ -105,7 +105,7 @@ function P2AgGrid(props, ref) {
     };
 
     columnDefs.forEach((c) => {
-      if (c.headerName.includes("\r\n")) {
+      if (c.headerName.includes("\n")) {
         setDefaultHeaderHeight(undefined);
       }
       c.headerClass = "justify-center";
