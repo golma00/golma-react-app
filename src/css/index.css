@@ -14,7 +14,7 @@
   }
 
   .p2-search-area {
-    @apply border border-area-border-color rounded-md px-4 py-2 bg-area-bg-color flex flex-row gap-x-5 gap-y-2 flex-wrap !important;
+    @apply border border-area-border-color rounded-md px-4 py-2 bg-area-bg-color flex flex-row gap-x-5 gap-y-2 flex-wrap min-h-10 !important;
   }
 
   .p2-search-area > div > label, .p2-search-area > label {
@@ -26,7 +26,7 @@
   }
 
   .p2-form-area {
-    @apply border border-area-border-color rounded-md p-4 bg-area-bg-color flex flex-col gap-x-5 gap-y-2 justify-start !important;
+    @apply border border-area-border-color rounded-md p-4 bg-area-bg-color flex flex-col gap-x-5 gap-y-2 justify-start box-content !important;
   }
 
   .p2-form-area > div > label, .p2-form-area > label {
@@ -71,6 +71,15 @@ body {
 
 .ant-tabs {
   @apply w-full h-full !important;
+}
+.ant-tabs-nav-container {
+  @apply h-8 !important;
+}
+.ant-tabs-bar {
+  @apply mb-1 !important;
+}
+.ant-tabs-tab {
+  @apply h-8 leading-8 !important;
 }
 .ant-spin-nested-loading {
   @apply w-full h-full !important;
