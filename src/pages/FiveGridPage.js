@@ -11,7 +11,7 @@ function FiveGridPage(props) {
   const [loading, setLoading] = useState(false);
 
   const colDefs = [
-    { field: "empNo",    headerName: "사원번호",   width: 150, align: "center" , required: true},
+    { field: "empNo",    headerName: "사원번호",   width: 150, editable: true  , align: "center" , required: true},
     { field: "empName",  headerName: "사원명",     width: 150, editable: true  , required: true },
     { field: "empHpno",  headerName: "휴대폰번호", width: 150, editable: true } ,
     { field: "empEmail", headerName: "e메일주소",  width: 150, editable: true}  ,
@@ -27,7 +27,7 @@ function FiveGridPage(props) {
 
       const res = await axios.get(`/api/v1/userLang/emp/${iempNo}`);
       
-      console.log("res==>" + JSON.stringify(res));
+      console.log("res==>" + JSON.stringify(res,null,2));
 
       setLoading(false);
       if (res.data.code === "00") {
