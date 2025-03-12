@@ -75,7 +75,7 @@ function App() {
     const index = tabs.findIndex(tab => tab.key === key);
     if (index > -1) {
       if (tabs.length > 1) {
-        setCurrentTab(tabs[index - 1].key);
+        setCurrentTab(tabs[(index === 0 ? 1 : index - 1)].key);
       }
       setTabs([...tabs.filter(tab => tab.key !== key)]);
     }
@@ -98,9 +98,9 @@ function App() {
   return (
     <BrowserRouter>
       <div className='w-full h-full p-0'>
-        <div className='flex flex-row justify-between items-center px-2 border-b border-gray-200'>
+        <div className='h-16 flex flex-row justify-between items-center px-4 bg-primary-900'>
           <div className='flex flex-row self-center'>
-            <div className='text-lg font-bold'>Equipment Life Cycle Management</div>
+            <div className='text-2xl font-bold text-white'>Equipment Life Cycle Management</div>
           </div>
           <div className='flex flex-row self-center'>
             <Menu onClick={onMenuClick} mode="horizontal">
