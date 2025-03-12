@@ -13,16 +13,17 @@ function App() {
   ]);
 
   const [pagePaths, setPagePaths] = useState({
-    "pages/CommonPage": <P2PageWrapper><pages.CommonPage /></P2PageWrapper>,
-    "pages/OneGridPage": <P2PageWrapper><pages.OneGridPage /></P2PageWrapper>,
-    "pages/TwoGridPage": <P2PageWrapper><pages.TwoGridPage /></P2PageWrapper>,
-    "pages/ThreeGridPage": <P2PageWrapper><pages.ThreeGridPage /></P2PageWrapper>,
-    "pages/GridFormPage": <P2PageWrapper><pages.GridFormPage /></P2PageWrapper>,
-    "pages/TreeFormPage": <P2PageWrapper><pages.TreeFormPage /></P2PageWrapper>,
-    "pages/FourGridPage": <P2PageWrapper><pages.FourGridPage /></P2PageWrapper>,
-    "pages/FiveGridPage": <P2PageWrapper><pages.FiveGridPage /></P2PageWrapper>,
-    "pages/TreePage": <P2PageWrapper><pages.TreePage /></P2PageWrapper>,
-    "pages/AttributeMng": <P2PageWrapper><pages.AttributeMng /></P2PageWrapper>,
+    "pages/CommonPage": <pages.CommonPage />,
+    "pages/OneGridPage": <pages.OneGridPage />,
+    "pages/TwoGridPage": <pages.TwoGridPage />,
+    "pages/ThreeGridPage": <pages.ThreeGridPage />,
+    "pages/FourGridPage": <pages.FourGridPage />,
+    "pages/GridFormPage": <pages.GridFormPage />,
+    "pages/TreeFormPage": <pages.TreeFormPage />,
+    "pages/TreePage": <pages.TreePage />,
+    "pages/AttributeMng": <pages.AttributeMng />,
+    "pages/admin/MenuMng": <pages.MenuMng />,
+    "pages/admin/FiveGridPage": <pages.FiveGridPage />,
   });
 
   const [menuList, setMenuList] = useState([]);
@@ -47,7 +48,7 @@ function App() {
               keyByMenu[row.menuId] = menu;
               menus.push(menu);
             }
-          }); 
+          });
           setMenuList(menus);
         }
         else {
@@ -108,21 +109,10 @@ function App() {
             </Menu>
           </div>
         </div>
-        <div className='flex flex-row self-center'>
-          <Menu onClick={onMenuClick} mode="horizontal">
-            <Menu.Item key="pages/CommonPage" path="pages/CommonPage" title="Home">Home</Menu.Item>
-            <Menu.SubMenu title={<span className="submenu-title-wrapper"><Icon type="setting" />SAMPLE</span>}>
-              <Menu.Item key="pages/OneGridPage" path="pages/OneGridPage" title="One">One</Menu.Item>
-              <Menu.Item key="pages/TwoGridPage" path="pages/TwoGridPage" title="Two">Two</Menu.Item>
-              <Menu.Item key="pages/ThreeGridPage" path="pages/ThreeGridPage" title="Three">Three</Menu.Item>
-              <Menu.Item key="pages/FourGridPage" path="pages/FourGridPage" title="Four">Four</Menu.Item>
-              <Menu.Item key="pages/FiveGridPage" path="pages/FiveGridPage" title="Five">Five</Menu.Item>
-              <Menu.Item key="pages/GridFormPage" path="pages/GridFormPage" title="GridForm">GridForm</Menu.Item>
-              <Menu.Item key="pages/TreeFormPage" path="pages/TreeFormPage" title="TreeForm">TreeForm</Menu.Item>
-              <Menu.Item key="pages/TreePage" path="pages/TreePage" title="Tree">Tree</Menu.Item>
-              <Menu.Item key="pages/AttributeMng" path="pages/AttributeMng" title="AttributeMng">AttributeMng</Menu.Item>
-            </Menu.SubMenu>
-          </Menu>
+        <div className='flex flex-row p-2'>
+          <Tabs hideAdd activeKey={currentTab} onChange={onTabChange} onEdit={onTabEdit} type="editable-card">
+            {tabs}
+          </Tabs>
         </div>
       </div>
     </BrowserRouter>
