@@ -5,12 +5,21 @@ import { Modal } from 'antd';
  * https://3x.ant.design/components/modal/
  */
 const P2MessageBox = {
-  info: (props) => {
+
+  setContent(props) {
     if (typeof props === 'string') {
       props = {
         content: props,
       };
     }
+    if (props.content && props.content.includes('\n')) {
+      props.className = 'whitespace-pre-wrap';
+    }
+    return props;
+  },
+
+  info: (props) => {
+    props = P2MessageBox.setContent(props);
 
     return Modal.info({
       ...props,
@@ -19,11 +28,7 @@ const P2MessageBox = {
   },
 
   success: (props) => { 
-    if (typeof props === 'string') {
-      props = {
-        content: props,
-      };
-    }
+    props = P2MessageBox.setContent(props);
 
     return Modal.success({
       ...props,
@@ -32,11 +37,7 @@ const P2MessageBox = {
   },
 
   error: (props) => {
-    if (typeof props === 'string') {
-      props = {
-        content: props,
-      };
-    }
+    props = P2MessageBox.setContent(props);
 
     return Modal.error({
       ...props,
@@ -45,11 +46,7 @@ const P2MessageBox = {
   },
 
   warn: (props) => {
-    if (typeof props === 'string') {
-      props = {
-        content: props,
-      };
-    }
+    props = P2MessageBox.setContent(props);
 
     return Modal.warn({
       ...props,
@@ -58,11 +55,7 @@ const P2MessageBox = {
   },
 
   confirm: (props) => {
-    if (typeof props === 'string') {
-      props = {
-        content: props,
-      };
-    }
+    props = P2MessageBox.setContent(props);
     
     return Modal.confirm({
       ...props,
