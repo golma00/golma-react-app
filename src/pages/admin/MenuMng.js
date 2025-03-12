@@ -1,0 +1,331 @@
+import React, { useState, useRef, useEffect } from 'react'
+import { P2Page, P2SearchArea, P2GridButtonBar, P2FormArea } from 'components/layout/index';
+import { P2Select, P2Input, P2Checkbox, P2Tree, P2DatePicker, P2MessageBox } from 'components/control/index';
+import { Divider } from 'antd';
+import * as Utils from 'utils/Utils';
+import SplitterLayout from 'react-splitter-layout';
+import axios from 'axios';
+
+function MenuMng(props) {
+  const searchArea = useRef(null);
+  const formArea = useRef(null);
+  const tree = useRef(null);
+
+  const [loading, setLoading] = useState(false);
+  const [treeNode, setTreeNode] = useState(null);
+  const [rowData, setRowData] = useState([]);
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    onSearch();
+  }, []);
+
+  async function onSearch() {
+    try {
+      setLoading(true);
+      tree.current.api.refresh();
+      formArea.current.api.clear();
+
+      const searchData = searchArea.current.api.get();
+      const res = await axios.post("/api/v1/menu/list", searchData);
+
+      setLoading(false);
+      if (res.data.code === "00") {
+        setRowData(res.data.data.result);
+        setCount(res.data.data.result.length);
+      }
+      else {
+        P2MessageBox.error(res.data.message || '시스템 오류가 발생했습니다.');
+      }
+    }
+    catch (error) {
+      setLoading(false);
+      P2MessageBox.error('시스템 오류가 발생했습니다.');
+      console.log(error);
+    }
+  }
+
+  async function onSave() {
+    console.log(formArea.current.api.get());
+
+    const saveDatas = await tree.current.api.getModifiedRows();
+
+    if (saveDatas.length === 0) {
+      P2MessageBox.warn('저장할 데이터가 없습니다.');
+      return;
+    }
+
+    let errorMessage = "";
+    for (let i = 0; i < saveDatas.length; i++) {
+      if (Utils.isEmpty(saveDatas[i]["menuNm"])) {
+        errorMessage += "메뉴명을 입력 하세요.\n";
+      }
+      if (Utils.isEmpty(saveDatas[i]["menuUrl"])) {
+        errorMessage += "메뉴PATH를 입력 하세요.\n";
+      }
+      if (Utils.isEmpty(saveDatas[i]["menuCd"])) {
+        errorMessage += "메뉴코드를 입력 하세요.\n";
+      }
+
+      if (Utils.isNotEmpty(errorMessage)) {
+        errorMessage = `메뉴 (${saveDatas[i]["menuId"]}) 정보를 확인 하세요.\n\n${errorMessage}`;
+        P2MessageBox.error(errorMessage);
+        return;
+      }
+    }
+
+    if (errorMessage) {
+      P2MessageBox.error(errorMessage);
+      return;
+    }
+
+    saveDatas.forEach((item) => {
+      if (Utils.isEmpty(item["menuNm"])) {
+        item["menuId"] = null;
+      }
+    });
+
+    P2MessageBox.confirm({
+      content: '저장 하시겠습니까?',
+      onOk: () => onSaveAction(saveDatas),
+      onCancel() {},
+    });
+  }
+
+  async function onSaveAction(saveDatas) {
+    setLoading(true);
+    try {
+      const res = await axios.put("/api/v1/menu/save", {
+        saveDatas: saveDatas
+      });
+
+      setLoading(false);
+      if (res.data.code === "00") {
+        P2MessageBox.success({
+          content: '저장이 완료 되었습니다.',
+          onOk: () => onSearch(),
+        });
+      }
+      else {
+        P2MessageBox.error(res.data.message || '시스템 오류가 발생했습니다.');
+      }
+    }
+    catch (error) {
+      setLoading(false);
+      P2MessageBox.error('시스템 오류가 발생했습니다.');
+      console.log(error);
+    }
+  }
+
+  function onAddTreeNode(action) {
+    const newNode = {
+      menuNm: "신규 메뉴",
+      menuCd: "",
+      menuUrl: "",
+      menuIcon: "",
+      menuDesc: "",
+      menuType: "",
+      menuIconVal: "",
+      useYn: "Y",
+      expoPeriodYn: "N",
+      expoStarDt: "",
+      expoEndDt: "",
+      saveUseYn: "Y",
+      extUseYn1: "N",
+      extUseYn2: "N",
+      extUseYn3: "N",
+      extUseYn4: "N",
+      extUseYn5: "N",
+      extUseYn6: "N",
+      extBtnNm1: "",
+      extBtnNm2: "",
+      extBtnNm3: "",
+      extBtnNm4: "",
+      extBtnNm5: "",
+      extBtnNm6: "",
+      extBtnIconVal1: "",
+      extBtnIconVal2: "",
+      extBtnIconVal3: "",
+      extBtnIconVal4: "",
+      extBtnIconVal5: "",
+      extBtnIconVal6: "",
+      menualUrl: "",
+    }
+    if (action === "after") {
+      tree.current.api.addAfterTreeNode(newNode);
+    }
+    else if (action === "child") {
+      tree.current.api.addChildTreeNode(newNode);
+    }
+  }
+
+  function onDeleteTreeNode() {
+    tree.current.api.deleteTreeNode(tree.current.api.getSelectedTreeNodeKey());
+  }
+
+  function nodeTitleFunc(item) {
+    return (item) => `${item["menuNm"]} (${item["menuId"]})`;
+  }
+
+  function onExtBtn1() {
+  }
+
+  function onTreeSelect(selectedRow, e) {
+    setTreeNode(e.node);
+    formArea.current.api.allDisabled(e.node.props.dataRef.menuId === 1);
+  }
+
+  return (
+    <P2Page menuProps={props.menuProps} onSearch={onSearch} onSave={onSave} loading={loading} onExtBtn1={onExtBtn1}>
+      <P2SearchArea onSearch={onSearch} ref={searchArea}>
+      </P2SearchArea>
+      <div className="w-full">
+        <SplitterLayout split="vertical" customClassName="w-full h-[600px]">
+          <div className="h-[600px] flex flex-col gap-1">
+            <P2GridButtonBar title="메뉴 목록" count={count}>
+              <button className="grid-btn" onClick={onAddTreeNode.bind(this, "after")}>
+                메뉴 추가
+              </button>
+              <button className="grid-btn" onClick={onAddTreeNode.bind(this, "child")}>
+                자식 추가
+              </button>
+              <button className="grid-btn" onClick={onDeleteTreeNode}>
+                메뉴 삭제
+              </button>
+            </P2GridButtonBar>
+            <P2Tree ref={tree} 
+              rowData={rowData}
+              nodeKeyField={"menuId"}
+              parentKeyField={"upperMenuId"}
+              nodeTitleField={nodeTitleFunc}
+              onSelect={onTreeSelect}
+              defaultExpandedKeys={['1']}
+            />
+          </div>
+          <div className="h-[600px] flex flex-col gap-1">
+            <P2GridButtonBar title="메뉴 상세"/>
+            <P2FormArea ref={formArea} className="p2-form-area h-[550px] overflow-y-auto" treeNode={treeNode}>
+              <div className="flex flex-row justify-stretch gap-5">
+                <div className="flex flex-row gap-2 w-1/3">
+                  <label htmlFor='menuNm' className="w-28 self-center text-right">메뉴명</label>
+                  <P2Input id="menuNm" name="menuNm" className="text-sm bg-white border border-gray-200 rounded-md" />
+                </div>
+                <div className="flex flex-row gap-2 w-2/3">
+                  <label htmlFor='menuUrl' className="w-28 self-center text-right">메뉴PATH</label>
+                  <P2Input id="menuUrl" name="menuUrl" className="text-sm bg-white border border-gray-200 rounded-md" />
+                </div>
+              </div>
+              <div className="flex flex-row justify-stretch gap-5">
+                <div className="flex flex-row gap-2 w-1/3">
+                  <label htmlFor='menuCd' className="w-28 self-center text-right">메뉴코드</label>
+                  <P2Input id="menuCd" name="menuCd" className="text-sm bg-white border border-gray-200 rounded-md" />
+                </div>
+                <div className="flex flex-row gap-2 w-2/3">
+                  <label htmlFor='menuIconVal' className="w-28 self-center text-right">메뉴ICON</label>
+                  <P2Input id="menuIconVal" name="menuIconVal" className="text-sm bg-white border border-gray-200 rounded-md" />
+                </div>
+              </div>
+              <div className="flex flex-row justify-stretch gap-5">
+                <div className="flex flex-row gap-2 w-1/3">
+                  <label htmlFor='useYn' className="w-28 self-center text-right">사용여부</label>
+                  <P2Checkbox id="useYn" name="useYn" className="text-sm self-center w-full" />
+                </div>
+                <div className="flex flex-row gap-2 w-2/3">
+                  <label htmlFor='menualUrl' className="w-28 self-center text-right">매뉴얼URL</label>
+                  <P2Input id="menualUrl" name="menualUrl" className="text-sm bg-white border border-gray-200 rounded-md" />
+                </div>
+              </div>
+              <Divider orientation="left" className="text-xs">공통 버튼</Divider>
+              <div className="flex flex-row justify-stretch gap-5">
+                <div className="flex flex-row gap-2 w-3/3">
+                  <P2Checkbox id="saveUseYn" name="saveUseYn" className="text-sm self-center text-right">저장 버튼</P2Checkbox>
+                </div>
+              </div>
+              <div className="flex flex-row justify-stretch gap-5">
+                <div className="flex flex-row gap-2 w-1/3">
+                  <P2Checkbox id="extUseYn1" name="extUseYn1" className="text-sm self-center">기타 버튼1</P2Checkbox>
+                </div>
+                <div className="flex flex-row gap-2 w-1/3">
+                  <label htmlFor='extBtnNm1' className="w-28 self-center text-right">버튼명</label>
+                  <P2Input id="extBtnNm1" name="extBtnNm1" className="text-sm self-center w-full" />
+                </div>
+                <div className="flex flex-row gap-2 w-1/3">
+                  <label htmlFor='extBtnIconVal1' className="w-28 self-center text-right">ICON</label>
+                  <P2Input id="extBtnIconVal1" name="extBtnIconVal1" className="text-sm self-center w-full" />
+                </div>
+              </div>
+              <div className="flex flex-row justify-stretch gap-5">
+                <div className="flex flex-row gap-2 w-1/3">
+                  <P2Checkbox id="extUseYn2" name="extUseYn2" className="text-sm self-center">기타 버튼2</P2Checkbox>
+                </div>
+                <div className="flex flex-row gap-2 w-1/3">
+                  <label htmlFor='extBtnNm2' className="w-28 self-center text-right">버튼명</label>
+                  <P2Input id="extBtnNm2" name="extBtnNm2" className="text-sm self-center w-full" />
+                </div>
+                <div className="flex flex-row gap-2 w-1/3">
+                  <label htmlFor='extBtnIconVal2' className="w-28 self-center text-right">ICON</label>
+                  <P2Input id="extBtnIconVal2" name="extBtnIconVal2" className="text-sm self-center w-full" />
+                </div>
+              </div>
+              <div className="flex flex-row justify-stretch gap-5">
+                <div className="flex flex-row gap-2 w-1/3">
+                  <P2Checkbox id="extUseYn3" name="extUseYn3" className="text-sm self-center">기타 버튼3</P2Checkbox>
+                </div>
+                <div className="flex flex-row gap-2 w-1/3">
+                  <label htmlFor='extBtnNm3' className="w-28 self-center text-right">버튼명</label>
+                  <P2Input id="extBtnNm3" name="extBtnNm3" className="text-sm self-center w-full" />
+                </div>
+                <div className="flex flex-row gap-2 w-1/3">
+                  <label htmlFor='extBtnIconVal3' className="w-28 self-center text-right">ICON</label>
+                  <P2Input id="extBtnIconVal3" name="extBtnIconVal3" className="text-sm self-center w-full" />
+                </div>
+              </div>
+              <div className="flex flex-row justify-stretch gap-5">
+                <div className="flex flex-row gap-2 w-1/3">
+                  <P2Checkbox id="extUseYn4" name="extUseYn4" className="text-sm self-center">기타 버튼4</P2Checkbox>
+                </div>
+                <div className="flex flex-row gap-2 w-1/3">
+                  <label htmlFor='extBtnNm4' className="w-28 self-center text-right">버튼명</label>
+                  <P2Input id="extBtnNm4" name="extBtnNm4" className="text-sm self-center w-full" />
+                </div>
+                <div className="flex flex-row gap-2 w-1/3">
+                  <label htmlFor='extBtnIconVal4' className="w-28 self-center text-right">ICON</label>
+                  <P2Input id="extBtnIconVal4" name="extBtnIconVal4" className="text-sm self-center w-full" />
+                </div>
+              </div>
+              <div className="flex flex-row justify-stretch gap-5">
+                <div className="flex flex-row gap-2 w-1/3">
+                  <P2Checkbox id="extUseYn5" name="extUseYn5" className="text-sm self-center">기타 버튼5</P2Checkbox>
+                </div>
+                <div className="flex flex-row gap-2 w-1/3">
+                  <label htmlFor='extBtnNm5' className="w-28 self-center text-right">버튼명</label>
+                  <P2Input id="extBtnNm5" name="extBtnNm5" className="text-sm self-center w-full" />
+                </div>
+                <div className="flex flex-row gap-2 w-1/3">
+                  <label htmlFor='extBtnIconVal5' className="w-28 self-center text-right">ICON</label>
+                  <P2Input id="extBtnIconVal5" name="extBtnIconVal5" className="text-sm self-center w-full" />
+                </div>
+              </div>
+              <Divider orientation="left" className="text-xs">노출 조건</Divider>
+              <div className="flex flex-row justify-stretch gap-5">
+                <div className="flex flex-row gap-2 w-1/3">
+                  <P2Checkbox id="expoPeriodYn" name="expoPeriodYn" className="text-sm self-center">노출기간 사용</P2Checkbox>
+                </div>
+                <div className="flex flex-row gap-2 w-1/3">
+                  <label htmlFor='expoStarDt' className="w-28 self-center text-right">시작일자</label>
+                  <P2DatePicker id="expoStarDt" name="expoStarDt" className="text-sm self-center w-full" />
+                </div>
+                <div className="flex flex-row gap-2 w-1/3">
+                  <label htmlFor='expoEndDt' className="w-28 self-center text-right">종료일자</label>
+                  <P2DatePicker id="expoEndDt" name="expoEndDt" className="text-sm self-center w-full" />
+                </div>
+              </div>
+            </P2FormArea>
+          </div>
+        </SplitterLayout>
+      </div>
+    </P2Page>
+  )
+}
+
+export default MenuMng;
