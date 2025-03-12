@@ -1,7 +1,18 @@
 import React from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import * as Utils from 'utils/Utils';
+import { P2MessageBox } from 'components/control/index';
 
 function P2PageButtonBar(props) {
+
+  function onManualClick() {
+    window.open(props.manualUrl, '_blank');
+  }
+
+  function onBugClick() {
+    P2MessageBox.info("버그 신고 기능은 아직 준비중입니다.");
+  }
+
   return (
     <div className="flex flex-row w-full justify-between">
       <div className="flex flex-row w-full h-8 gap-1 justify-start">
@@ -35,10 +46,13 @@ function P2PageButtonBar(props) {
         </button>
         <button className={`common-btn ${props.extUseYn5 === "Y" ? "" : "hidden"}`} onClick={props.onExtBtn5}>
           <FontAwesomeIcon icon={props.extBtnIconVal5 || "fa-check"} className="pr-1" size="sm"/>
-          <span>{props.extBtnNm5 || "기타5"}</span>
+          <span>{props.extBtnNm5 || "기타5"}</span> 
         </button>
-        <button className=" hidden">
-          <FontAwesomeIcon icon="fa-question" className="pr-1" size="sm"/>
+        <button className={"bug-btn"} onClick={onBugClick}>
+          <FontAwesomeIcon icon="fa-bug" />
+        </button>
+        <button className={`manual-btn ${Utils.isEmpty(props.manualUrl) ? "hidden" : ""}`} onClick={onManualClick}>
+          <FontAwesomeIcon icon="fa-question" />
         </button>
       </div>
     </div>

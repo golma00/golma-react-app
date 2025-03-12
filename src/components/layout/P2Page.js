@@ -44,6 +44,7 @@ function P2Page(props) {
             extBtnIconVal3={props.menuProps.extBtnIconVal3}
             extBtnIconVal4={props.menuProps.extBtnIconVal4}
             extBtnIconVal5={props.menuProps.extBtnIconVal5}
+            manualUrl={props.menuProps.manualUrl}
           />
         )}
         {props.children}
