@@ -25,14 +25,51 @@ function P2Tree(props, ref) {
 
   useImperativeHandle(ref, () => ({
     api: {
+      refresh: () => {
+        setSelectKeys([]);
+        setSelectedTreeNode(null);
+        setExpandedKeys(props.defaultExpandedKeys || []);
+        setKeyByTreeNode({});
+        setTreeData([]);
+      },
       getTreeData: () => {
         return treeData;
       },
       getRowData: () => {
         return rowData;
       },
-      getModifiedRowData: () => {
+      getModifiedRows: () => {
         return rowData.filter((item) => item[statusField] !== "");
+      },
+      addAfterTreeNode: (data) => {
+        if (selectedTreeNode) {
+          setNewNodeCount(prev => prev + 1);
+
+          const newNodeId = `new${newNodeCount}`;
+          setNewNodeKey(newNodeId);
+
+          const parentNode = keyByTreeNode[selectedTreeNode.props.dataRef[parentKeyField]];
+
+          let newNode = { 
+            [oldStatusField]: insertStatus,
+            [statusField]: insertStatus, 
+            [nodeKeyField]: newNodeId, 
+            [parentKeyField]: parentNode.key||parentNode.props.eventKey, 
+            ...data 
+          };
+
+          if (typeof nodeTitleField === "string") {
+            newNode[nodeTitleField] = `신규 ${newNodeCount}`;
+          }
+
+          setRowData([
+            ...rowData.slice(0, rowData.indexOf(selectedTreeNode.props.dataRef) + 1),
+            newNode,
+            ...rowData.slice(rowData.indexOf(selectedTreeNode.props.dataRef) + 1)
+          ]);
+
+          setExpandedKeys(prev => [...prev, selectedTreeNode.key||selectedTreeNode.props.eventKey]);
+        }
       },
       addChildTreeNode: (data) => {
         if (selectedTreeNode) {
@@ -53,10 +90,19 @@ function P2Tree(props, ref) {
             newNode[nodeTitleField] = `신규 ${newNodeCount}`;
           }
 
+          let insertIndex = 0;
+          if (selectedTreeNode.props.children && selectedTreeNode.props.children.length > 0) {
+            const lastChild = selectedTreeNode.props.children[selectedTreeNode.props.children.length - 1];
+            insertIndex = rowData.indexOf(lastChild.props.dataRef) + 1;
+          }
+          else {
+            insertIndex = rowData.indexOf(selectedTreeNode.props.dataRef) + 1
+          }
+
           setRowData([
-            ...rowData.slice(0, rowData.indexOf(selectedTreeNode.props.dataRef) + 1),
+            ...rowData.slice(0, insertIndex),
             newNode,
-            ...rowData.slice(rowData.indexOf(selectedTreeNode.props.dataRef) + 1)
+            ...rowData.slice(insertIndex)
           ]);
 
           setExpandedKeys(prev => [...prev, selectedTreeNode.key||selectedTreeNode.props.eventKey]);
@@ -131,7 +177,7 @@ function P2Tree(props, ref) {
       let treeNodes = [];
       let keyByTreeNodeMap = {};
   
-      data.forEach((item) => {
+      data.forEach((item, index) => {
         if (!item["_status"]) {
           item["_status"] = "";
           item["_oldStatus"] = "";
@@ -146,7 +192,7 @@ function P2Tree(props, ref) {
         }
 
         const node = <Tree.TreeNode 
-          key={item[nodeKeyField]} 
+          key={item[nodeKeyField]}
           title={
             item[statusField] === "I" ? <span className="text-blue-500">{title}</span> :
             item[statusField] === "U" ? <span className="text-red-500">{title}</span> :
@@ -156,6 +202,7 @@ function P2Tree(props, ref) {
           children={[]}
           dataRef={item}
           update={update}
+          disabled={item["disabled"] === "Y" || item["disabled"] === true}
         />;
   
         if (newNodeKey && item[nodeKeyField] === newNodeKey) {
@@ -169,12 +216,12 @@ function P2Tree(props, ref) {
           const parentNode = keyByTreeNodeMap[item[parentKeyField]];
           parentNode.props.children.push(node);
           keyByTreeNodeMap[item[nodeKeyField]] = node;
-          item[nodeSeqField] = parentNode.props.children.length - 1;
+          item[nodeSeqField] = parentNode.props.children.length;
         }
         else {
           treeNodes.push(node);
           keyByTreeNodeMap[item[nodeKeyField]] = node;
-          item[nodeSeqField] = 0;
+          item[nodeSeqField] = 1;
         }
       });
   
