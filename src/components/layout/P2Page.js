@@ -20,7 +20,6 @@ function P2Page(props) {
         {showButtonBar && (
           <P2PageButtonBar 
             menuNm={props.menuProps.menuNm} 
-            saveUseYn={props.menuProps.auth.saveUseYn}
             onSearch={props.onSearch}
             onSave={props.onSave}
             onExtBtn1={props.onExtBtn1}
@@ -28,25 +27,23 @@ function P2Page(props) {
             onExtBtn3={props.onExtBtn3}
             onExtBtn4={props.onExtBtn4}
             onExtBtn5={props.onExtBtn5}
-            onExtBtn6={props.onExtBtn6}
-            extBtnNm1={props.menuProps.auth.extBtnNm1}
-            extBtnNm2={props.menuProps.auth.extBtnNm2}
-            extBtnNm3={props.menuProps.auth.extBtnNm3}
-            extBtnNm4={props.menuProps.auth.extBtnNm4}
-            extBtnNm5={props.menuProps.auth.extBtnNm5}
-            extBtnNm6={props.menuProps.auth.extBtnNm6}
-            extUseYn1={props.menuProps.auth.extUseYn1}
-            extUseYn2={props.menuProps.auth.extUseYn2}
-            extUseYn3={props.menuProps.auth.extUseYn3}
-            extUseYn4={props.menuProps.auth.extUseYn4}
-            extUseYn5={props.menuProps.auth.extUseYn5}
-            extUseYn6={props.menuProps.auth.extUseYn6}
-            extBtnIconVal1={props.menuProps.auth.extBtnIconVal1}
-            extBtnIconVal2={props.menuProps.auth.extBtnIconVal2}
-            extBtnIconVal3={props.menuProps.auth.extBtnIconVal3}
-            extBtnIconVal4={props.menuProps.auth.extBtnIconVal4}
-            extBtnIconVal5={props.menuProps.auth.extBtnIconVal5}
-            extBtnIconVal6={props.menuProps.auth.extBtnIconVal6}
+            saveUseYn={props.menuProps.saveUseYn}
+            extUseYn1={props.menuProps.extUseYn1}
+            extUseYn2={props.menuProps.extUseYn2}
+            extUseYn3={props.menuProps.extUseYn3}
+            extUseYn4={props.menuProps.extUseYn4}
+            extUseYn5={props.menuProps.extUseYn5}
+            extBtnNm1={props.menuProps.extBtnNm1}
+            extBtnNm2={props.menuProps.extBtnNm2}
+            extBtnNm3={props.menuProps.extBtnNm3}
+            extBtnNm4={props.menuProps.extBtnNm4}
+            extBtnNm5={props.menuProps.extBtnNm5}
+            extBtnNm6={props.menuProps.extBtnNm6}
+            extBtnIconVal1={props.menuProps.extBtnIconVal1}
+            extBtnIconVal2={props.menuProps.extBtnIconVal2}
+            extBtnIconVal3={props.menuProps.extBtnIconVal3}
+            extBtnIconVal4={props.menuProps.extBtnIconVal4}
+            extBtnIconVal5={props.menuProps.extBtnIconVal5}
           />
         )}
         {props.children}

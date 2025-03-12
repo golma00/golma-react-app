@@ -7,3 +7,5 @@ export { default as TreeFormPage } from "pages/TreeFormPage";
 export { default as TreePage } from "pages/TreePage";
 export { default as AttributeMng } from "pages/AttributeMng";
 export { default as FourGridPage } from "pages/FourGridPage";
+
+export { default as MenuMng } from "pages/admin/MenuMng";

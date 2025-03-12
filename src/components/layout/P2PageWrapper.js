@@ -1,22 +1,30 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios';
+import { P2MessageBox } from 'components/control/index';
 
 function P2PageWrapper(props) {
   const [success, setSuccess] = useState(false);
   const [menuProps, setMenuProps] = useState({});
 
   useEffect(() => {
-    setMenuProps({
-      menuNm: "테스트",
-      auth: {
-        saveUseYn: "Y",
-        extUseYn1: "Y",
-        extBtnNm1: "기타1",
-        extUseYn2: "Y",
-        extBtnNm2: "기타2",
+    async function getMenuAuth() {
+      try {
+        const res = await axios.post('/api/v1/auth/menuAuth', { menuId: props.menuId });
+        if (res.data.code === "00") {
+          setMenuProps(res.data.data.result);
+          setSuccess(true);
+        }
+        else {
+          P2MessageBox.error(res.data.message || '시스템 오류가 발생했습니다.');
+          setSuccess(false);
+        }
       }
-    });
-    setSuccess(true);
+      catch (e) {
+        P2MessageBox.error(e.message || '시스템 오류가 발생했습니다.');
+        setSuccess(false);
+      }
+    }
+    getMenuAuth();
   }, []);
 
   function loadMenu() {
