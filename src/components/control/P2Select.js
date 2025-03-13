@@ -106,12 +106,15 @@ function P2Select(props, ref) {
           break;
       }
     }
-    if (datas.length > 0) {
+    if (datas && datas.length > 0) {
       optionArray.push(...datas.map((item) => ({
         value: item[valueField || "cd"],
         label: item[labelField || "cdNm"],
       })));
       setOptions(optionArray);
+    }
+    else {
+      setOptions([]);
     }
   }, [datas, defaultOption, valueField, labelField]);
 

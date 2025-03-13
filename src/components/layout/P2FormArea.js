@@ -163,10 +163,10 @@ function P2FormArea(props, ref) {
               setChildrenMap(prev => ({ ...prev, [child.props.name]: child }));
             }
           }
-          else if (child.type === P2Input 
-            || child.type === P2InputPassword 
-            || child.type === P2DatePicker 
-            || child.type === P2MonthPicker 
+          else if (child.type === P2Input
+            || child.type === P2InputPassword
+            || child.type === P2DatePicker
+            || child.type === P2MonthPicker
             || child.type === P2TimePicker
             || child.type === P2RadioGroup
           ) {
@@ -182,7 +182,7 @@ function P2FormArea(props, ref) {
             setChildrenMap(prev => ({ ...prev, [child.props.name]: child }));
           }
           else if (child.type === P2Checkbox || child.type === P2Switch) {
-            initData[child.props.name] = child.props.checked ? "Y" : "N";
+            initData[child.props.name] = child.props.checked;
             initHide[child.props.name] = child.props.hide || false;
             initDisabled[child.props.name] = child.props.disabled || false;
             setChildrenMap(prev => ({ ...prev, [child.props.name]: child }));
@@ -537,14 +537,14 @@ function P2FormArea(props, ref) {
       return (
         <React.Fragment key={index}>
           {React.cloneElement(child, {
-            value: formData[child.props.name] === "Y" || false,
+            value: formData[child.props.name] || child.props.falseValue,
             hide: formHide[child.props.name] || false,
             disabled: formDisabled[child.props.name] || false,
             onChange: (checked) => {
               if (child.props.onChange) {
                 child.props.onChange(checked);
               }
-              const targetValue = checked ? "Y" : "N";
+              const targetValue = checked ? child.props.trueValue : child.props.falseValue;
               setFormData((prev) => ({
                 ...prev,
                 [child.props.name]: targetValue,
