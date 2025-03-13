@@ -167,16 +167,13 @@ function MenuMng(props) {
     return (item) => `${item["menuNm"]} (${item["menuId"]})`;
   }
 
-  function onExtBtn1() {
-  }
-
   function onTreeSelect(selectedRow, e) {
     setTreeNode(e.node);
     formArea.current.api.allDisabled(e.node.props.dataRef.menuId === 1);
   }
 
   return (
-    <P2Page menuProps={props.menuProps} onSearch={onSearch} onSave={onSave} loading={loading} onExtBtn1={onExtBtn1}>
+    <P2Page menuProps={props.menuProps} onSearch={onSearch} onSave={onSave} loading={loading}>
       <P2SearchArea onSearch={onSearch} ref={searchArea}>
       </P2SearchArea>
       <div className="w-full">
@@ -228,7 +225,7 @@ function MenuMng(props) {
               <div className="flex flex-row justify-stretch gap-5">
                 <div className="flex flex-row gap-2 w-1/3">
                   <label htmlFor='useYn' className="w-28 self-center text-right">사용여부</label>
-                  <P2Checkbox id="useYn" name="useYn" className="text-sm self-center w-full" />
+                  <P2Checkbox id="useYn" name="useYn" className="text-sm self-center w-full" trueValue="Y" falseValue="N" />
                 </div>
                 <div className="flex flex-row gap-2 w-2/3">
                   <label htmlFor='manualUrl' className="w-28 self-center text-right">매뉴얼URL</label>
@@ -238,12 +235,12 @@ function MenuMng(props) {
               <Divider orientation="left" className="text-xs">공통 버튼</Divider>
               <div className="flex flex-row justify-stretch gap-5">
                 <div className="flex flex-row gap-2 w-3/3">
-                  <P2Checkbox id="saveUseYn" name="saveUseYn" className="text-sm self-center text-right">저장 버튼</P2Checkbox>
+                  <P2Checkbox id="saveUseYn" name="saveUseYn" className="text-sm self-center text-right" trueValue="Y" falseValue="N">저장 버튼</P2Checkbox>
                 </div>
               </div>
               <div className="flex flex-row justify-stretch gap-5">
                 <div className="flex flex-row gap-2 w-1/3">
-                  <P2Checkbox id="extUseYn1" name="extUseYn1" className="text-sm self-center">기타 버튼1</P2Checkbox>
+                  <P2Checkbox id="extUseYn1" name="extUseYn1" className="text-sm self-center" trueValue="Y" falseValue="N">기타 버튼1</P2Checkbox>
                 </div>
                 <div className="flex flex-row gap-2 w-1/3">
                   <label htmlFor='extBtnNm1' className="w-28 self-center text-right">버튼명</label>
@@ -256,7 +253,7 @@ function MenuMng(props) {
               </div>
               <div className="flex flex-row justify-stretch gap-5">
                 <div className="flex flex-row gap-2 w-1/3">
-                  <P2Checkbox id="extUseYn2" name="extUseYn2" className="text-sm self-center">기타 버튼2</P2Checkbox>
+                  <P2Checkbox id="extUseYn2" name="extUseYn2" className="text-sm self-center" trueValue="Y" falseValue="N">기타 버튼2</P2Checkbox>
                 </div>
                 <div className="flex flex-row gap-2 w-1/3">
                   <label htmlFor='extBtnNm2' className="w-28 self-center text-right">버튼명</label>
@@ -269,7 +266,7 @@ function MenuMng(props) {
               </div>
               <div className="flex flex-row justify-stretch gap-5">
                 <div className="flex flex-row gap-2 w-1/3">
-                  <P2Checkbox id="extUseYn3" name="extUseYn3" className="text-sm self-center">기타 버튼3</P2Checkbox>
+                  <P2Checkbox id="extUseYn3" name="extUseYn3" className="text-sm self-center" trueValue="Y" falseValue="N">기타 버튼3</P2Checkbox>
                 </div>
                 <div className="flex flex-row gap-2 w-1/3">
                   <label htmlFor='extBtnNm3' className="w-28 self-center text-right">버튼명</label>
@@ -282,7 +279,7 @@ function MenuMng(props) {
               </div>
               <div className="flex flex-row justify-stretch gap-5">
                 <div className="flex flex-row gap-2 w-1/3">
-                  <P2Checkbox id="extUseYn4" name="extUseYn4" className="text-sm self-center">기타 버튼4</P2Checkbox>
+                  <P2Checkbox id="extUseYn4" name="extUseYn4" className="text-sm self-center" trueValue="Y" falseValue="N">기타 버튼4</P2Checkbox>
                 </div>
                 <div className="flex flex-row gap-2 w-1/3">
                   <label htmlFor='extBtnNm4' className="w-28 self-center text-right">버튼명</label>
@@ -295,7 +292,7 @@ function MenuMng(props) {
               </div>
               <div className="flex flex-row justify-stretch gap-5">
                 <div className="flex flex-row gap-2 w-1/3">
-                  <P2Checkbox id="extUseYn5" name="extUseYn5" className="text-sm self-center">기타 버튼5</P2Checkbox>
+                  <P2Checkbox id="extUseYn5" name="extUseYn5" className="text-sm self-center" trueValue="Y" falseValue="N">기타 버튼5</P2Checkbox>
                 </div>
                 <div className="flex flex-row gap-2 w-1/3">
                   <label htmlFor='extBtnNm5' className="w-28 self-center text-right">버튼명</label>
@@ -309,7 +306,7 @@ function MenuMng(props) {
               <Divider orientation="left" className="text-xs">노출 조건</Divider>
               <div className="flex flex-row justify-stretch gap-5">
                 <div className="flex flex-row gap-2 w-1/3">
-                  <P2Checkbox id="expoPeriodYn" name="expoPeriodYn" className="text-sm self-center">노출기간 사용</P2Checkbox>
+                  <P2Checkbox id="expoPeriodYn" name="expoPeriodYn" className="text-sm self-center" trueValue="Y" falseValue="N">노출기간 사용</P2Checkbox>
                 </div>
                 <div className="flex flex-row gap-2 w-1/3">
                   <label htmlFor='expoStarDt' className="w-28 self-center text-right">시작일자</label>
