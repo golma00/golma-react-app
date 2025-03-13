@@ -6,6 +6,7 @@ import SplitterLayout from 'react-splitter-layout';
 import "react-splitter-layout/lib/index.css";
 import "../css/splitter.css";
 import axios from 'axios';
+import { useCommonCode } from '../hooks/useCommonCode';
 
 function AttributeMng(props) {
   const searchArea = useRef(null);
@@ -27,6 +28,19 @@ function AttributeMng(props) {
     { cd: "C", cdNm: "속성" },      // Code
     { cd: "G", cdNm: "속성그룹" },  // Group
   ];
+  
+  const commonCodeParams = {
+    "code01" : {
+      grpCd : "ROOT",
+      cd: "G002",
+    },
+    "code02" : {
+      grpCd : "ROOT",
+      cd: "G002",
+    }
+  };
+  
+  const {code, getCodeDatas} = useCommonCode();
 
   const colDefs = [
       { 
@@ -83,15 +97,15 @@ function AttributeMng(props) {
         cellDataType: "checkbox",
       },
       { 
-        field: "uppperGrpCd",
-        headerName: "종속속성 그룹", 
+        field: "upperGrpCd",
+        headerName: "종속속성\n그룹", 
         editable: true, 
         width: 120,
         align: "left" 
       },
       { 
-        field: "uppperCd",
-        headerName: "종속속성 코드", 
+        field: "upperCd",
+        headerName: "종속속성\n코드", 
         editable: true, 
         width: 120,
         align: "left" 
@@ -183,7 +197,11 @@ function AttributeMng(props) {
 
   useEffect(() => {
     //getCodeList();
-  }, []);
+
+    if (code) {
+      console.log("code => ", code);
+    }
+  }, [code]);
 
   const getCodeList = async () => {
     try {
@@ -318,6 +336,7 @@ function AttributeMng(props) {
 
   function onGridReady() {
     onSearch();
+    getCodeDatas(commonCodeParams);
   }
   
   return (
