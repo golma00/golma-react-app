@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { P2Page, P2SearchArea, P2GridButtonBar } from 'components/layout/index';
 import { P2AgGrid } from 'components/grid/index';
-import { P2Input, P2MessageBox, P2Tree } from 'components/control/index';
+import { P2Select, P2Input, P2MessageBox, P2Tree } from 'components/control/index';
 import SplitterLayout from 'react-splitter-layout';
 import "react-splitter-layout/lib/index.css";
 import "../css/splitter.css";
@@ -28,19 +28,11 @@ function AttributeMng(props) {
     { cd: "C", cdNm: "속성" },      // Code
     { cd: "G", cdNm: "속성그룹" },  // Group
   ];
+
+  const {getCodeDatas} = useCommonCode();
   
-  const commonCodeParams = {
-    "code01" : {
-      grpCd : "ROOT",
-      cd: "G002",
-    },
-    "code02" : {
-      grpCd : "ROOT",
-      cd: "G002",
-    }
-  };
-  
-  const {code, getCodeDatas} = useCommonCode();
+  //const {code: elemGrpCdCombo, getCodeDatas: getElemGrpCdCombo} = useCommonCode();
+  //const {code: elemCdCombo, getCodeDatas: getElemCdCombo} = useCommonCode();
 
   const colDefs = [
       { 
@@ -197,11 +189,7 @@ function AttributeMng(props) {
 
   useEffect(() => {
     //getCodeList();
-
-    if (code) {
-      console.log("code => ", code);
-    }
-  }, [code]);
+  }, []);
 
   const getCodeList = async () => {
     try {
@@ -334,9 +322,41 @@ function AttributeMng(props) {
     return (item) => item["cd"] === "ROOT" ? item["cd"] : item["cdNm"] + " (" + item["cd"] + ")";
   }
 
-  function onGridReady() {
+  async function onGridReady() {
     onSearch();
-    getCodeDatas(commonCodeParams);
+  
+    const elemGrpCdParams = {
+      elemGrpCd : {
+        grpCd : "ROOT",
+        cd: "G003",
+      },
+    };
+  
+    const elemCdParams = {
+      elemCd : {
+        grpCd : "ROOT",
+        cd: "G004",
+      },
+    };
+
+    const elemGrpCdCombo = await getCodeDatas(elemGrpCdParams);
+    const elemCdCombo = await getCodeDatas(elemCdParams);
+
+    searchArea.current.api.set("ceGroupList", elemGrpCdCombo.elemGrpCd);
+    searchArea.current.api.set("ceList", elemCdCombo.elemCd);
+  }
+
+  function elemGrpCdSelectionChanged(e) {
+    // const elemCdParams = {
+    //   elemCd : {
+    //     grpCd : "ROOT",
+    //     cd: "G004",
+    //     upperGrpCd: "G003",
+    //     upperCd: e.value,
+    //   },
+    // };
+
+    // getElemCdCombo(elemCdParams);
   }
   
   return (
@@ -345,6 +365,21 @@ function AttributeMng(props) {
         <div className="flex flex-row gap-1">
           <label className="text-xl" htmlFor='attribGrpId'>속성그룹ID</label>
           <P2Input type="combo" id="attribGrpId" name="attribGrpId" className="text-sm bg-white border border-gray-200 rounded-md"/>
+        </div>
+        <div className="flex flex-row gap-2 justify-center">
+          <label htmlFor='ceGroupList'>C/E 그룹</label>
+          <P2Select id="ceGroupList" name="ceGroupList" className="w-40 text-sm"
+            defaultOption="ALL"
+            value=""
+            onChange={elemGrpCdSelectionChanged}
+          />
+        </div>
+        <div className="flex flex-row gap-2 justify-center">
+          <label htmlFor='ceList'>C/E</label>
+          <P2Select id="ceList" name="ceList" className="w-40 text-sm"
+            defaultOption="ALL"
+            value=""
+          />
         </div>
       </P2SearchArea>
       <P2GridButtonBar title="속성관리" onAddRow={onAddRow} onDeleteRow={onDeleteRow} count={count}>
