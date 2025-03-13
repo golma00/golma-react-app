@@ -23,6 +23,9 @@ function AttributeMng(props) {
   const [selectedRow, setSelectedRow] = useState(null);
   const [selectionNode, setSectionNode] = useState({selectedRow: [], e: []});
 
+  const [ceGroupList, setCeGroupList] = useState([]);
+  const [ceList, setCeList] = useState([]);
+
   // 임시사용
   const cdTypeCombo = [
     { cd: "C", cdNm: "속성" },      // Code
@@ -342,8 +345,10 @@ function AttributeMng(props) {
     const elemGrpCdCombo = await getCodeDatas(elemGrpCdParams);
     const elemCdCombo = await getCodeDatas(elemCdParams);
 
-    searchArea.current.api.set("ceGroupList", elemGrpCdCombo.elemGrpCd);
-    searchArea.current.api.set("ceList", elemCdCombo.elemCd);
+    setCeGroupList(elemGrpCdCombo.elemGrpCd);
+    setCeList(elemCdCombo.elemCd);
+    // searchArea.current.api.set("ceGroupList", elemGrpCdCombo.elemGrpCd);
+    // searchArea.current.api.set("ceList", elemCdCombo.elemCd);
   }
 
   function elemGrpCdSelectionChanged(e) {
@@ -372,6 +377,7 @@ function AttributeMng(props) {
             defaultOption="ALL"
             value=""
             onChange={elemGrpCdSelectionChanged}
+            datas={ceGroupList}
           />
         </div>
         <div className="flex flex-row gap-2 justify-center">
@@ -379,6 +385,7 @@ function AttributeMng(props) {
           <P2Select id="ceList" name="ceList" className="w-40 text-sm"
             defaultOption="ALL"
             value=""
+            datas={ceList}
           />
         </div>
       </P2SearchArea>

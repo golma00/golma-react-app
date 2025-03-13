@@ -8,18 +8,6 @@ function P2Select(props, ref) {
   const [options, setOptions] = useState([]);
   const [selectedIndex, setSelectedIndex] = useState();
 
-  const groupOption = (props) => {
-    return (
-      <components.Option {...props}>
-        <input
-            type="checkbox"
-            checked={props.isSelected}
-            onChange={() => null}
-          />{" "}
-        <label>{props.label}</label>
-      </components.Option>
-    );
-  };
   const checkboxOption = (props) => {
     return (
       <div>
