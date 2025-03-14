@@ -1,11 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { P2Page, P2SearchArea, P2GridButtonBar } from 'components/layout/index';
 import { P2AgGrid } from 'components/grid/index';
-import { P2Input, P2MessageBox, P2Tree } from 'components/control/index';
+import { P2Select, P2Input, P2MessageBox, P2Tree } from 'components/control/index';
 import SplitterLayout from 'react-splitter-layout';
 import "react-splitter-layout/lib/index.css";
 import "../css/splitter.css";
 import axios from 'axios';
+import { useCommonCode } from '../hooks/useCommonCode';
 
 function AttributeMng(props) {
   const searchArea = useRef(null);
@@ -22,11 +23,19 @@ function AttributeMng(props) {
   const [selectedRow, setSelectedRow] = useState(null);
   const [selectionNode, setSectionNode] = useState({selectedRow: [], e: []});
 
+  const [ceGroupList, setCeGroupList] = useState([]);
+  const [ceList, setCeList] = useState([]);
+
   // 임시사용
   const cdTypeCombo = [
     { cd: "C", cdNm: "속성" },      // Code
     { cd: "G", cdNm: "속성그룹" },  // Group
   ];
+
+  const {getCodeDatas} = useCommonCode();
+  
+  //const {code: elemGrpCdCombo, getCodeDatas: getElemGrpCdCombo} = useCommonCode();
+  //const {code: elemCdCombo, getCodeDatas: getElemCdCombo} = useCommonCode();
 
   const colDefs = [
       { 
@@ -83,15 +92,15 @@ function AttributeMng(props) {
         cellDataType: "checkbox",
       },
       { 
-        field: "uppperGrpCd",
-        headerName: "종속속성 그룹", 
+        field: "upperGrpCd",
+        headerName: "종속속성\n그룹", 
         editable: true, 
         width: 120,
         align: "left" 
       },
       { 
-        field: "uppperCd",
-        headerName: "종속속성 코드", 
+        field: "upperCd",
+        headerName: "종속속성\n코드", 
         editable: true, 
         width: 120,
         align: "left" 
@@ -316,8 +325,44 @@ function AttributeMng(props) {
     return (item) => item["cd"] === "ROOT" ? item["cd"] : item["cdNm"] + " (" + item["cd"] + ")";
   }
 
-  function onGridReady() {
+  async function onGridReady() {
     onSearch();
+  
+    const elemGrpCdParams = {
+      elemGrpCd : {
+        grpCd : "ROOT",
+        cd: "G003",
+      },
+    };
+  
+    const elemCdParams = {
+      elemCd : {
+        grpCd : "ROOT",
+        cd: "G004",
+      },
+    };
+
+    const elemGrpCdCombo = await getCodeDatas(elemGrpCdParams);
+    const elemCdCombo = await getCodeDatas(elemCdParams);
+
+    setCeGroupList(elemGrpCdCombo.elemGrpCd);
+    setCeList(elemCdCombo.elemCd);
+    // searchArea.current.api.set("ceGroupList", elemGrpCdCombo.elemGrpCd);
+    // searchArea.current.api.set("ceList", elemCdCombo.elemCd);
+  }
+
+  async function elemGrpCdSelectionChanged(e) {
+    const elemCdParams = {
+      elemCd : {
+        grpCd : "ROOT",
+        cd: "G004",
+        upperGrpCd: "G003",
+        upperCd: e.value,
+      },
+    };
+
+    const elemCdCombo = await getCodeDatas(elemCdParams);
+    setCeList(elemCdCombo.elemCd);
   }
   
   return (
@@ -326,6 +371,23 @@ function AttributeMng(props) {
         <div className="flex flex-row gap-1">
           <label className="text-xl" htmlFor='attribGrpId'>속성그룹ID</label>
           <P2Input type="combo" id="attribGrpId" name="attribGrpId" className="text-sm bg-white border border-gray-200 rounded-md"/>
+        </div>
+        <div className="flex flex-row gap-2 justify-center">
+          <label htmlFor='ceGroupList'>C/E 그룹</label>
+          <P2Select id="ceGroupList" name="ceGroupList" className="w-40 text-sm"
+            defaultOption="ALL"
+            value=""
+            onChange={elemGrpCdSelectionChanged}
+            datas={ceGroupList}
+          />
+        </div>
+        <div className="flex flex-row gap-2 justify-center">
+          <label htmlFor='ceList'>C/E</label>
+          <P2Select id="ceList" name="ceList" className="w-40 text-sm"
+            defaultOption="ALL"
+            value=""
+            datas={ceList}
+          />
         </div>
       </P2SearchArea>
       <P2GridButtonBar title="속성관리" onAddRow={onAddRow} onDeleteRow={onDeleteRow} count={count}>

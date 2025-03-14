@@ -8,18 +8,6 @@ function P2Select(props, ref) {
   const [options, setOptions] = useState([]);
   const [selectedIndex, setSelectedIndex] = useState();
 
-  const groupOption = (props) => {
-    return (
-      <components.Option {...props}>
-        <input
-            type="checkbox"
-            checked={props.isSelected}
-            onChange={() => null}
-          />{" "}
-        <label>{props.label}</label>
-      </components.Option>
-    );
-  };
   const checkboxOption = (props) => {
     return (
       <div>
@@ -106,12 +94,15 @@ function P2Select(props, ref) {
           break;
       }
     }
-    if (datas.length > 0) {
+    if (datas && datas.length > 0) {
       optionArray.push(...datas.map((item) => ({
         value: item[valueField || "cd"],
         label: item[labelField || "cdNm"],
       })));
       setOptions(optionArray);
+    }
+    else {
+      setOptions([]);
     }
   }, [datas, defaultOption, valueField, labelField]);
 

@@ -90,7 +90,7 @@ function P2SearchArea(props, ref) {
           }
           else if (child.type === P2Select) {
             if (child.props.name) {
-              initData[child.props.name] = child.props.value || "";
+              initData[child.props.name] = child.props.value || [];
             }
           }
           else if (child.type === P2Input 
@@ -297,7 +297,7 @@ function P2SearchArea(props, ref) {
       return (
         <React.Fragment key={index}>
           {React.cloneElement(child, {
-            optionValue: searchData[child.props.name] || "",
+            optionValue: searchData[child.props.name] || [],
             onChange: (e) => {
               if (child.props.onChange) {
                 child.props.onChange(e);

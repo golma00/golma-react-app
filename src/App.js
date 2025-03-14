@@ -9,8 +9,7 @@ import axios from 'axios';
 function App() {
 
   const [currentTab, setCurrentTab] = useState("pages/CommonPage");
-  const [tabs, setTabs] = useState([
-  ]);
+  const [tabs, setTabs] = useState([]);
 
   const [pagePaths, setPagePaths] = useState({
     "pages/CommonPage": <pages.CommonPage />,

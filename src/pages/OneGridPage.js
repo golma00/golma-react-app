@@ -14,6 +14,7 @@ function OneGridPage(props) {
     { field: "authGrpId", headerName: "권한그룹ID", width: 150, align: "center" },
     { field: "authGrpNm", headerName: "권한그룹명", width: 400, editable: true, required: true },
     { field: "alignSeq",  headerName: "정렬순서",   width: 120, editable: true, cellDataType: "number" },
+    { field: "useYn",     headerName: "사용여부",   width: 120, editable: true, cellDataType: "checkbox" },
     { field: "chgUserId", headerName: "수정자ID",   width: 150, },
     { field: "chgDate",   headerName: "수정일시",   width: 200, },
   ];
@@ -83,7 +84,7 @@ function OneGridPage(props) {
   }
 
   async function onAddRow() {
-    await grid.current.api.addRow({}, "authGrpNm");
+    await grid.current.api.addRow({ useYn: "Y" }, "authGrpNm");
   }
 
   function onDeleteRow() {
