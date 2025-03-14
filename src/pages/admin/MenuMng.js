@@ -170,8 +170,25 @@ function MenuMng(props) {
   function onTreeSelect(selectedRow, e) {
     setTreeNode(e.node);
     formArea.current.api.allDisabled(e.node.props.dataRef.menuId === 1);
+//    handleFieldVisibility(e.node.props.dataRef.menuId); // 숨길 키 값 받는 코드
   }
-
+  // 
+  // function handleFieldVisibility(menuId) {
+  //   // 숨길 필드 목록을 정의 ( 키 , name 값)
+  //   const hiddenFieldsMap = {
+  //     1: "menuNm",  // menuId가 1일 때 숨길 필드
+  //     2: "saveUseYn1",         // menuId가 2일 때 숨길 필드
+  //   };
+  
+  //   // 모든 필드 숨김 해제 (초기화 , 다른 key 눌렀을 때 )
+  //   formArea.current.api.allHidden(false);
+  
+  //   // 선택된 menuId에 해당하는 필드 숨기기
+  //   if (hiddenFieldsMap[menuId]) {
+  //     formArea.current.api.hidden(hiddenFieldsMap[menuId], true);
+  //   }
+  // }
+  
   return (
     <P2Page menuProps={props.menuProps} onSearch={onSearch} onSave={onSave} loading={loading}>
       <P2SearchArea onSearch={onSearch} ref={searchArea}>
