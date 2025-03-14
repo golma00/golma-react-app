@@ -7,6 +7,7 @@ import "react-splitter-layout/lib/index.css";
 import "../css/splitter.css";
 import axios from 'axios';
 import { useCommonCode } from '../hooks/useCommonCode';
+import SearchUpperCodePopup from './SearchUpperCodePopup';
 
 function AttributeMng(props) {
   const searchArea = useRef(null);
@@ -26,6 +27,9 @@ function AttributeMng(props) {
   const [ceGroupList, setCeGroupList] = useState([]);
   const [ceList, setCeList] = useState([]);
 
+  const [isSearchUpperCodePopupVisible, setSearchUpperCodePopupVisible] = useState(false);
+  const [selectedAgGridRowData, setSelectedAgGridRowData] = useState(null);
+
   // 임시사용
   const cdTypeCombo = [
     { cd: "C", cdNm: "속성" },      // Code
@@ -33,9 +37,10 @@ function AttributeMng(props) {
   ];
 
   const {getCodeDatas} = useCommonCode();
-  
-  //const {code: elemGrpCdCombo, getCodeDatas: getElemGrpCdCombo} = useCommonCode();
-  //const {code: elemCdCombo, getCodeDatas: getElemCdCombo} = useCommonCode();
+
+  useEffect(() => {
+    //getCodeList();
+  }, []);
 
   const colDefs = [
       { 
@@ -96,7 +101,11 @@ function AttributeMng(props) {
         headerName: "종속속성\n그룹", 
         editable: true, 
         width: 120,
-        align: "left" 
+        align: "left",
+        onCellClicked: async (params) => {
+          setSelectedAgGridRowData(params.data);
+          setSearchUpperCodePopupVisible(true);
+        },
       },
       { 
         field: "upperCd",
@@ -189,10 +198,6 @@ function AttributeMng(props) {
         align: "left" 
       },
   ];
-
-  useEffect(() => {
-    //getCodeList();
-  }, []);
 
   const getCodeList = async () => {
     try {
@@ -364,6 +369,15 @@ function AttributeMng(props) {
     const elemCdCombo = await getCodeDatas(elemCdParams);
     setCeList(elemCdCombo.elemCd);
   }
+
+  const closeearchUpperCodePopup = () => {
+    setSearchUpperCodePopupVisible(false);
+  }
+
+  const setUpperCode = (data) => {
+    console.log("setUpperCode data => ", data);
+    console.log("grid.current.api => ", grid.current.api);
+  }
   
   return (
     <P2Page menuProps={props.menuProps} onSearch={onSearch} onSave={onSave} loading={loading}>
@@ -428,6 +442,13 @@ function AttributeMng(props) {
           />
         </SplitterLayout>
       </div>
+      <SearchUpperCodePopup className="w-[800px]"
+        visible={isSearchUpperCodePopupVisible}
+        onOk={setUpperCode}
+        onClose={closeearchUpperCodePopup}
+        params={selectedAgGridRowData}
+        props={props}
+      />
     </P2Page>
   )
 }
