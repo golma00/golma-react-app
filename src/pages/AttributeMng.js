@@ -351,17 +351,18 @@ function AttributeMng(props) {
     // searchArea.current.api.set("ceList", elemCdCombo.elemCd);
   }
 
-  function elemGrpCdSelectionChanged(e) {
-    // const elemCdParams = {
-    //   elemCd : {
-    //     grpCd : "ROOT",
-    //     cd: "G004",
-    //     upperGrpCd: "G003",
-    //     upperCd: e.value,
-    //   },
-    // };
+  async function elemGrpCdSelectionChanged(e) {
+    const elemCdParams = {
+      elemCd : {
+        grpCd : "ROOT",
+        cd: "G004",
+        upperGrpCd: "G003",
+        upperCd: e.value,
+      },
+    };
 
-    // getElemCdCombo(elemCdParams);
+    const elemCdCombo = await getCodeDatas(elemCdParams);
+    setCeList(elemCdCombo.elemCd);
   }
   
   return (
