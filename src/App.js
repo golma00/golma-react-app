@@ -22,8 +22,8 @@ function App() {
     "pages/TreeFormPage": <pages.TreeFormPage />,
     "pages/TreePage": <pages.TreePage />,
     "pages/AttributeMng": <pages.AttributeMng />,
+    "pages/FiveGridPage": <pages.FiveGridPage />,
     "pages/admin/MenuMng": <pages.MenuMng />,
-    "pages/admin/FiveGridPage": <pages.FiveGridPage />,
   });
 
   const [menuList, setMenuList] = useState([]);
