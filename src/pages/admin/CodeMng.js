@@ -8,6 +8,7 @@ import "../../css/splitter.css";
 import axios from 'axios';
 import { useCommonCode } from '../../hooks/useCommonCode';
 import SearchUpperCodePopup from './SearchUpperCodePopup';
+import * as Utils from 'utils/Utils';
 
 function CodeMng(props) {
   const searchArea = useRef(null);
@@ -29,8 +30,6 @@ function CodeMng(props) {
 
   const [isSearchUpperCodePopupVisible, setSearchUpperCodePopupVisible] = useState(false);
   const [selectedAgGridRowData, setSelectedAgGridRowData] = useState(null);
-  
-  const [upperGrpCombo, setUpperGrpCombo] = useState([]);
 
   // 임시사용
   const cdTypeCombo = [
@@ -51,13 +50,15 @@ function CodeMng(props) {
         editable: false, 
         width: 120,
         hide: true,
-        align: "left" 
+        align: "left",
+        pinned: "left",
       },
       { 
         field: "grpNm",
         headerName: "속성그룹명", 
         editable: false, 
-        align: "left" 
+        align: "left",
+        pinned: "left",
       },
       { 
         field: "cd",
@@ -65,7 +66,8 @@ function CodeMng(props) {
         editable: true, 
         required: true,
         width: 120,
-        align: "left" 
+        align: "left",
+        pinned: "left",
       },
       { 
         field: "cdNm",
@@ -73,7 +75,8 @@ function CodeMng(props) {
         editable: true, 
         required: true,
         width: 150,
-        align: "left" 
+        align: "left",
+        pinned: "left",
       },
       { 
         field: "cdDesc",
@@ -137,7 +140,7 @@ function CodeMng(props) {
       },
       { 
         field: "cdRefVal01",
-        headerName: "비고 1", 
+        headerName: "비고 1",
         editable: true, 
         width: 150,
         align: "left" 
@@ -206,6 +209,19 @@ function CodeMng(props) {
         align: "left" 
       },
   ];
+  
+  const [columnDefs, setColumnDefs] = useState(colDefs);
+
+  function setHeaderNames(parentData) {
+    colDefs.forEach((colDef) => {
+      if (colDef.field.startsWith("cdRefVal")) {
+        if (parentData && parentData[colDef.field]) {
+          colDef.headerName = parentData[colDef.field];
+        }
+      }
+    });
+    grid.current.api.setGridOption("columnDefs", colDefs);
+  }
 
   const getCodeList = async () => {
     try {
@@ -326,6 +342,8 @@ function CodeMng(props) {
 
       if (res.data.code === "00") {
         grid.current.api.setGridOption("rowData", structuredClone(res.data.data.result));
+        grid.current.api.firstRowSelected();
+
         setCount(grid.current.api.getDisplayedRowCount());
       }
     }
@@ -439,10 +457,12 @@ function CodeMng(props) {
                 setSectionNode({selectedRow: selectedRow, e: e});
                 getAttributeList(selectedRow, e);
                 setTreeNode(e.node);
+                setHeaderNames(e.node.props.dataRef);
               }
               else {
                 getAttributeList(selectionNode.selectedRow, selectionNode.e);
                 setTreeNode(selectionNode.e.node);
+                setHeaderNames(e.node.props.dataRef);
               }
             }}
             defaultExpandedKeys={['ROOT']}
@@ -450,7 +470,7 @@ function CodeMng(props) {
           <P2AgGrid 
             debug={true}
             ref={grid}
-            columnDefs={colDefs}
+            columnDefs={columnDefs}
             showStatusColumn={true}
             showCheckedColumn={true}
             onGridReady={onGridReady}
