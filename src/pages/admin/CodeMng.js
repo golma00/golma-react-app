@@ -27,6 +27,8 @@ function CodeMng(props) {
 
   const [ceGroupList, setCeGroupList] = useState([]);
   const [ceList, setCeList] = useState([]);
+  
+  const [upperGrpCdCombo, setUpperGrpCdCombo] = useState([]);
 
   const [isSearchUpperCodePopupVisible, setSearchUpperCodePopupVisible] = useState(false);
   const [selectedAgGridRowData, setSelectedAgGridRowData] = useState(null);
@@ -213,14 +215,20 @@ function CodeMng(props) {
   const [columnDefs, setColumnDefs] = useState(colDefs);
 
   function setHeaderNames(parentData) {
-    colDefs.forEach((colDef) => {
-      if (colDef.field.startsWith("cdRefVal")) {
+    var columnDefinition = grid.current.api.getGridOption("columnDefs");
+    columnDefinition.forEach((colDef) => {
+      if (colDef.field && colDef.field.startsWith("cdRefVal")) {
         if (parentData && parentData[colDef.field]) {
           colDef.headerName = parentData[colDef.field];
         }
+        else {
+          colDef.headerName = "비고 " + colDef.field.slice(-2);
+        }
       }
     });
-    grid.current.api.setGridOption("columnDefs", colDefs);
+    grid.current.api.setGridOption("columnDefs", columnDefinition);
+    grid.current.api.setColumnComboDatas("upperGrpCd", upperGrpCdCombo, "grpCd", "grpNm");
+    grid.current.api.setColumnComboDatas("upperCd", upperGrpCdCombo, "cd", "cdNm");
   }
 
   const getCodeList = async () => {
@@ -382,9 +390,8 @@ function CodeMng(props) {
 
     setCeGroupList(commonCodeCombo.elemGrpCd);
     setCeList(elemCdCombo.elemCd);
-    
-    grid.current.api.setColumnComboDatas("upperGrpCd", commonCodeCombo.upperGrpCd, "grpCd", "grpNm");
-    grid.current.api.setColumnComboDatas("upperCd", commonCodeCombo.upperGrpCd, "cd", "cdNm");
+
+    setUpperGrpCdCombo(commonCodeCombo.upperGrpCd);
   }
 
   async function elemGrpCdSelectionChanged(e) {
