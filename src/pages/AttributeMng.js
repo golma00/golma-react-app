@@ -456,13 +456,16 @@ function AttributeMng(props) {
           />
         </SplitterLayout>
       </div>
-      <SearchUpperCodePopup className="w-[800px]"
-        visible={isSearchUpperCodePopupVisible}
-        onOk={setUpperCode}
-        onClose={closeearchUpperCodePopup}
-        params={selectedAgGridRowData}
-        props={props}
-      />
+      {
+        isSearchUpperCodePopupVisible && (
+          <SearchUpperCodePopup className="w-[800px]"
+            onOk={setUpperCode}
+            onClose={closeearchUpperCodePopup}
+            params={selectedAgGridRowData}
+            props={props}
+          />
+        )
+      }
     </P2Page>
   )
 }
