@@ -4,12 +4,13 @@ import { P2AgGrid } from 'components/grid/index';
 import { P2Select, P2Input, P2MessageBox, P2Tree } from 'components/control/index';
 import SplitterLayout from 'react-splitter-layout';
 import "react-splitter-layout/lib/index.css";
-import "../css/splitter.css";
+import "../../css/splitter.css";
 import axios from 'axios';
-import { useCommonCode } from '../hooks/useCommonCode';
+import { useCommonCode } from '../../hooks/useCommonCode';
 import SearchUpperCodePopup from './SearchUpperCodePopup';
+import * as Utils from 'utils/Utils';
 
-function AttributeMng(props) {
+function CodeMng(props) {
   const searchArea = useRef(null);
   const grid = useRef(0);
   const tree = useRef(null);
@@ -26,11 +27,11 @@ function AttributeMng(props) {
 
   const [ceGroupList, setCeGroupList] = useState([]);
   const [ceList, setCeList] = useState([]);
+  
+  const [upperGrpCdCombo, setUpperGrpCdCombo] = useState([]);
 
   const [isSearchUpperCodePopupVisible, setSearchUpperCodePopupVisible] = useState(false);
   const [selectedAgGridRowData, setSelectedAgGridRowData] = useState(null);
-  
-  const [upperGrpCombo, setUpperGrpCombo] = useState([]);
 
   // 임시사용
   const cdTypeCombo = [
@@ -51,13 +52,15 @@ function AttributeMng(props) {
         editable: false, 
         width: 120,
         hide: true,
-        align: "left" 
+        align: "left",
+        pinned: "left",
       },
       { 
         field: "grpNm",
         headerName: "속성그룹명", 
         editable: false, 
-        align: "left" 
+        align: "left",
+        pinned: "left",
       },
       { 
         field: "cd",
@@ -65,7 +68,8 @@ function AttributeMng(props) {
         editable: true, 
         required: true,
         width: 120,
-        align: "left" 
+        align: "left",
+        pinned: "left",
       },
       { 
         field: "cdNm",
@@ -73,7 +77,8 @@ function AttributeMng(props) {
         editable: true, 
         required: true,
         width: 150,
-        align: "left" 
+        align: "left",
+        pinned: "left",
       },
       { 
         field: "cdDesc",
@@ -137,7 +142,7 @@ function AttributeMng(props) {
       },
       { 
         field: "cdRefVal01",
-        headerName: "비고 1", 
+        headerName: "비고 1",
         editable: true, 
         width: 150,
         align: "left" 
@@ -206,6 +211,25 @@ function AttributeMng(props) {
         align: "left" 
       },
   ];
+  
+  const [columnDefs, setColumnDefs] = useState(colDefs);
+
+  function setHeaderNames(parentData) {
+    var columnDefinition = grid.current.api.getGridOption("columnDefs");
+    columnDefinition.forEach((colDef) => {
+      if (colDef.field && colDef.field.startsWith("cdRefVal")) {
+        if (parentData && parentData[colDef.field]) {
+          colDef.headerName = parentData[colDef.field];
+        }
+        else {
+          colDef.headerName = "비고 " + colDef.field.slice(-2);
+        }
+      }
+    });
+    grid.current.api.setGridOption("columnDefs", columnDefinition);
+    grid.current.api.setColumnComboDatas("upperGrpCd", upperGrpCdCombo, "grpCd", "grpNm");
+    grid.current.api.setColumnComboDatas("upperCd", upperGrpCdCombo, "cd", "cdNm");
+  }
 
   const getCodeList = async () => {
     try {
@@ -219,6 +243,7 @@ function AttributeMng(props) {
   async function onSearch() {
     try {
       setLoading(true);
+      grid.current.api.refresh();
 
       const searchData = searchArea.current.api.get();
       const res = await axios.post("/api/v1/code/attributeGrpList", searchData);
@@ -325,6 +350,8 @@ function AttributeMng(props) {
 
       if (res.data.code === "00") {
         grid.current.api.setGridOption("rowData", structuredClone(res.data.data.result));
+        grid.current.api.firstRowSelected();
+
         setCount(grid.current.api.getDisplayedRowCount());
       }
     }
@@ -363,9 +390,8 @@ function AttributeMng(props) {
 
     setCeGroupList(commonCodeCombo.elemGrpCd);
     setCeList(elemCdCombo.elemCd);
-    
-    grid.current.api.setColumnComboDatas("upperGrpCd", commonCodeCombo.upperGrpCd, "grpCd", "grpNm");
-    grid.current.api.setColumnComboDatas("upperCd", commonCodeCombo.upperGrpCd, "cd", "cdNm");
+
+    setUpperGrpCdCombo(commonCodeCombo.upperGrpCd);
   }
 
   async function elemGrpCdSelectionChanged(e) {
@@ -427,7 +453,7 @@ function AttributeMng(props) {
         </button>
       </P2GridButtonBar>
       <div className="w-full h-[500px]">
-        <SplitterLayout split="vertical" percentage={true} primaryMinSize={20} secondaryMinSize={20} secondaryInitialSize={75} customClassName='border border-solid '>
+        <SplitterLayout split="vertical" percentage={true} primaryMinSize={20} secondaryMinSize={20} secondaryInitialSize={75}>
           <P2Tree ref={tree} 
             rowData={rowData}
             nodeKeyField={"cd"}
@@ -438,10 +464,12 @@ function AttributeMng(props) {
                 setSectionNode({selectedRow: selectedRow, e: e});
                 getAttributeList(selectedRow, e);
                 setTreeNode(e.node);
+                setHeaderNames(e.node.props.dataRef);
               }
               else {
                 getAttributeList(selectionNode.selectedRow, selectionNode.e);
                 setTreeNode(selectionNode.e.node);
+                setHeaderNames(e.node.props.dataRef);
               }
             }}
             defaultExpandedKeys={['ROOT']}
@@ -449,25 +477,22 @@ function AttributeMng(props) {
           <P2AgGrid 
             debug={true}
             ref={grid}
-            columnDefs={colDefs}
+            columnDefs={columnDefs}
             showStatusColumn={true}
             showCheckedColumn={true}
             onGridReady={onGridReady}
           />
         </SplitterLayout>
       </div>
-      {
-        isSearchUpperCodePopupVisible && (
-          <SearchUpperCodePopup className="w-[800px]"
-            onOk={setUpperCode}
-            onClose={closeearchUpperCodePopup}
-            params={selectedAgGridRowData}
-            props={props}
-          />
-        )
-      }
+      <SearchUpperCodePopup className="w-[800px]"
+        visible={isSearchUpperCodePopupVisible}
+        onOk={setUpperCode}
+        onClose={closeearchUpperCodePopup}
+        params={selectedAgGridRowData}
+        props={props}
+      />
     </P2Page>
   )
 }
 
-export default AttributeMng;
+export default CodeMng;

@@ -113,3 +113,7 @@ body {
 .ant-spin-nested-loading {
   @apply w-full h-full !important;
 }
+
+.searchUpperCode .ant-modal-body {
+  @apply px-3 !important;
+}
