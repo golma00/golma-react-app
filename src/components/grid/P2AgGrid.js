@@ -30,6 +30,7 @@ function P2AgGrid(props, ref) {
   const [rowData] = useState(props.rowData || []);
   const [gridApi, setGridApi] = useState();
   const [defaultHeaderHeight, setDefaultHeaderHeight] = useState(props.headerHeight || 35);
+  const [oldSelectedRowIndex, setOldSelectedRowIndex] = useState(-1);
 
   useImperativeHandle(ref, () => ({
     api: gridApi,
@@ -246,6 +247,26 @@ function P2AgGrid(props, ref) {
     }
   }, []);
 
+  const onSelectionChanged = useCallback(async (params) => {
+    const selectedNode = await params.api.getSelectedNode();
+
+    if (props.onBeforeRowSelected && oldSelectedRowIndex !== selectedNode.rowIndex) {
+      const result = props.onBeforeRowSelected({
+        api: params.api,
+        node: params.api.getDisplayedRowAtIndex(oldSelectedRowIndex),
+      });
+      if (!result) {
+        params.api.getDisplayedRowAtIndex(oldSelectedRowIndex).setSelected(false);
+        return;
+      }
+      setOldSelectedRowIndex(selectedNode.rowIndex);
+    }
+
+    if (props.onSelectionChanged) {
+      props.onSelectionChanged(params);
+    }
+  }, []);
+
   return (
     <AgGridReact
       {...props}
@@ -263,6 +284,7 @@ function P2AgGrid(props, ref) {
       dataTypeDefinitions={dataTypeDefinitions}
       onGridReady={onGridReady}
       onCellValueChanged={onCellValueChanged}
+      onSelectionChanged={onSelectionChanged}
     />
   );
 }

@@ -243,6 +243,13 @@ function P2Tree(props, ref) {
   }, [rowData]);
 
   const onSelect = useCallback((selectedKey, e) => {
+
+    if (props.onBeforeSelect && selectedTreeNode && e.node !== selectedTreeNode) {
+      const result = props.onBeforeSelect(selectedTreeNode);
+      if (!result) {
+        return;
+      }
+    }
     setSelectedTreeNode(e.node);
     setSelectKeys([e.node.key || e.node.props.eventKey]);
 
