@@ -18,7 +18,7 @@ import { statusField, insertStatus, updateStatus, deleteStatus } from "component
 function P2FormArea(props, ref) {
 
   const [formData, setFormData] = useState({});
-  const [formHide, setFormHide] = useState({});
+  const [formHidden, setformHidden] = useState({});
   const [formDisabled, setFormDisabled] = useState({});
   const [childrenMap, setChildrenMap] = useState({});
 
@@ -55,14 +55,14 @@ function P2FormArea(props, ref) {
         })); 
       },
       hidden(name, hidden) {
-        setFormHide((prev) => ({
+        setformHidden((prev) => ({
           ...prev,
           [name]: hidden,
         }));
       },
       allHidden(hidden) {
         Object.keys(formData).forEach((key) => {
-          setFormHide((prev) => ({
+          setformHidden((prev) => ({
             ...prev,
             [key]: hidden,
           }));
@@ -233,19 +233,60 @@ function P2FormArea(props, ref) {
         case "search":
         case "tel":
         case "time":
-          return (
-            <div style={{ display: formHide[child.props.name] ? "none" : "block" }}>
+          return formHidden[child.props.name] ? null : (
+            <React.Fragment key={index}>
+              {React.cloneElement(child, {
+                value: formData[child.props.name] || "",
+                hidden: formHidden[child.props.name] || false,
+                disabled: formDisabled[child.props.name] || false,
+                onChange: (e) => {
+                  if (child.props.onChange) {
+                    child.props.onChange(e);
+                  }
+                  const targetValue = e.target && e.target.value;
+                  setFormData((prev) => ({
+                    ...prev,
+                    [child.props.name]: targetValue,
+                  }));
+                  if (props.rowNode) {
+                    updateRowData(child.props.name, targetValue);
+                  }
+                  if (props.treeNode) {
+                    updateTreeNodeData(child.props.name, targetValue);
+                  }
+                },
+                onKeyDown: (e) => {
+                  if (child.props.onKeyDown) {
+                    child.props.onKeyDown(e);
+                  }
+                  const targetValue = e.target && e.target.value;
+                  setFormData((prev) => ({
+                    ...prev,
+                    [child.props.name]: targetValue,
+                  }));
+                  if (props.rowNode) {
+                    updateRowData(child.props.name, targetValue);
+                  }
+                  if (props.treeNode) {
+                    updateTreeNodeData(child.props.name, targetValue);
+                  }
+                },
+              })}
+            </React.Fragment>
+          );
+          case "number":
+            return formHidden[child.props.name] ? null : (
               <React.Fragment key={index}>
                 {React.cloneElement(child, {
-                  value: formData[child.props.name] || "",
-                  hidden: formHide[child.props.name] || false,
+                  value: formData[child.props.name] || 0,
+                  hidden: formHidden[child.props.name] || false,
                   disabled: formDisabled[child.props.name] || false,
                   onChange: (e) => {
                     if (child.props.onChange) {
                       child.props.onChange(e);
                     }
                     const targetValue = e.target && e.target.value;
-                    setFormData((prev) => ({
+                    formData((prev) => ({
                       ...prev,
                       [child.props.name]: targetValue,
                     }));
@@ -261,7 +302,7 @@ function P2FormArea(props, ref) {
                       child.props.onKeyDown(e);
                     }
                     const targetValue = e.target && e.target.value;
-                    setFormData((prev) => ({
+                    formData((prev) => ({
                       ...prev,
                       [child.props.name]: targetValue,
                     }));
@@ -274,147 +315,94 @@ function P2FormArea(props, ref) {
                   },
                 })}
               </React.Fragment>
-            </div>
-          );
-          case "number":
-            return (
-              <div style={{ display: formHide[child.props.name] ? "none" : "block" }}>
-                <React.Fragment key={index}>
-                  {React.cloneElement(child, {
-                    value: formData[child.props.name] || 0,
-                    hidden: formHide[child.props.name] || false,
-                    disabled: formDisabled[child.props.name] || false,
-                    onChange: (e) => {
-                      if (child.props.onChange) {
-                        child.props.onChange(e);
-                      }
-                      const targetValue = e.target && e.target.value;
-                      formData((prev) => ({
-                        ...prev,
-                        [child.props.name]: targetValue,
-                      }));
-                      if (props.rowNode) {
-                        updateRowData(child.props.name, targetValue);
-                      }
-                      if (props.treeNode) {
-                        updateTreeNodeData(child.props.name, targetValue);
-                      }
-                    },
-                    onKeyDown: (e) => {
-                      if (child.props.onKeyDown) {
-                        child.props.onKeyDown(e);
-                      }
-                      const targetValue = e.target && e.target.value;
-                      formData((prev) => ({
-                        ...prev,
-                        [child.props.name]: targetValue,
-                      }));
-                      if (props.rowNode) {
-                        updateRowData(child.props.name, targetValue);
-                      }
-                      if (props.treeNode) {
-                        updateTreeNodeData(child.props.name, targetValue);
-                      }
-                    },
-                  })}
-                </React.Fragment>
-              </div>
             );
         case "checkbox":
-          return (
-            <div style={{ display: formHide[child.props.name] ? "none" : "block" }}>
-              <React.Fragment key={index}>
-                {React.cloneElement(child, {
-                  checked: formData[child.props.name] === "Y" || false,
-                  onChange: (e) => {
-                    if (child.props.onChange) {
-                      child.props.onChange(e);
-                    }
-                    const targetValue = e.target && e.target.checked ? "Y" : "N";
-                    setFormData((prev) => ({
-                      ...prev,
-                      [child.props.name]: targetValue,
-                    }));
-                    if (props.rowNode) {
-                      updateRowData(child.props.name, targetValue);
-                    }
-                    if (props.treeNode) {
-                      updateTreeNodeData(child.props.name, targetValue);
-                    }
-                  },
-                })}
-              </React.Fragment>
-            </div>
+          return formHidden[child.props.name] ? null : (
+            <React.Fragment key={index}>
+              {React.cloneElement(child, {
+                checked: formData[child.props.name] === "Y" || false,
+                onChange: (e) => {
+                  if (child.props.onChange) {
+                    child.props.onChange(e);
+                  }
+                  const targetValue = e.target && e.target.checked ? "Y" : "N";
+                  setFormData((prev) => ({
+                    ...prev,
+                    [child.props.name]: targetValue,
+                  }));
+                  if (props.rowNode) {
+                    updateRowData(child.props.name, targetValue);
+                  }
+                  if (props.treeNode) {
+                    updateTreeNodeData(child.props.name, targetValue);
+                  }
+                },
+              })}
+            </React.Fragment>
           );
         case "radio":
-          return (
-            <div style={{ display: formHide[child.props.name] ? "none" : "block" }}>
-              <React.Fragment key={index}>
-                {React.cloneElement(child, {
-                  value: formData[child.props.name] || "",
-                  hidden: formHide[child.props.name] || false,
-                  disabled: formDisabled[child.props.name] || false,
-                  onChange: (e) => {
-                    if (child.props.onChange) {
-                      child.props.onChange(e);
-                    }
-                    const targetValue = e.target && e.target.value;
-                    setFormData((prev) => ({
-                      ...prev,
-                      [child.props.name]: targetValue,
-                    }));
-                    if (props.rowNode) {
-                      updateRowData(child.props.name, targetValue);
-                    }
-                    if (props.treeNode) {
-                      updateTreeNodeData(child.props.name, targetValue);
-                    }
-                  },
-                })}
-              </React.Fragment>
-            </div>
+          return formHidden[child.props.name] ? null : (
+            <React.Fragment key={index}>
+              {React.cloneElement(child, {
+                value: formData[child.props.name] || "",
+                hidden: formHidden[child.props.name] || false,
+                disabled: formDisabled[child.props.name] || false,
+                onChange: (e) => {
+                  if (child.props.onChange) {
+                    child.props.onChange(e);
+                  }
+                  const targetValue = e.target && e.target.value;
+                  setFormData((prev) => ({
+                    ...prev,
+                    [child.props.name]: targetValue,
+                  }));
+                  if (props.rowNode) {
+                    updateRowData(child.props.name, targetValue);
+                  }
+                  if (props.treeNode) {
+                    updateTreeNodeData(child.props.name, targetValue);
+                  }
+                },
+              })}
+            </React.Fragment>
           );
         default:
           return <React.Fragment key={index}>{child}</React.Fragment>;
       }
     }
     else if (child.type === "textarea" || child.type === P2InputTextArea) {
-      return (
-        <div style={{ display: formHide[child.props.name] ? "none" : "block" }}>
-          <React.Fragment key={index}>v
-            {React.cloneElement(child, {
-              value: formData[child.props.name] || "",
-              hidden: formHide[child.props.name] || false,
-              disabled: formDisabled[child.props.name] || false,
-              onChange: (e) => {
-                if (child.props.onChange) {
-                  child.props.onChange(e);
-                }
-                const targetValue = e.target && e.target.value;
-                setFormData((prev) => ({
-                  ...prev,
-                  [child.props.name]: targetValue,
-                }));
-                if (props.rowNode) {
-                  updateRowData(child.props.name, targetValue);
-                }
-                if (props.treeNode) {
-                  updateTreeNodeData(child.props.name, targetValue);
-                }
-              },
-            })}
-          </React.Fragment>
-        </div>
+      return formHidden[child.props.name] ? null : (
+        <React.Fragment key={index}>
+          {React.cloneElement(child, {
+            value: formData[child.props.name] || "",
+            hidden: formHidden[child.props.name] || false,
+            disabled: formDisabled[child.props.name] || false,
+            onChange: (e) => {
+              if (child.props.onChange) {
+                child.props.onChange(e);
+              }
+              const targetValue = e.target && e.target.value;
+              setFormData((prev) => ({
+                ...prev,
+                [child.props.name]: targetValue,
+              }));
+              if (props.rowNode) {
+                updateRowData(child.props.name, targetValue);
+              }
+              if (props.treeNode) {
+                updateTreeNodeData(child.props.name, targetValue);
+              }
+            },
+          })}
+        </React.Fragment>
       );
     }
     else if (child.type === P2Select) {
-      return (
-        <div style={{ display: formHide[child.props.name] ? "none" : "block" }}>
+      return formHidden[child.props.name] ? null : (
           <React.Fragment key={index}>
             {React.cloneElement(child, {
               optionValue: formData[child.props.name] || "",
-              hidden: formHide[child.props.name] || false,
-              disabled: formDisabled[child.props.name] || false,
+              hidden: formHidden[child.props.name] || false,
               onChange: (e) => {
                 if (child.props.onChange) {
                   child.props.onChange(e);
@@ -433,182 +421,169 @@ function P2FormArea(props, ref) {
               },
             })}
           </React.Fragment>
-        </div>
       );
     }
     else if (child.type === P2Input) {
-      return (
-        <div style={{ display: formHide[child.props.name] ? "none" : "block" }}>
-          <React.Fragment key={index}>
-            {React.cloneElement(child, {
-              value: formData[child.props.name] || "",
-              hidden: formHide[child.props.name] || false,
-              disabled: formDisabled[child.props.name] || false,
-              onChange: (e) => {
-                if (child.props.onChange) {
-                  child.props.onChange(e);
-                }
-                const targetValue = e.target && e.target.value;
-                setFormData((prev) => ({
-                  ...prev,
-                  [child.props.name]: targetValue,
-                }));
-                if (props.rowNode) {
-                  updateRowData(child.props.name, targetValue);
-                }
-                if (props.treeNode) {
-                  updateTreeNodeData(child.props.name, targetValue);
-                }
-              },
-              
-            })}
-          </React.Fragment>
-        </div>
+      return formHidden[child.props.name] ? null : (
+        <React.Fragment key={index}>
+          {React.cloneElement(child, {
+            value: formData[child.props.name] || "",
+            hidden: formHidden[child.props.name] || false,
+            disabled: formDisabled[child.props.name] || false,
+            onChange: (e) => {
+              if (child.props.onChange) {
+                child.props.onChange(e);
+              }
+              const targetValue = e.target && e.target.value;
+              setFormData((prev) => ({
+                ...prev,
+                [child.props.name]: targetValue,
+              }));
+              if (props.rowNode) {
+                updateRowData(child.props.name, targetValue);
+              }
+              if (props.treeNode) {
+                updateTreeNodeData(child.props.name, targetValue);
+              }
+            },
+            
+          })}
+        </React.Fragment>
       );
     }
     else if (child.type === P2DatePicker || child.type === P2MonthPicker || child.type === P2TimePicker) {
-      return (
-        <div style={{ display: formHide[child.props.name] ? "none" : "block" }}>
-          <React.Fragment key={index}>
-            {React.cloneElement(child, {
-              value: formData[child.props.name] || "",
-              hidden: formHide[child.props.name] || false,
-              disabled: formDisabled[child.props.name] || false,
-              onChange: (e, formatString) => {
-                if (child.props.onChange) {
-                  child.props.onChange(e, formatString);
-                }
-                const targetValue = formatString;
-                setFormData((prev) => ({
-                  ...prev,
-                  [child.props.name]: targetValue,
-                }));
-                if (props.rowNode) {
-                  updateRowData(child.props.name, targetValue);
-                }
-                if (props.treeNode) {
-                  updateTreeNodeData(child.props.name, targetValue);
-                }
+      return formHidden[child.props.name] ? null : (
+        <React.Fragment key={index}>
+          {React.cloneElement(child, {
+            value: formData[child.props.name] || "",
+            hidden: formHidden[child.props.name] || false,
+            disabled: formDisabled[child.props.name] || false,
+            onChange: (e, formatString) => {
+              if (child.props.onChange) {
+                child.props.onChange(e, formatString);
               }
-            })}
-          </React.Fragment>
-        </div>
+              const targetValue = formatString;
+              setFormData((prev) => ({
+                ...prev,
+                [child.props.name]: targetValue,
+              }));
+              if (props.rowNode) {
+                updateRowData(child.props.name, targetValue);
+              }
+              if (props.treeNode) {
+                updateTreeNodeData(child.props.name, targetValue);
+              }
+            }
+          })}
+        </React.Fragment>
       );
     }
     else if (child.type === P2RangePicker) {
-      return (
-        <div style={{ display: formHide[child.props.name] ? "none" : "block" }}>
-          <React.Fragment key={index}>
-            {React.cloneElement(child, {
-              value: formData[child.props.name] || [null, null],
-              hidden: formHide[child.props.name] || false,
-              disabled: formDisabled[child.props.name] || false,
-              onChange: (e, formatStrings) => {
-                if (child.props.onChange) {
-                  child.props.onChange(e, formatStrings);
-                }
-                const targetValue = formatStrings;
-                setFormData((prev) => ({
-                  ...prev,
-                  [child.props.name]: targetValue,
-                }));
-                if (props.rowNode) {
-                  updateRowData(child.props.name, targetValue);
-                }
-                if (props.treeNode) {
-                  updateTreeNodeData(child.props.name, targetValue);
-                }
+      return formHidden[child.props.name] ? null : (
+        <React.Fragment key={index}>
+          {React.cloneElement(child, {
+            value: formData[child.props.name] || [null, null],
+            hidden: formHidden[child.props.name] || false,
+            disabled: formDisabled[child.props.name] || false,
+            onChange: (e, formatStrings) => {
+              if (child.props.onChange) {
+                child.props.onChange(e, formatStrings);
               }
-            })}
-          </React.Fragment>
-        </div>
+              const targetValue = formatStrings;
+              setFormData((prev) => ({
+                ...prev,
+                [child.props.name]: targetValue,
+              }));
+              if (props.rowNode) {
+                updateRowData(child.props.name, targetValue);
+              }
+              if (props.treeNode) {
+                updateTreeNodeData(child.props.name, targetValue);
+              }
+            }
+          })}
+        </React.Fragment>
       );
     }
     else if (child.type === P2InputNumber) {
-      return (
-        <div style={{ display: formHide[child.props.name] ? "none" : "block" }}>
-          <React.Fragment key={index}>
-            {React.cloneElement(child, {
-              value: formData[child.props.name] || 0,
-              hidden: formHide[child.props.name] || false,
-              disabled: formDisabled[child.props.name] || false,
-              onChange: (value) => {
-                if (child.props.onChange) {
-                  child.props.onChange(value);
-                }
-                const targetValue = value;
-                setFormData((prev) => ({
-                  ...prev,
-                  [child.props.name]: targetValue,
-                }));
-                if (props.rowNode) {
-                  updateRowData(child.props.name, targetValue);
-                }
-                if (props.treeNode) {
-                  updateTreeNodeData(child.props.name, targetValue);
-                }
-              },
-            })}
-          </React.Fragment>
-        </div>
+      return formHidden[child.props.name] ? null : (
+        <React.Fragment key={index}>
+          {React.cloneElement(child, {
+            value: formData[child.props.name] || 0,
+            hidden: formHidden[child.props.name] || false,
+            disabled: formDisabled[child.props.name] || false,
+            onChange: (value) => {
+              if (child.props.onChange) {
+                child.props.onChange(value);
+              }
+              const targetValue = value;
+              setFormData((prev) => ({
+                ...prev,
+                [child.props.name]: targetValue,
+              }));
+              if (props.rowNode) {
+                updateRowData(child.props.name, targetValue);
+              }
+              if (props.treeNode) {
+                updateTreeNodeData(child.props.name, targetValue);
+              }
+            },
+          })}
+        </React.Fragment>
       );
     }
     else if (child.type === P2Checkbox || child.type === P2Switch) {
-      return (
-        <div style={{ display: formHide[child.props.name] ? "none" : "block" }}>
-          <React.Fragment key={index}>
-            {React.cloneElement(child, {
-              value: formData[child.props.name] || child.props.falseValue,
-              hidden: formHide[child.props.name] || false,
-              disabled: formDisabled[child.props.name] || false,
-              onChange: (checked) => {
-                if (child.props.onChange) {
-                  child.props.onChange(checked);
-                }
-                const targetValue = checked ? child.props.trueValue : child.props.falseValue;
-                setFormData((prev) => ({
-                  ...prev,
-                  [child.props.name]: targetValue,
-                }));
-                if (props.rowNode) {
-                  updateRowData(child.props.name, targetValue);
-                }
-                if (props.treeNode) {
-                  updateTreeNodeData(child.props.name, targetValue);
-                }
-              },
-            })}
-          </React.Fragment>
-        </div>
+      return formHidden[child.props.name] ? null : (
+        <React.Fragment key={index}>
+          {React.cloneElement(child, {
+            value: formData[child.props.name] || child.props.falseValue,
+            hidden: formHidden[child.props.name] || false,
+            disabled: formDisabled[child.props.name] || false,
+            onChange: (checked) => {
+              if (child.props.onChange) {
+                child.props.onChange(checked);
+              }
+              const targetValue = checked ? child.props.trueValue : child.props.falseValue;
+              setFormData((prev) => ({
+                ...prev,
+                [child.props.name]: targetValue,
+              }));
+              if (props.rowNode) {
+                updateRowData(child.props.name, targetValue);
+              }
+              if (props.treeNode) {
+                updateTreeNodeData(child.props.name, targetValue);
+              }
+            },
+          })}
+        </React.Fragment>
       );
     }
     else if (child.type === P2RadioGroup) {
-      return (
-        <div style={{ display: formHide[child.props.name] ? "none" : "block" }}>
-          <React.Fragment key={index}>
-            {React.cloneElement(child, {
-              value: formData[child.props.name] || "",
-              hidden: formHide[child.props.name] || false,
-              disabled: formDisabled[child.props.name] || false,
-              onChange: (e) => {
-                if (child.props.onChange) {
-                  child.props.onChange(e);
-                }
-                const targetValue = e.target && e.target.value;
-                setFormData((prev) => ({
-                  ...prev,
-                  [child.props.name]: targetValue,
-                }));
-                if (props.rowNode) {
-                  updateRowData(child.props.name, targetValue);
-                }
-                if (props.treeNode) {
-                  updateTreeNodeData(child.props.name, targetValue);
-                }
-              },
-            })}
-          </React.Fragment>
-        </div>
+      return formHidden[child.props.name] ? null : (
+        <React.Fragment key={index}>
+          {React.cloneElement(child, {
+            value: formData[child.props.name] || "",
+            hidden: formHidden[child.props.name] || false,
+            disabled: formDisabled[child.props.name] || false,
+            onChange: (e) => {
+              if (child.props.onChange) {
+                child.props.onChange(e);
+              }
+              const targetValue = e.target && e.target.value;
+              setFormData((prev) => ({
+                ...prev,
+                [child.props.name]: targetValue,
+              }));
+              if (props.rowNode) {
+                updateRowData(child.props.name, targetValue);
+              }
+              if (props.treeNode) {
+                updateTreeNodeData(child.props.name, targetValue);
+              }
+            },
+          })}
+        </React.Fragment>
       );
     }
     else {
