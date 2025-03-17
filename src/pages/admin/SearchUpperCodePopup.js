@@ -205,7 +205,7 @@ const SearchUpperCodePopup = ({ props, visible, onOk, onClose, params }) => {
   };
 
   return (
-    visible && <Modal className="!w-[80%]"
+    visible && <Modal className="!w-[80%] searchUpperCode"
       title="상위 코드 검색"
       visible={visible}
       onCancel={onClose}
