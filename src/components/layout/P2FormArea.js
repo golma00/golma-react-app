@@ -233,7 +233,7 @@ function P2FormArea(props, ref) {
         case "search":
         case "tel":
         case "time":
-          return formHidden[child.props.name] ? null : (
+          return formHidden[child.props.name] !== true && (
             <React.Fragment key={index}>
               {React.cloneElement(child, {
                 value: formData[child.props.name] || "",
@@ -275,7 +275,7 @@ function P2FormArea(props, ref) {
             </React.Fragment>
           );
           case "number":
-            return formHidden[child.props.name] ? null : (
+            return formHidden[child.props.name] !== true && (
               <React.Fragment key={index}>
                 {React.cloneElement(child, {
                   value: formData[child.props.name] || 0,
@@ -317,7 +317,7 @@ function P2FormArea(props, ref) {
               </React.Fragment>
             );
         case "checkbox":
-          return formHidden[child.props.name] ? null : (
+          return formHidden[child.props.name] !== true && (
             <React.Fragment key={index}>
               {React.cloneElement(child, {
                 checked: formData[child.props.name] === "Y" || false,
@@ -341,7 +341,7 @@ function P2FormArea(props, ref) {
             </React.Fragment>
           );
         case "radio":
-          return formHidden[child.props.name] ? null : (
+          return formHidden[child.props.name] !== true && (
             <React.Fragment key={index}>
               {React.cloneElement(child, {
                 value: formData[child.props.name] || "",
@@ -371,7 +371,7 @@ function P2FormArea(props, ref) {
       }
     }
     else if (child.type === "textarea" || child.type === P2InputTextArea) {
-      return formHidden[child.props.name] ? null : (
+      return formHidden[child.props.name] !== true && (
         <React.Fragment key={index}>
           {React.cloneElement(child, {
             value: formData[child.props.name] || "",
@@ -398,7 +398,7 @@ function P2FormArea(props, ref) {
       );
     }
     else if (child.type === P2Select) {
-      return formHidden[child.props.name] ? null : (
+      return formHidden[child.props.name] !== true && (
           <React.Fragment key={index}>
             {React.cloneElement(child, {
               optionValue: formData[child.props.name] || "",
@@ -424,7 +424,7 @@ function P2FormArea(props, ref) {
       );
     }
     else if (child.type === P2Input) {
-      return formHidden[child.props.name] ? null : (
+      return formHidden[child.props.name] !== true && (
         <React.Fragment key={index}>
           {React.cloneElement(child, {
             value: formData[child.props.name] || "",
@@ -452,7 +452,7 @@ function P2FormArea(props, ref) {
       );
     }
     else if (child.type === P2DatePicker || child.type === P2MonthPicker || child.type === P2TimePicker) {
-      return formHidden[child.props.name] ? null : (
+      return formHidden[child.props.name] !== true && (
         <React.Fragment key={index}>
           {React.cloneElement(child, {
             value: formData[child.props.name] || "",
@@ -479,7 +479,7 @@ function P2FormArea(props, ref) {
       );
     }
     else if (child.type === P2RangePicker) {
-      return formHidden[child.props.name] ? null : (
+      return formHidden[child.props.name] !== true && (
         <React.Fragment key={index}>
           {React.cloneElement(child, {
             value: formData[child.props.name] || [null, null],
@@ -506,7 +506,7 @@ function P2FormArea(props, ref) {
       );
     }
     else if (child.type === P2InputNumber) {
-      return formHidden[child.props.name] ? null : (
+      return formHidden[child.props.name] !== true && (
         <React.Fragment key={index}>
           {React.cloneElement(child, {
             value: formData[child.props.name] || 0,
@@ -533,7 +533,7 @@ function P2FormArea(props, ref) {
       );
     }
     else if (child.type === P2Checkbox || child.type === P2Switch) {
-      return formHidden[child.props.name] ? null : (
+      return formHidden[child.props.name] !== true && (
         <React.Fragment key={index}>
           {React.cloneElement(child, {
             value: formData[child.props.name] || child.props.falseValue,
@@ -560,7 +560,7 @@ function P2FormArea(props, ref) {
       );
     }
     else if (child.type === P2RadioGroup) {
-      return formHidden[child.props.name] ? null : (
+      return formHidden[child.props.name] !== true && (
         <React.Fragment key={index}>
           {React.cloneElement(child, {
             value: formData[child.props.name] || "",
