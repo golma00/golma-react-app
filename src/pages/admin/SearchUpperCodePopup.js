@@ -156,12 +156,6 @@ const SearchUpperCodePopup = ({ props, visible, onOk, onClose, params }) => {
       },
   ];
 
-  useEffect(() => {
-    if (visible && isGridReady) {
-      getUpperCodeList();
-    }
-  }, [visible, isGridReady]);
-
   async function getUpperCodeList() {
     try {
       setLoading(true);
@@ -183,7 +177,7 @@ const SearchUpperCodePopup = ({ props, visible, onOk, onClose, params }) => {
 
   async function onGridReady() {
     setGridReady(true);
-    //getUpperCodeList();
+    getUpperCodeList();
   }
 
   const onRowClicked = (params) => {
@@ -211,7 +205,7 @@ const SearchUpperCodePopup = ({ props, visible, onOk, onClose, params }) => {
   };
 
   return (
-    <Modal className="!w-[80%]"
+    visible && <Modal className="!w-[80%]"
       title="상위 코드 검색"
       visible={visible}
       onCancel={onClose}

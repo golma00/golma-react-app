@@ -20,7 +20,7 @@ function App() {
     "pages/GridFormPage": <pages.GridFormPage />,
     "pages/TreeFormPage": <pages.TreeFormPage />,
     "pages/TreePage": <pages.TreePage />,
-    "pages/AttributeMng": <pages.AttributeMng />,
+    "pages/admin/CodeMng": <pages.CodeMng />,
     "pages/admin/MenuMng": <pages.MenuMng />,
     "pages/admin/FiveGridPage": <pages.FiveGridPage />,
   });

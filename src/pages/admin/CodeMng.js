@@ -4,12 +4,12 @@ import { P2AgGrid } from 'components/grid/index';
 import { P2Select, P2Input, P2MessageBox, P2Tree } from 'components/control/index';
 import SplitterLayout from 'react-splitter-layout';
 import "react-splitter-layout/lib/index.css";
-import "../css/splitter.css";
+import "../../css/splitter.css";
 import axios from 'axios';
-import { useCommonCode } from '../hooks/useCommonCode';
+import { useCommonCode } from '../../hooks/useCommonCode';
 import SearchUpperCodePopup from './SearchUpperCodePopup';
 
-function AttributeMng(props) {
+function CodeMng(props) {
   const searchArea = useRef(null);
   const grid = useRef(0);
   const tree = useRef(null);
@@ -219,6 +219,7 @@ function AttributeMng(props) {
   async function onSearch() {
     try {
       setLoading(true);
+      grid.current.api.refresh();
 
       const searchData = searchArea.current.api.get();
       const res = await axios.post("/api/v1/code/attributeGrpList", searchData);
@@ -427,7 +428,7 @@ function AttributeMng(props) {
         </button>
       </P2GridButtonBar>
       <div className="w-full h-[500px]">
-        <SplitterLayout split="vertical" percentage={true} primaryMinSize={20} secondaryMinSize={20} secondaryInitialSize={75} customClassName='border border-solid '>
+        <SplitterLayout split="vertical" percentage={true} primaryMinSize={20} secondaryMinSize={20} secondaryInitialSize={75}>
           <P2Tree ref={tree} 
             rowData={rowData}
             nodeKeyField={"cd"}
@@ -456,18 +457,15 @@ function AttributeMng(props) {
           />
         </SplitterLayout>
       </div>
-      {
-        isSearchUpperCodePopupVisible && (
-          <SearchUpperCodePopup className="w-[800px]"
-            onOk={setUpperCode}
-            onClose={closeearchUpperCodePopup}
-            params={selectedAgGridRowData}
-            props={props}
-          />
-        )
-      }
+      <SearchUpperCodePopup className="w-[800px]"
+        visible={isSearchUpperCodePopupVisible}
+        onOk={setUpperCode}
+        onClose={closeearchUpperCodePopup}
+        params={selectedAgGridRowData}
+        props={props}
+      />
     </P2Page>
   )
 }
 
-export default AttributeMng;
+export default CodeMng;
