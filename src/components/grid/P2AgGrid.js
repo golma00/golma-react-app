@@ -54,6 +54,7 @@ function P2AgGrid(props, ref) {
           editable: false,
           sortable: false,
           filter: false,
+          pinned: "left",
           cellClass: "text-center",
         };
 
@@ -71,6 +72,7 @@ function P2AgGrid(props, ref) {
           sortable: false,
           filter: false,
           editable: true,
+          pinned: "left",
           cellRenderer: CommonCheckedRenderer,
           cellEditor: CommonCheckedEditor,
           headerComponent: CommonHeaderCheckedComponet,
@@ -91,6 +93,7 @@ function P2AgGrid(props, ref) {
           sortable: false,
           filter: false,
           editable: false,
+          pinned: "left",
           cellClass: "text-center",
           valueFormatter: (params) => {
             return `${parseInt(params.node.childIndex) + 1}`;
@@ -101,7 +104,7 @@ function P2AgGrid(props, ref) {
       }
     }
 
-    let required = {
+    const required = {
       'error-cell': (params) => !params.value
     };
 
