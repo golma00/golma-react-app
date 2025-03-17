@@ -17,6 +17,20 @@ function MenuMng(props) {
   const [count, setCount] = useState(0);
 
   useEffect(() => {
+
+    formArea.current.api.setValid({
+      menuNm: (key, param) => {
+        if (Utils.isEmpty(param[key])) {
+          return "메뉴명을 입력 하세요.";
+        }
+      },
+      menuUrl: true,
+      menuCd: true,
+      menuIconVal: true,
+      useYn: true,
+      manualUrl: true,
+    })
+
     onSearch();
   }, []);
 

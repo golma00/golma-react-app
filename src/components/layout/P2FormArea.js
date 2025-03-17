@@ -21,6 +21,7 @@ function P2FormArea(props, ref) {
   const [formHidden, setFormHidden] = useState({});
   const [formDisabled, setFormDisabled] = useState({});
   const [childrenMap, setChildrenMap] = useState({});
+  const [valid, setValid] = useState({});
 
   useEffect(() => {
     if (props.rowNode) {
@@ -90,6 +91,19 @@ function P2FormArea(props, ref) {
           }));
         });
       },
+      setValid(valid) {
+        Object.keys(valid).forEach((key) => {
+          if (valid[key]) {
+            setValid((prev) => ({
+              ...prev,
+              [key]: valid[key],
+            }));
+          }
+        });
+      },
+      validation() {
+        
+      }
     }
   }));
 
