@@ -336,7 +336,7 @@ const P2AgGridModule = {
      * @param data
      *
      */
-    setColumComboDatas: function (beans, colId, datas, valueField, displayField) {
+    setColumnComboDatas: function (beans, colId, datas, valueField, displayField) {
       const column = beans.getColumn(colId);
       if (column) {
           column.colDef.cellEditorParams = {

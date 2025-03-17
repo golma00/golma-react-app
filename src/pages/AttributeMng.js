@@ -29,6 +29,8 @@ function AttributeMng(props) {
 
   const [isSearchUpperCodePopupVisible, setSearchUpperCodePopupVisible] = useState(false);
   const [selectedAgGridRowData, setSelectedAgGridRowData] = useState(null);
+  
+  const [upperGrpCombo, setUpperGrpCombo] = useState([]);
 
   // 임시사용
   const cdTypeCombo = [
@@ -99,6 +101,18 @@ function AttributeMng(props) {
       { 
         field: "upperGrpCd",
         headerName: "종속속성\n그룹", 
+        editable: false, 
+        width: 120,
+        align: "left",
+        onCellClicked: async (params) => {
+          setSelectedAgGridRowData(params.data);
+          setSearchUpperCodePopupVisible(true);
+        },
+        cellDataType: "combo",
+      },
+      { 
+        field: "upperCd",
+        headerName: "종속속성\n코드", 
         editable: true, 
         width: 120,
         align: "left",
@@ -106,13 +120,7 @@ function AttributeMng(props) {
           setSelectedAgGridRowData(params.data);
           setSearchUpperCodePopupVisible(true);
         },
-      },
-      { 
-        field: "upperCd",
-        headerName: "종속속성\n코드", 
-        editable: true, 
-        width: 120,
-        align: "left" 
+        cellDataType: "combo",
       },
       { 
         field: "cdType",
@@ -333,10 +341,13 @@ function AttributeMng(props) {
   async function onGridReady() {
     onSearch();
   
-    const elemGrpCdParams = {
+    const commonCodeParmas = {
       elemGrpCd : {
         grpCd : "ROOT",
         cd: "G003",
+      },
+      upperGrpCd : {
+        grpCd : "ROOT",
       },
     };
   
@@ -347,13 +358,14 @@ function AttributeMng(props) {
       },
     };
 
-    const elemGrpCdCombo = await getCodeDatas(elemGrpCdParams);
+    const commonCodeCombo = await getCodeDatas(commonCodeParmas);
     const elemCdCombo = await getCodeDatas(elemCdParams);
 
-    setCeGroupList(elemGrpCdCombo.elemGrpCd);
+    setCeGroupList(commonCodeCombo.elemGrpCd);
     setCeList(elemCdCombo.elemCd);
-    // searchArea.current.api.set("ceGroupList", elemGrpCdCombo.elemGrpCd);
-    // searchArea.current.api.set("ceList", elemCdCombo.elemCd);
+    
+    grid.current.api.setColumnComboDatas("upperGrpCd", commonCodeCombo.upperGrpCd, "grpCd", "grpNm");
+    grid.current.api.setColumnComboDatas("upperCd", commonCodeCombo.upperGrpCd, "cd", "cdNm");
   }
 
   async function elemGrpCdSelectionChanged(e) {
@@ -374,9 +386,11 @@ function AttributeMng(props) {
     setSearchUpperCodePopupVisible(false);
   }
 
-  const setUpperCode = (data) => {
+  const setUpperCode = async (data) => {
     console.log("setUpperCode data => ", data);
-    console.log("grid.current.api => ", grid.current.api);
+    const selectedNode = await grid.current.api.getSelectedNode();
+    selectedNode.setDataValue("upperGrpCd", data.grpCd);
+    selectedNode.setDataValue("upperCd", data.cd);
   }
   
   return (

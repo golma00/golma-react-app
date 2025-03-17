@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Modal, Button } from 'antd';
 import { P2Page, P2SearchArea, P2GridButtonBar } from 'components/layout/index';
 import { P2AgGrid } from 'components/grid/index';
@@ -9,6 +9,7 @@ const SearchUpperCodePopup = ({ props, visible, onOk, onClose, params }) => {
   const searchArea = useRef(null);
   const grid = useRef(0);
   
+  const [isGridReady, setGridReady] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
 
   const [count, setCount] = useState(0);
@@ -155,6 +156,12 @@ const SearchUpperCodePopup = ({ props, visible, onOk, onClose, params }) => {
       },
   ];
 
+  useEffect(() => {
+    if (visible && isGridReady) {
+      getUpperCodeList();
+    }
+  }, [visible, isGridReady]);
+
   async function getUpperCodeList() {
     try {
       setLoading(true);
@@ -175,7 +182,8 @@ const SearchUpperCodePopup = ({ props, visible, onOk, onClose, params }) => {
   }
 
   async function onGridReady() {
-    getUpperCodeList();
+    setGridReady(true);
+    //getUpperCodeList();
   }
 
   const onRowClicked = (params) => {
@@ -185,11 +193,11 @@ const SearchUpperCodePopup = ({ props, visible, onOk, onClose, params }) => {
   const selectionConfirm = () => {
     if (selectedRow) {
       P2MessageBox.confirm({
-        title: '아래 Row를 선택하시겠습니까?' + '\n' +
-               '* 속성그룹명: ' + selectedRow.grpNm + '\n' + 
-               '* 속성그룹코드: ' + selectedRow.grpCd + '\n' + 
-               '* 속성명: ' + selectedRow.cdNm + '\n' + 
-               '* 속성코드: ' + selectedRow.cd,
+        title: '아래 Row를 선택하시겠습니까?',
+        content: '* 속성그룹명: ' + selectedRow.grpNm + '\n' + 
+                  '* 속성그룹코드: ' + selectedRow.grpCd + '\n' + 
+                  '* 속성명: ' + selectedRow.cdNm + '\n' + 
+                  '* 속성코드: ' + selectedRow.cd,
         onOk: () => {
           onOk(selectedRow);
           onClose();
