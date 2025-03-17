@@ -1,4 +1,5 @@
 import { insertStatus, updateStatus, deleteStatus, statusField } from "components/grid/P2AgGrid";
+import P2MessageBox from "components/control/P2MessageBox";
 
 const P2AgGridModule = {
   moduleName: "P2AgGrid",
@@ -368,6 +369,27 @@ const P2AgGridModule = {
               return null;
           }
       }
+    },
+    validate: function (beans) {
+      let message = "";
+      beans.forEachNode((node) => {
+        beans.getColumnDefs().forEach((col) => {
+          if (col.valid && col.valid instanceof Function) {
+            const result = col.valid(node);
+            if (result) {
+              col.cellClass += " error-cell";
+              col.tooltipValueGetter = (params) => result;
+              message += result + "\n";
+            }
+          }
+        });
+
+        if (message) {
+          P2MessageBox.warn(message);
+          return false;
+        }
+      });
+      return message;
     },
   },
 }; 

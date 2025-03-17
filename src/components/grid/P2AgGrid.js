@@ -237,9 +237,6 @@ function P2AgGrid(props, ref) {
   }, []);
 
   const onCellValueChanged = useCallback((params) => {
-    if (props.onCellValueChanged) {
-      props.onCellValueChanged(params);
-    }
     if (showStatusColumn && params.oldValue !== params.newValue) {
       if (
         params.data[statusField] !== insertStatus &&
@@ -247,6 +244,9 @@ function P2AgGrid(props, ref) {
       ) {
         params.node.setDataValue(statusField, updateStatus);
       }
+    }
+    if (props.onCellValueChanged) {
+      props.onCellValueChanged(params);
     }
   }, []);
 
