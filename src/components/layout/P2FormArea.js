@@ -18,7 +18,7 @@ import { statusField, insertStatus, updateStatus, deleteStatus } from "component
 function P2FormArea(props, ref) {
 
   const [formData, setFormData] = useState({});
-  const [formHidden, setformHidden] = useState({});
+  const [formHidden, setFormHidden] = useState({});
   const [formDisabled, setFormDisabled] = useState({});
   const [childrenMap, setChildrenMap] = useState({});
 
@@ -55,14 +55,14 @@ function P2FormArea(props, ref) {
         })); 
       },
       hidden(name, hidden) {
-        setformHidden((prev) => ({
+        setFormHidden((prev) => ({
           ...prev,
           [name]: hidden,
         }));
       },
       allHidden(hidden) {
         Object.keys(formData).forEach((key) => {
-          setformHidden((prev) => ({
+          setFormHidden((prev) => ({
             ...prev,
             [key]: hidden,
           }));
