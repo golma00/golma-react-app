@@ -74,13 +74,6 @@ function MenuMng(props) {
       if (Utils.isEmpty(saveDatas[i]["menuNm"])) {
         errorMessage += "메뉴명을 입력 하세요.\n";
       }
-      if (Utils.isEmpty(saveDatas[i]["menuUrl"])) {
-        errorMessage += "메뉴PATH를 입력 하세요.\n";
-      }
-      if (Utils.isEmpty(saveDatas[i]["menuCd"])) {
-        errorMessage += "메뉴코드를 입력 하세요.\n";
-      }
-
       if (Utils.isNotEmpty(errorMessage)) {
         errorMessage = `메뉴 (${saveDatas[i]["menuId"]}) 정보를 확인 하세요.\n\n${errorMessage}`;
         P2MessageBox.error(errorMessage);
@@ -181,11 +174,25 @@ function MenuMng(props) {
     return (item) => `${item["menuNm"]} (${item["menuId"]})`;
   }
 
+  function onBeforeTreeSelect(selectedNode) {
+    let errorMessage = "";
+    if (Utils.isEmpty(selectedNode.props.dataRef["menuNm"])) {
+      errorMessage += "메뉴명을 입력 하세요.\n";
+    }
+
+    if (Utils.isNotEmpty(errorMessage)) {
+      P2MessageBox.error(errorMessage);
+      return false;
+    }
+    return true;
+  }
+
   function onTreeSelect(selectedRow, e) {
     setTreeNode(e.node);
     formArea.current.api.allDisabled(e.node.props.dataRef.menuId === 1);
     //handleFieldVisibility(e.node.props.dataRef.menuId); // 숨길 키 값 받는 코드
   }
+
   //
   //  function handleFieldVisibility(menuId) {
   //     숨길 필드 목록을 정의 ( 키 , name 값)
@@ -227,6 +234,7 @@ function MenuMng(props) {
               parentKeyField={"upperMenuId"}
               nodeTitleField={nodeTitleFunc}
               onSelect={onTreeSelect}
+              onBeforeSelect={onBeforeTreeSelect}
               defaultExpandedKeys={['1']}
             />
           </div>

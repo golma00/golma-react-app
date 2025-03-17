@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect, useCallback } from 'react';
-import { P2MessageBox } from 'components/control/index';
 import { P2Page, P2SearchArea, P2GridButtonBar } from 'components/layout/index';
+import { P2MessageBox } from 'components/control/index';
 import { P2AgGrid } from 'components/grid/index';
 import SplitterLayout from 'react-splitter-layout';
 import axios from 'axios';
@@ -15,20 +15,31 @@ function AuthGrpMenuMng(props) {
   const [countAuthGrp, setCountAuthGrp] = useState(0);
   const [countMenu, setCountMenu] = useState(0);
 
+  const visibleFunc = (params) => params.data[params.colDef.field] === "Y";
   const colDefAuthGrps = [
-    { headerName: 'ID',         field: 'authGrpId', width: 60,  align: "center" },
+    { headerName: 'ID',         field: 'authGrpId', width: 80,  align: "center" },
     { headerName: '권한그룹명', field: 'authGrpNm', width: 200 },
   ];
   const colDefMenus = [
-    { headerName: '사용',        field: 'exsistYn',   width: 60 , cellDataType: "checkbox" },
-    { headerName: 'ID',          field: 'menuId',     width: 60,  align: "center" },
-    { headerName: '메뉴명',      field: 'menuNm',     width: 300, },
-    { headerName: '저장\n버튼',  field: 'saveUseYn',  width: 60 , cellDataType: "checkbox" },
-    { headerName: '기타\n버튼1', field: 'etcUseYn1',  width: 60 , cellDataType: "checkbox" },
-    { headerName: '기타\n버튼2', field: 'etcUseYn2',  width: 60 , cellDataType: "checkbox" },
-    { headerName: '기타\n버튼3', field: 'etcUseYn3',  width: 60 , cellDataType: "checkbox" },
-    { headerName: '기타\n버튼4', field: 'etcUseYn4',  width: 60 , cellDataType: "checkbox" },
-    { headerName: '기타\n버튼5', field: 'etcUseYn5',  width: 60 , cellDataType: "checkbox" },
+    { headerName: '사용',        field: 'useYn',      width: 60 , cellDataType: "checkbox", filter: false, editable: true, },
+    { headerName: 'ID',          field: 'menuId',     width: 80,  align: "center" },
+    { headerName: '메뉴명',      field: 'menuNm',     width: 400, cellClass: "whitespace-pre-wrap" },
+    { headerName: '저장\n버튼',  field: 'saveUseYn',  width: 80,  cellDataType: "checkbox", filter: false, editable: true },
+    { headerName: '기타\n버튼1', field: 'etcUseYn1',  width: 100, cellDataType: "checkbox", filter: false, editable: true, 
+      cellRendererParams: { visibleFunc }, cellEditorParams: { visibleFunc }
+    },
+    { headerName: '기타\n버튼2', field: 'etcUseYn2',  width: 100, cellDataType: "checkbox", filter: false, editable: true, 
+      cellRendererParams: { visibleFunc }, cellEditorParams: { visibleFunc }
+    },
+    { headerName: '기타\n버튼3', field: 'etcUseYn3',  width: 100, cellDataType: "checkbox", filter: false, editable: true, 
+      cellRendererParams: { visibleFunc }, cellEditorParams: { visibleFunc } 
+    },
+    { headerName: '기타\n버튼4', field: 'etcUseYn4',  width: 100, cellDataType: "checkbox", filter: false, editable: true, 
+      cellRendererParams: { visibleFunc }, cellEditorParams: { visibleFunc } 
+    },
+    { headerName: '기타\n버튼5', field: 'etcUseYn5',  width: 100, cellDataType: "checkbox", filter: false, editable: true, 
+      cellRendererParams: { visibleFunc }, cellEditorParams: { visibleFunc } 
+    },
   ];
 
   async function onSearch() {
@@ -45,6 +56,7 @@ function AuthGrpMenuMng(props) {
       if (res.data.code === "00") {
         gridAuthGrp.current.api.setGridOption("rowData", res.data.data.result);
         setCountAuthGrp(res.data.data.result.length);
+        gridAuthGrp.current.api.firstRowSelected();
       }
       else {
         P2MessageBox.error(res.data.message || '시스템 오류가 발생했습니다.');
@@ -98,8 +110,10 @@ function AuthGrpMenuMng(props) {
   async function onSaveAction(saveDatas) {
     setLoading(true);
     try {
+      const selectedAuthGrp = await gridAuthGrp.current.api.getSelectedRow();
       const res = await axios.put("/api/v1/authGrpMenu/saveAuthGrpMenu", {
-        saveDatas: saveDatas
+        saveDatas: saveDatas,
+        authGrpId: selectedAuthGrp.authGrpId
       });
 
       setLoading(false);
@@ -128,20 +142,28 @@ function AuthGrpMenuMng(props) {
     onSearchMenu();
   }, []);
 
+  const onCellValueChangedMenu = useCallback((e) => {
+    if (e.column.colId === "useYn") {
+      e.api.forEachNode((node) => {
+        if (node.data.upperMenuId === e.data.menuId) {
+          node.setDataValue("useYn", e.newValue);
+        }
+      });
+    }
+  }, []);
+
   return (
     <P2Page menuProps={props.menuProps} onSearch={onSearch} onSave={onSave} loading={loading}>
       <P2SearchArea onSearch={onSearch} ref={searchArea}>
       </P2SearchArea>
       <div className="w-full">
-        <SplitterLayout split="vertical" customClassName="w-full h-[600px]">
+        <SplitterLayout split="vertical" customClassName="w-full h-[600px]" percentage={true} primaryMinSize={20} secondaryMinSize={20} secondaryInitialSize={80} >
           <div className="h-[600px] flex flex-col gap-1">
             <P2GridButtonBar title="권한 그룹 목록" count={countAuthGrp}/>
             <P2AgGrid  
               debug={true}
               ref={gridAuthGrp}
               columnDefs={colDefAuthGrps}
-              showStatusColumn={true}
-              showCheckedColumn={true}
               onGridReady={onGridReadyAuthGrp}
               onSelectionChanged={onSelectionChangedAuthGrp}
             />
@@ -151,6 +173,7 @@ function AuthGrpMenuMng(props) {
             <P2AgGrid ref={gridMenu}
               columnDefs={colDefMenus}
               showStatusColumn={true}
+              onCellValueChanged={onCellValueChangedMenu}
             />
           </div>
         </SplitterLayout>
