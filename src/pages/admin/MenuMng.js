@@ -202,14 +202,14 @@ function MenuMng(props) {
       <div className="w-full">
         <SplitterLayout split="vertical" customClassName="w-full h-[600px]">
           <div className="h-[600px] flex flex-col gap-1">
-            <P2GridButtonBar title="메뉴 목록" count={count}>
-              <button className="grid-btn" onClick={onAddTreeNode.bind(this, "after")}>
+            <P2GridButtonBar title="메뉴 목록" count={count} menuProps={props.menuProps}>
+              <button className="grid-btn" onClick={onAddTreeNode.bind(this, "after")} auth={"saveUseYn"}>
                 메뉴 추가
               </button>
-              <button className="grid-btn" onClick={onAddTreeNode.bind(this, "child")}>
+              <button className="grid-btn" onClick={onAddTreeNode.bind(this, "child")} auth={"saveUseYn"}>
                 자식 추가
               </button>
-              <button className="grid-btn" onClick={onDeleteTreeNode}>
+              <button className="grid-btn" onClick={onDeleteTreeNode} auth={"saveUseYn"}>
                 메뉴 삭제
               </button>
             </P2GridButtonBar>
