@@ -1,5 +1,6 @@
 import { insertStatus, updateStatus, deleteStatus, statusField } from "components/grid/P2AgGrid";
 import P2MessageBox from "components/control/P2MessageBox";
+import * as Utils from 'utils/Utils';
 
 const P2AgGridModule = {
   moduleName: "P2AgGrid",
@@ -372,23 +373,49 @@ const P2AgGridModule = {
     },
     validate: function (beans) {
       let message = "";
+      let onMessage = false;
+      let colDefs = beans.getColumnDefs();
+
+      let valid = {
+        'error-cell': (params) => {
+          if (params.colDef.valid) {
+            return !Utils.isEmpty(params.colDef.valid(params));
+          }
+          return false;
+        }
+      };
+
       beans.forEachNode((node) => {
-        beans.getColumnDefs().forEach((col) => {
+        const rowNum = node.rowIndex + 1;
+        var colDetails = "";
+        colDefs.forEach((col) => {
           if (col.valid && col.valid instanceof Function) {
             const result = col.valid(node);
             if (result) {
-              col.cellClass += " error-cell";
+              const headerName = col.headerName.replace("*", "");
+              const rowDetails = `[${rowNum}] 행에서 오류가 발생했습니다.`;
+              colDetails += `[${headerName}] : ` + result + "\n";
+              
+              col.cellClassRules = valid;
               col.tooltipValueGetter = (params) => result;
-              message += result + "\n";
+              if (Utils.isEmpty(message)) {
+                message += rowDetails + "\n";
+              }
             }
           }
         });
 
-        if (message) {
+        if (message && !onMessage) {
+          onMessage = true;
+          message += colDetails;
           P2MessageBox.warn(message);
           return false;
         }
+        else if (message && onMessage) {
+          return false;
+        }
       });
+      beans.setGridOption("columnDefs", colDefs);
       return message;
     },
   },

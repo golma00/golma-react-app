@@ -8,6 +8,8 @@ import "../../css/splitter.css";
 import axios from 'axios';
 import { useCommonCode } from '../../hooks/useCommonCode';
 import SearchUpperCodePopup from './SearchUpperCodePopup';
+import * as Utils from 'utils/Utils';
+import { insertStatus } from 'components/grid/P2AgGrid';
 
 function CodeMng(props) {
   const searchArea = useRef(null);
@@ -29,6 +31,7 @@ function CodeMng(props) {
   const [isSearchUpperCodePopupVisible, setSearchUpperCodePopupVisible] = useState(false);
   const [selectedAgGridRowData, setSelectedAgGridRowData] = useState(null);
 
+  //코드 조회용 공통 function
   const {getCodeDatas} = useCommonCode();
 
   useEffect(() => {
@@ -48,17 +51,24 @@ function CodeMng(props) {
         field: "grpNm",
         headerName: "그룹코드명", 
         editable: false, 
+        width: 120,
         align: "left",
         pinned: "left",
       },
       { 
         field: "cd",
         headerName: "코드", 
-        editable: true, 
+        editable: (params) => params.data._status == insertStatus,
         required: true,
         width: 120,
         align: "left",
         pinned: "left",
+        valid: (params) => {
+          if (params && Utils.isEmpty(params.data.cd)) {
+            return "필수 입력 컬럼에 값이 존재하지않습니다1.";
+          }
+          return "";
+        },
       },
       { 
         field: "cdNm",
@@ -68,13 +78,25 @@ function CodeMng(props) {
         width: 150,
         align: "left",
         pinned: "left",
+        valid: (params) => {
+          if (params && Utils.isEmpty(params.data.cdNm)) {
+            return "필수 입력 컬럼에 값이 존재하지않습니다2.";
+          }
+          return "";
+        },
       },
       { 
         field: "cdDesc",
         headerName: "코드 설명", 
         editable: true, 
         width: 250,
-        align: "left" 
+        align: "left",
+        valid: (params) => {
+          if (params && Utils.isEmpty(params.data.cdDesc)) {
+            return "필수 입력 컬럼에 값이 존재하지않습니다3.";
+          }
+          return "";
+        },
       },
       { 
         field: "alignSeq",
@@ -211,6 +233,10 @@ function CodeMng(props) {
       }
     });
     grid.current.api.setGridOption("columnDefs", columnDefinition);
+  }
+
+  // 다른 그리드 세팅 이후 마지막에 실행해주어야 적용됨
+  function setGridComboDatas() {
     grid.current.api.setColumnComboDatas("upperGrpCd", upperGrpCdCombo, "grpCd", "grpNm");
     grid.current.api.setColumnComboDatas("upperCd", upperGrpCdCombo, "cd", "cdNm");
     grid.current.api.setColumnComboDatas("cdType", cdType, "cd", "cdNm");
@@ -242,31 +268,33 @@ function CodeMng(props) {
   }
 
   async function onSave() {
-    const saveDatas = await grid.current.api.getModifiedRows();
-    if (saveDatas.length === 0) {
-      P2MessageBox.warn('저장할 데이터가 없습니다.');
-      return;
-    }
-    
-    const allRowDatas = await grid.current.api.getAllRowNodes();
-    for (let saveData of saveDatas) {
-      let checkCnt = 0;
-      for (let data of allRowDatas) {
-        if (data.data._status != "D" && (data.data.cd == saveData.cd)) {
-          checkCnt++;
-          if (checkCnt > 1) {
-            P2MessageBox.warn('중복된 코드를 등록할 수 없습니다. 확인 후 다시 시도해 주십시오.');
-            return;
+    if (Utils.isEmpty(await grid.current.api.validate())) {
+      const saveDatas = await grid.current.api.getModifiedRows();
+      if (saveDatas.length === 0) {
+        P2MessageBox.warn('저장할 데이터가 없습니다.');
+        return;
+      }
+      
+      const allRowDatas = await grid.current.api.getAllRowNodes();
+      for (let saveData of saveDatas) {
+        let checkCnt = 0;
+        for (let data of allRowDatas) {
+          if (data.data._status != "D" && (data.data.cd == saveData.cd)) {
+            checkCnt++;
+            if (checkCnt > 1) {
+              P2MessageBox.warn('중복된 코드를 등록할 수 없습니다. 확인 후 다시 시도해 주십시오.');
+              return;
+            }
           }
         }
       }
-    }
-
-    P2MessageBox.confirm({
-      title: '저장 하시겠습니까?',
-      onOk: () => onSaveAction(saveDatas),
-      onCancel() {},
-    });
+  
+      P2MessageBox.confirm({
+        title: '저장 하시겠습니까?',
+        onOk: () => onSaveAction(saveDatas),
+        onCancel() {},
+      });
+    };
   }
 
   async function onSaveAction(saveDatas) {
@@ -301,6 +329,11 @@ function CodeMng(props) {
   }
 
   function onAddRow() {
+    if(Utils.isEmpty(selectedRow)){
+      P2MessageBox.warn('그룹코드가 선택되지않았습니다.\n선택 후 다시 시도해주십시오.');
+      return false;
+    }
+
     grid.current.api.addRow({
       grpCd: selectedRow.cd,
       grpNm: selectedRow.cdNm,
@@ -348,17 +381,20 @@ function CodeMng(props) {
       getCommonCodeList(selectedRow, e);
       setTreeNode(e.node);
       setHeaderNames(e.node.props.dataRef);
+      setGridComboDatas();
     }
     else {
       getCommonCodeList(selectionNode.selectedRow, selectionNode.e);
       setTreeNode(selectionNode.e.node);
       setHeaderNames(e.node.props.dataRef);
+      setGridComboDatas();
     }
   }
 
   async function onGridReady() {
     onSearch();
   
+    //불러올 공통 코드 개수만큼 Object 생성
     const commonCodeParams = {
       cdType: {
         grpCd : "ROOT",
@@ -368,7 +404,9 @@ function CodeMng(props) {
         grpCd : "ROOT",
       },
     };
+    //한번 조회로 모든 결과 불러오기
     const commonCodeCombo = await getCodeDatas(commonCodeParams);
+    //불러온 조회값에서 각각 필요한 데이터 뽑아서 UseSate 변수에 set
     setCdType(commonCodeCombo.cdType);
     setUpperGrpCdCombo(commonCodeCombo.upperGrpCd);
   }
@@ -378,7 +416,6 @@ function CodeMng(props) {
   }
 
   const setUpperCode = async (data) => {
-    console.log("setUpperCode data => ", data);
     const selectedNode = await grid.current.api.getSelectedNode();
     selectedNode.setDataValue("upperGrpCd", data.grpCd);
     selectedNode.setDataValue("upperCd", data.cd);
@@ -392,16 +429,10 @@ function CodeMng(props) {
           <P2Input type="combo" id="attribGrpId" name="attribGrpId" className="text-sm bg-white border border-gray-200 rounded-md"/>
         </div>
       </P2SearchArea>
-      <P2GridButtonBar title="코드관리" onAddRow={onAddRow} onDeleteRow={onDeleteRow} count={count}>
-        <button className="grid-btn">
-          <span>임시버튼1</span>
-        </button>
-        <button className="grid-btn">
-          <span>임시버튼2</span>
-        </button>
+      <P2GridButtonBar title="코드관리" onAddRow={onAddRow} onDeleteRow={onDeleteRow} count={count} menuProps={props.menuProps}>
       </P2GridButtonBar>
       <div className="w-full h-[500px]">
-        <SplitterLayout split="vertical" percentage={true} primaryMinSize={20} secondaryMinSize={20} secondaryInitialSize={75}>
+        <SplitterLayout split="vertical" percentage={true} primaryMinSize={20} secondaryMinSize={20} secondaryInitialSize={80}>
           <P2Tree ref={tree} 
             rowData={rowData}
             nodeKeyField={"cd"}
