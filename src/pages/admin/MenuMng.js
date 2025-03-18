@@ -18,19 +18,6 @@ function MenuMng(props) {
 
   useEffect(() => {
 
-    formArea.current.api.setValid({
-      menuNm: (key, param) => {
-        if (Utils.isEmpty(param[key])) {
-          return "메뉴명을 입력 하세요.";
-        }
-      },
-      menuUrl: true,
-      menuCd: true,
-      menuIconVal: true,
-      useYn: true,
-      manualUrl: true,
-    })
-
     onSearch();
   }, []);
 
@@ -39,6 +26,7 @@ function MenuMng(props) {
       setLoading(true);
       tree.current.api.refresh();
       formArea.current.api.clear();
+      formArea.current.api.resetErrors();
 
       const searchData = searchArea.current.api.get();
       const res = await axios.post("/api/v1/menu/list", searchData);
@@ -69,28 +57,24 @@ function MenuMng(props) {
       return;
     }
 
-    let errorMessage = "";
-    for (let i = 0; i < saveDatas.length; i++) {
-      if (Utils.isEmpty(saveDatas[i]["menuNm"])) {
-        errorMessage += "메뉴명을 입력 하세요.\n";
-      }
-      if (Utils.isNotEmpty(errorMessage)) {
-        errorMessage = `메뉴 (${saveDatas[i]["menuId"]}) 정보를 확인 하세요.\n\n${errorMessage}`;
-        P2MessageBox.error(errorMessage);
-        return;
-      }
-    }
+    let errors = {};
+    // 에러 문구 작성 하는 곳
+    saveDatas.forEach((data) => {
+      if (Utils.isEmpty(data.menuNm)) errors.menuNm = "메뉴명을 입력하세요.";
+      if (Utils.isEmpty(data.menuUrl)) errors.menuUrl = "메뉴 PATH를 입력하세요.";
+      if (Utils.isEmpty(data.menuCd)) errors.menuCd = "메뉴 코드를 입력하세요.";
+    });
 
-    if (errorMessage) {
-      P2MessageBox.error(errorMessage);
+    if (Object.keys(errors).length > 0) {
+      formArea.current.api.setValid(errors);
       return;
     }
 
-    saveDatas.forEach((item) => {
-      if (Utils.isEmpty(item["menuNm"])) {
-        item["menuId"] = null;
-      }
-    });
+    // saveDatas.forEach((item) => {
+    //   if (Utils.isEmpty(item["menuNm"])) {
+    //     item["menuId"] = null;
+    //   }
+    // });
 
     P2MessageBox.confirm({
       content: '저장 하시겠습니까?',
@@ -189,6 +173,7 @@ function MenuMng(props) {
 
   function onTreeSelect(selectedRow, e) {
     setTreeNode(e.node);
+    formArea.current.api.resetErrors();
     formArea.current.api.allDisabled(e.node.props.dataRef.menuId === 1);
     //handleFieldVisibility(e.node.props.dataRef.menuId); // 숨길 키 값 받는 코드
   }
