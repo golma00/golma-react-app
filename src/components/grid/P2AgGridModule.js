@@ -380,7 +380,7 @@ const P2AgGridModule = {
       let invalid = {
         'error-cell': (params) => {
           if (params.colDef.invalid) {
-            return !Utils.isEmpty(params.colDef.invalid(params));
+            return Utils.isNotEmpty(params.colDef.invalid({colId: params.colDef.field, node: params.node}));
           }
           return false;
         }

@@ -64,7 +64,7 @@ function CodeMng(props) {
         align: "left",
         pinned: "left",
         invalid: (params) => {
-          if (params && Utils.isEmpty(params.node.data[params.colId])) {
+          if (params.node && Utils.isEmpty(params.node.data[params.colId])) {
             return "필수 입력 컬럼에 값이 존재하지않습니다1.";
           }
           return "";
@@ -79,7 +79,7 @@ function CodeMng(props) {
         align: "left",
         pinned: "left",
         invalid: (params) => {
-          if (params && Utils.isEmpty(params.data.cdNm)) {
+          if (params.node && Utils.isEmpty(params.node.data[params.colId])) {
             return "필수 입력 컬럼에 값이 존재하지않습니다2.";
           }
           return "";
