@@ -58,13 +58,13 @@ function CodeMng(props) {
       { 
         field: "cd",
         headerName: "코드", 
-        editable: (params) => params.data._status == insertStatus,
+        editable: (params) => params.data._status === insertStatus,
         required: true,
         width: 120,
         align: "left",
         pinned: "left",
         invalid: (params) => {
-          if (params && Utils.isEmpty(params.data.cd)) {
+          if (params && Utils.isEmpty(params.node.data[params.colId])) {
             return "필수 입력 컬럼에 값이 존재하지않습니다1.";
           }
           return "";

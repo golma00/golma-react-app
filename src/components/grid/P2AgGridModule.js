@@ -391,7 +391,10 @@ const P2AgGridModule = {
         var colDetails = "";
         colDefs.forEach((col) => {
           if (col.invalid && col.invalid instanceof Function) {
-            const result = col.invalid(node);
+            const result = col.invalid({
+              colId: col.field,
+              node
+            });
             if (result) {
               const headerName = col.headerName.replace("*", "");
               const rowDetails = `[${rowNum}] 행에서 오류가 발생했습니다.`;
