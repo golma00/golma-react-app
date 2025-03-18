@@ -20,12 +20,26 @@ export class P2CheckboxCellEditor extends PopupComponent {
     const inputEl = eCheckbox.getInputElement();
     inputEl.setAttribute("tabindex", "-1");
     this.setAriaLabel(isSelected);
+
+    const { visibleFunc, textFunc } = params;
+    if (visibleFunc && !visibleFunc(params)) {
+      eCheckbox.eWrapper.className = "hidden";
+    }
+    else {
+      if (textFunc) {
+        const span = document.createElement("span");
+        span.textContent = textFunc(params);
+        eCheckbox.eWrapper.appendChild(span);
+        eCheckbox.eWrapper.className = "flex gap-1";
+      }
+    }
+
     this.addManagedListeners(eCheckbox, {
       fieldValueChanged: (event) => this.setAriaLabel(event.selected)
     });
   }
   getValue() {
-    return this.eCheckbox.getValue();
+    return this.eCheckbox.getValue() ? "Y" : "N";
   }
   focusIn() {
     this.eCheckbox.getFocusableElement().focus();
@@ -62,9 +76,23 @@ export class P2CheckboxCellRenderer extends Component {
   init(params) {
     this.refresh(params);
     const { eCheckbox, beans } = this;
+    const { visibleFunc, textFunc } = params;
     const inputEl = eCheckbox.getInputElement();
     inputEl.setAttribute("tabindex", "-1");
     _setAriaLive(inputEl, "polite");
+
+    if (visibleFunc && !visibleFunc(params)) {
+      eCheckbox.eWrapper.className = "hidden";
+    }
+    else {
+      if (textFunc) {
+        const span = document.createElement("span");
+        span.textContent = textFunc(params);
+        eCheckbox.eWrapper.appendChild(span);
+        eCheckbox.eWrapper.className = "flex gap-2";
+      }
+    }
+
     this.addManagedListeners(inputEl, {
       click: (event) => {
         _stopPropagationForAgGrid(event);
@@ -121,6 +149,11 @@ export class P2CheckboxCellRenderer extends Component {
       eCheckbox.setDisplayed(false);
       return;
     }
+
+    if (eCheckbox.eWrapper.classList.contains("hidden")) {
+      return;
+    }
+
     eCheckbox.setValue(isSelected);
     const disabled = params.disabled ?? !column?.isCellEditable(node);
     eCheckbox.setDisabled(disabled);
