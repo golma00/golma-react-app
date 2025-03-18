@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect, useCallback } from 'react';
 import { P2Page, P2SearchArea, P2GridButtonBar } from 'components/layout/index';
-import { P2MessageBox } from 'components/control/index';
+import { P2Input, P2MessageBox } from 'components/control/index';
 import { P2AgGrid } from 'components/grid/index';
 import SplitterLayout from 'react-splitter-layout';
 import axios from 'axios';
@@ -15,7 +15,9 @@ function AuthGrpMenuMng(props) {
   const [countAuthGrp, setCountAuthGrp] = useState(0);
   const [countMenu, setCountMenu] = useState(0);
 
-  const visibleFunc = (params) => params.data[params.colDef.field] === "Y";
+  const visibleFunc = (params) => params.data[params.colDef.field.replace("Use", "Has")] === "Y";
+  const textFunc = (params) => params.data[params.colDef.field.replace("UseYn", "BtnNm")];
+
   const colDefAuthGrps = [
     { headerName: 'ID',         field: 'authGrpId', width: 80,  align: "center" },
     { headerName: '권한그룹명', field: 'authGrpNm', width: 200 },
@@ -25,20 +27,25 @@ function AuthGrpMenuMng(props) {
     { headerName: 'ID',          field: 'menuId',     width: 80,  align: "center" },
     { headerName: '메뉴명',      field: 'menuNm',     width: 400, cellClass: "whitespace-pre-wrap" },
     { headerName: '저장\n버튼',  field: 'saveUseYn',  width: 80,  cellDataType: "checkbox", filter: false, editable: true },
-    { headerName: '기타\n버튼1', field: 'etcUseYn1',  width: 100, cellDataType: "checkbox", filter: false, editable: true, 
-      cellRendererParams: { visibleFunc }, cellEditorParams: { visibleFunc }
+    { headerName: '기타\n버튼1', field: 'extUseYn1',  width: 100, cellDataType: "checkbox", filter: false, editable: true, 
+      cellRendererParams: { visibleFunc, textFunc }, cellEditorParams: { visibleFunc, textFunc },
+      tooltipValueGetter: (params) => params.data["extBtnNm1"]
     },
-    { headerName: '기타\n버튼2', field: 'etcUseYn2',  width: 100, cellDataType: "checkbox", filter: false, editable: true, 
-      cellRendererParams: { visibleFunc }, cellEditorParams: { visibleFunc }
+    { headerName: '기타\n버튼2', field: 'extUseYn2',  width: 100, cellDataType: "checkbox", filter: false, editable: true, 
+      cellRendererParams: { visibleFunc, textFunc }, cellEditorParams: { visibleFunc, textFunc },
+      tooltipValueGetter: (params) => params.data["extBtnNm2"]
     },
-    { headerName: '기타\n버튼3', field: 'etcUseYn3',  width: 100, cellDataType: "checkbox", filter: false, editable: true, 
-      cellRendererParams: { visibleFunc }, cellEditorParams: { visibleFunc } 
+    { headerName: '기타\n버튼3', field: 'extUseYn3',  width: 100, cellDataType: "checkbox", filter: false, editable: true, 
+      cellRendererParams: { visibleFunc, textFunc }, cellEditorParams: { visibleFunc, textFunc },
+      tooltipValueGetter: (params) => params.data["extBtnNm3"]
     },
-    { headerName: '기타\n버튼4', field: 'etcUseYn4',  width: 100, cellDataType: "checkbox", filter: false, editable: true, 
-      cellRendererParams: { visibleFunc }, cellEditorParams: { visibleFunc } 
+    { headerName: '기타\n버튼4', field: 'extUseYn4',  width: 100, cellDataType: "checkbox", filter: false, editable: true, 
+      cellRendererParams: { visibleFunc, textFunc }, cellEditorParams: { visibleFunc, textFunc },
+      tooltipValueGetter: (params) => params.data["extBtnNm4"]
     },
-    { headerName: '기타\n버튼5', field: 'etcUseYn5',  width: 100, cellDataType: "checkbox", filter: false, editable: true, 
-      cellRendererParams: { visibleFunc }, cellEditorParams: { visibleFunc } 
+    { headerName: '기타\n버튼5', field: 'extUseYn5',  width: 100, cellDataType: "checkbox", filter: false, editable: true, 
+      cellRendererParams: { visibleFunc, textFunc }, cellEditorParams: { visibleFunc, textFunc },
+      tooltipValueGetter: (params) => params.data["extBtnNm5"]
     },
   ];
 
@@ -155,6 +162,14 @@ function AuthGrpMenuMng(props) {
   return (
     <P2Page menuProps={props.menuProps} onSearch={onSearch} onSave={onSave} loading={loading}>
       <P2SearchArea onSearch={onSearch} ref={searchArea}>
+        <div className="flex flex-row gap-2">
+          <label className="text-xl" htmlFor='authGrpId'>권한그룹ID</label>
+          <P2Input id="authGrpId" name="authGrpId" className="text-sm bg-white border border-gray-200 rounded-md"/>
+        </div>
+        <div className="flex flex-row gap-2">
+          <label className="text-xl" htmlFor='authGrpNm'>권한그룹명</label>
+          <P2Input id="authGrpNm" name="authGrpNm" className="text-sm bg-white border border-gray-200 rounded-md"/>
+        </div>
       </P2SearchArea>
       <div className="w-full">
         <SplitterLayout split="vertical" customClassName="w-full h-[600px]" percentage={true} primaryMinSize={20} secondaryMinSize={20} secondaryInitialSize={80} >
