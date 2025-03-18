@@ -91,12 +91,6 @@ function CodeMng(props) {
         editable: true, 
         width: 250,
         align: "left",
-        valid: (params) => {
-          if (params && Utils.isEmpty(params.data.cdDesc)) {
-            return "필수 입력 컬럼에 값이 존재하지않습니다3.";
-          }
-          return "";
-        },
       },
       { 
         field: "alignSeq",
