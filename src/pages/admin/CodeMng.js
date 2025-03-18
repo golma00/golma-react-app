@@ -126,6 +126,11 @@ function CodeMng(props) {
           setSearchUpperCodePopupVisible(true);
         },
         cellDataType: "combo",
+        valid: (params) => {
+          if (Utils.isEmpty(params.data.upperGrpCd)) {
+            return "필수 입력 값 입니다.";
+          }
+        }
       },
       { 
         field: "cdType",
