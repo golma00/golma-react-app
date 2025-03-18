@@ -202,14 +202,14 @@ function MenuMng(props) {
       <div className="w-full">
         <SplitterLayout split="vertical" customClassName="w-full h-[600px]">
           <div className="h-[600px] flex flex-col gap-1">
-            <P2GridButtonBar title="메뉴 목록" count={count} menuProps={props.menuProps}>
-              <button className="grid-btn" onClick={onAddTreeNode.bind(this, "after")} auth={"saveUseYn"}>
+            <P2GridButtonBar title="메뉴 목록" count={count}>
+              <button className="grid-btn" onClick={onAddTreeNode.bind(this, "after")}>
                 메뉴 추가
               </button>
-              <button className="grid-btn" onClick={onAddTreeNode.bind(this, "child")} auth={"saveUseYn"}>
+              <button className="grid-btn" onClick={onAddTreeNode.bind(this, "child")}>
                 자식 추가
               </button>
-              <button className="grid-btn" onClick={onDeleteTreeNode} auth={"saveUseYn"}>
+              <button className="grid-btn" onClick={onDeleteTreeNode}>
                 메뉴 삭제
               </button>
             </P2GridButtonBar>
@@ -224,7 +224,7 @@ function MenuMng(props) {
             />
           </div>
           <div className="h-[600px] flex flex-col gap-1">
-            <P2GridButtonBar title="메뉴 상세" menuProps={props.menuProps}/>
+            <P2GridButtonBar title="메뉴 상세"/>
             <P2FormArea ref={formArea} className="p2-form-area h-[550px] overflow-y-auto" treeNode={treeNode}>
               <div className="flex flex-row justify-stretch gap-5">
                 <div className="flex flex-row gap-2 w-1/3">
