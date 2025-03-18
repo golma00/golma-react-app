@@ -262,33 +262,35 @@ function CodeMng(props) {
   }
 
   async function onSave() {
-    if (Utils.isEmpty(await grid.current.api.validate())) {
-      const saveDatas = await grid.current.api.getModifiedRows();
-      if (saveDatas.length === 0) {
-        P2MessageBox.warn('저장할 데이터가 없습니다.');
-        return;
-      }
-      
-      const allRowDatas = await grid.current.api.getAllRowNodes();
-      for (let saveData of saveDatas) {
-        let checkCnt = 0;
-        for (let data of allRowDatas) {
-          if (data.data._status != "D" && (data.data.cd == saveData.cd)) {
-            checkCnt++;
-            if (checkCnt > 1) {
-              P2MessageBox.warn('중복된 코드를 등록할 수 없습니다. 확인 후 다시 시도해 주십시오.');
-              return;
-            }
+    const saveDatas = await grid.current.api.getModifiedRows();
+    if (saveDatas.length === 0) {
+      P2MessageBox.warn('저장할 데이터가 없습니다.');
+      return;
+    }
+
+    if (Utils.isNotEmpty(await grid.current.api.validate())) {
+      return;
+    }
+    
+    const allRowDatas = await grid.current.api.getAllRowNodes();
+    for (let saveData of saveDatas) {
+      let checkCnt = 0;
+      for (let data of allRowDatas) {
+        if (data.data._status != "D" && (data.data.cd == saveData.cd)) {
+          checkCnt++;
+          if (checkCnt > 1) {
+            P2MessageBox.warn('중복된 코드를 등록할 수 없습니다. 확인 후 다시 시도해 주십시오.');
+            return;
           }
         }
       }
-  
-      P2MessageBox.confirm({
-        title: '저장 하시겠습니까?',
-        onOk: () => onSaveAction(saveDatas),
-        onCancel() {},
-      });
-    };
+    }
+
+    P2MessageBox.confirm({
+      title: '저장 하시겠습니까?',
+      onOk: () => onSaveAction(saveDatas),
+      onCancel() {},
+    });
   }
 
   async function onSaveAction(saveDatas) {
