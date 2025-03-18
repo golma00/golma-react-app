@@ -377,8 +377,6 @@ const P2AgGridModule = {
       let colDefs = beans.getColumnDefs();
       let modifiedRowNodes = await beans.getModifiedRowNodes();
 
-      console.log("modifiedRowNodes => ", modifiedRowNodes);
-
       let invalid = {
         'error-cell': (params) => {
           if (params.colDef.invalid) {
