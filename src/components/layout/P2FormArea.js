@@ -92,6 +92,7 @@ function P2FormArea(props, ref) {
             [key]: undefined,
           }));
         });
+        setErrors({});
       },
       setValid(valid) {
         Object.keys(valid).forEach((key) => {
@@ -105,7 +106,33 @@ function P2FormArea(props, ref) {
         setErrors(valid);
       },
       validate() {
-        
+        let errors = {};
+
+        //검증 규칙 정의
+        const validationRules = {
+          menuNm: { required: true, message: "메뉴 이름을 작성하십시오" },
+          menuCd: { required: true, message: "메뉴 코드를 작성하십시오" },
+          menuUrl: { required: true, message: "메뉴 PATH를 작성하여야 합니다" },
+        };
+        // 검증 결과
+        Object.keys(formData).forEach((key) => {
+          const value = formData[key];
+          const rules = validationRules[key]; // 해당 필드의 검증 규칙 가져오기
+      
+          if (rules) {
+            if (rules.required && (value === "" || value === undefined)) {
+              errors[key] = rules.message || "필수 입력 항목입니다.";
+            }
+          }
+        });  
+        if (Object.keys(errors).length > 0) {
+          setValid(errors);
+          setErrors(errors);
+          return errors;  // 에러 메세지 반환
+        }
+
+        setErrors({});
+        return null;
       },
       resetErrors() {
         setErrors({});
