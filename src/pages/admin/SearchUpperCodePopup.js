@@ -3,28 +3,26 @@ import { Modal, Button } from 'antd';
 import { P2Page, P2SearchArea, P2GridButtonBar } from 'components/layout/index';
 import { P2AgGrid } from 'components/grid/index';
 import { P2Input, P2MessageBox } from 'components/control/index';
+import { useCommonCode } from '../../hooks/useCommonCode';
 import axios from 'axios';
 
 const SearchUpperCodePopup = ({ props, visible, onOk, onClose, params }) => {
   const searchArea = useRef(null);
   const grid = useRef(0);
+
+  const [cdType, setCdType] = useState([]);
   
-  const [isGridReady, setGridReady] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
 
   const [count, setCount] = useState(0);
   const [loading, setLoading] = useState(false);
 
-  // 임시사용
-  const cdTypeCombo = [
-    { cd: "C", cdNm: "속성" },      // Code
-    { cd: "G", cdNm: "속성그룹" },  // Group
-  ];
+  const {getCodeDatas} = useCommonCode();
 
   const colDefs = [
       { 
         field: "grpCd",
-        headerName: "속성그룹", 
+        headerName: "그룹코드", 
         width: 120,
         hide: true,
         align: "left",
@@ -32,27 +30,27 @@ const SearchUpperCodePopup = ({ props, visible, onOk, onClose, params }) => {
       },
       { 
         field: "grpNm",
-        headerName: "속성그룹명", 
+        headerName: "그룹코드명", 
         align: "left",
         pinned: "left",
       },
       { 
         field: "cd",
-        headerName: "속성코드",
+        headerName: "코드",
         width: 120,
         align: "left",
         pinned: "left",
       },
       { 
         field: "cdNm",
-        headerName: "속성명", 
+        headerName: "코드명", 
         width: 150,
         align: "left",
         pinned: "left",
       },
       { 
         field: "cdDesc",
-        headerName: "속성 설명", 
+        headerName: "코드 설명", 
         width: 250,
         align: "left" 
       },
@@ -72,27 +70,22 @@ const SearchUpperCodePopup = ({ props, visible, onOk, onClose, params }) => {
       },
       { 
         field: "upperGrpCd",
-        headerName: "종속속성\n그룹", 
+        headerName: "종속\n그룹", 
         width: 120,
         align: "left" 
       },
       { 
         field: "upperCd",
-        headerName: "종속속성\n코드", 
+        headerName: "종속\n그룹코드", 
         width: 120,
         align: "left" 
       },
       { 
         field: "cdType",
-        headerName: "속성 타입", 
+        headerName: "종속 코드", 
         width: 110,
         align: "center",
         cellDataType: "combo",
-        cellEditorParams: { 
-          valueField: "cd", 
-          displayField: "cdNm", 
-          values: cdTypeCombo,
-        }
       },
       { 
         field: "cdRefVal01",
@@ -160,7 +153,7 @@ const SearchUpperCodePopup = ({ props, visible, onOk, onClose, params }) => {
     try {
       setLoading(true);
       grid.current.api.refresh();
-      const res = await axios.post("/api/v1/code/attributeCodeList", params);
+      const res = await axios.post("/api/v1/code/getCommonCodeList", params);
 
       setLoading(false);
       if (res.data.code === "00") {
@@ -176,8 +169,16 @@ const SearchUpperCodePopup = ({ props, visible, onOk, onClose, params }) => {
   }
 
   async function onGridReady() {
-    setGridReady(true);
     getUpperCodeList();
+  
+    const commonCodeParams = {
+      cdType: {
+        grpCd : "ROOT",
+        cd : "G001",
+      },
+    };
+    const commonCodeCombo = await getCodeDatas(commonCodeParams);
+    grid.current.api.setColumnComboDatas("cdType", commonCodeCombo.cdType, "cd", "cdNm");
   }
 
   const onRowClicked = (params) => {
@@ -189,9 +190,9 @@ const SearchUpperCodePopup = ({ props, visible, onOk, onClose, params }) => {
       P2MessageBox.confirm({
         title: '아래 Row를 선택하시겠습니까?',
         content: '* 속성그룹명: ' + selectedRow.grpNm + '\n' + 
-                  '* 속성그룹코드: ' + selectedRow.grpCd + '\n' + 
-                  '* 속성명: ' + selectedRow.cdNm + '\n' + 
-                  '* 속성코드: ' + selectedRow.cd,
+                 '* 속성그룹코드: ' + selectedRow.grpCd + '\n' + 
+                 '* 속성명: ' + selectedRow.cdNm + '\n' + 
+                 '* 속성코드: ' + selectedRow.cd,
         onOk: () => {
           onOk(selectedRow);
           onClose();
@@ -205,7 +206,7 @@ const SearchUpperCodePopup = ({ props, visible, onOk, onClose, params }) => {
   };
 
   return (
-    visible && <Modal className="!w-[80%] searchUpperCode"
+    visible && <Modal className="!w-[80%] p2-modal"
       title="상위 코드 검색"
       visible={visible}
       onCancel={onClose}

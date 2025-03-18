@@ -114,7 +114,7 @@ body {
   @apply w-full h-full !important;
 }
 
-.searchUpperCode .ant-modal-body {
+.p2-modal .ant-modal-body {
   @apply px-3 !important;
 }
 .ant-status-error {

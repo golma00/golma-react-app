@@ -8,14 +8,12 @@ import "../../css/splitter.css";
 import axios from 'axios';
 import { useCommonCode } from '../../hooks/useCommonCode';
 import SearchUpperCodePopup from './SearchUpperCodePopup';
-import * as Utils from 'utils/Utils';
 
 function CodeMng(props) {
   const searchArea = useRef(null);
   const grid = useRef(0);
   const tree = useRef(null);
 
-  const [codeList, setCodeList] = useState([]);
   const [count, setCount] = useState(0);
   const [loading, setLoading] = useState(false);
 
@@ -24,31 +22,22 @@ function CodeMng(props) {
   const [rowData, setRowData] = useState([]);
   const [selectedRow, setSelectedRow] = useState(null);
   const [selectionNode, setSectionNode] = useState({selectedRow: [], e: []});
-
-  const [ceGroupList, setCeGroupList] = useState([]);
-  const [ceList, setCeList] = useState([]);
   
+  const [cdType, setCdType] = useState([]);
   const [upperGrpCdCombo, setUpperGrpCdCombo] = useState([]);
 
   const [isSearchUpperCodePopupVisible, setSearchUpperCodePopupVisible] = useState(false);
   const [selectedAgGridRowData, setSelectedAgGridRowData] = useState(null);
 
-  // 임시사용
-  const cdTypeCombo = [
-    { cd: "C", cdNm: "속성" },      // Code
-    { cd: "G", cdNm: "속성그룹" },  // Group
-  ];
-
   const {getCodeDatas} = useCommonCode();
 
   useEffect(() => {
-    //getCodeList();
   }, []);
 
   const colDefs = [
       { 
         field: "grpCd",
-        headerName: "속성그룹", 
+        headerName: "그룹코드", 
         editable: false, 
         width: 120,
         hide: true,
@@ -57,14 +46,14 @@ function CodeMng(props) {
       },
       { 
         field: "grpNm",
-        headerName: "속성그룹명", 
+        headerName: "그룹코드명", 
         editable: false, 
         align: "left",
         pinned: "left",
       },
       { 
         field: "cd",
-        headerName: "속성코드", 
+        headerName: "코드", 
         editable: true, 
         required: true,
         width: 120,
@@ -73,7 +62,7 @@ function CodeMng(props) {
       },
       { 
         field: "cdNm",
-        headerName: "속성명", 
+        headerName: "코드명", 
         editable: true, 
         required: true,
         width: 150,
@@ -82,7 +71,7 @@ function CodeMng(props) {
       },
       { 
         field: "cdDesc",
-        headerName: "속성 설명", 
+        headerName: "코드 설명", 
         editable: true, 
         width: 250,
         align: "left" 
@@ -105,7 +94,7 @@ function CodeMng(props) {
       },
       { 
         field: "upperGrpCd",
-        headerName: "종속속성\n그룹", 
+        headerName: "종속\n그룹코드", 
         editable: false, 
         width: 120,
         align: "left",
@@ -117,8 +106,8 @@ function CodeMng(props) {
       },
       { 
         field: "upperCd",
-        headerName: "종속속성\n코드", 
-        editable: true, 
+        headerName: "종속 코드", 
+        editable: false, 
         width: 120,
         align: "left",
         onCellClicked: async (params) => {
@@ -129,16 +118,11 @@ function CodeMng(props) {
       },
       { 
         field: "cdType",
-        headerName: "속성 타입", 
+        headerName: "코드 타입", 
         editable: true, 
         width: 110,
         align: "center",
         cellDataType: "combo",
-        cellEditorParams: { 
-          valueField: "cd", 
-          displayField: "cdNm", 
-          values: cdTypeCombo,
-        }
       },
       { 
         field: "cdRefVal01",
@@ -229,24 +213,17 @@ function CodeMng(props) {
     grid.current.api.setGridOption("columnDefs", columnDefinition);
     grid.current.api.setColumnComboDatas("upperGrpCd", upperGrpCdCombo, "grpCd", "grpNm");
     grid.current.api.setColumnComboDatas("upperCd", upperGrpCdCombo, "cd", "cdNm");
-  }
-
-  const getCodeList = async () => {
-    try {
-      const res = await axios.get("/api/v1/login/langCd?sysId=ADMIN&grpCd=LANG_CD");
-      setCodeList(res.data.data.result);
-    } catch (error) {
-      console.log(error);
-    }
+    grid.current.api.setColumnComboDatas("cdType", cdType, "cd", "cdNm");
   }
 
   async function onSearch() {
     try {
       setLoading(true);
+      tree.current.api.refresh();
       grid.current.api.refresh();
 
       const searchData = searchArea.current.api.get();
-      const res = await axios.post("/api/v1/code/attributeGrpList", searchData);
+      const res = await axios.post("/api/v1/code/getGrpCodeList", searchData);
 
       setLoading(false);
       if (res.data.code === "00") {
@@ -295,7 +272,7 @@ function CodeMng(props) {
   async function onSaveAction(saveDatas) {
     try {
       setLoading(true);
-      const res = await axios.put("/api/v1/code/saveAttributeCodeList", {
+      const res = await axios.put("/api/v1/code/saveCommonCodeList", {
         saveDatas: saveDatas,
         parentGrpCd: selectedRow.grpCd,
         parentCd: selectedRow.cd,
@@ -307,7 +284,7 @@ function CodeMng(props) {
           title: '저장이 완료 되었습니다.',
           onOk: () => {
             onSearch();
-            getAttributeList(selectionNode.selectedRow, selectionNode.e);
+            getCommonCodeList(selectionNode.selectedRow, selectionNode.e);
             setTreeNode(selectionNode.e.node);
           }
         });
@@ -336,17 +313,17 @@ function CodeMng(props) {
     grid.current.api.deleteRow(true);
   }
 
-  async function getAttributeList(selectedAttributeId, item) {
+  async function getCommonCodeList(selectedCodeId, item) {
     try {
       grid.current.api.refresh();
       const params = {
-        attributeGrpId: item.node.props.dataRef.grpCd,
-        attributeId: selectedAttributeId[0],
+        grpCodeId: item.node.props.dataRef.grpCd,
+        codeId: selectedCodeId[0],
       }
       if (item.node.props.dataRef) {
         setSelectedRow(item.node.props.dataRef);
       }
-      const res = await axios.post("/api/v1/code/attributeCodeList", params);
+      const res = await axios.post("/api/v1/code/getCommonCodeList", params);
 
       if (res.data.code === "00") {
         grid.current.api.setGridOption("rowData", structuredClone(res.data.data.result));
@@ -365,47 +342,35 @@ function CodeMng(props) {
     return (item) => item["cd"] === "ROOT" ? item["cd"] : item["cdNm"] + " (" + item["cd"] + ")";
   }
 
+  function onSelect(selectedRow, e) {
+    if (e.selectedNodes.length > 0) {
+      setSectionNode({selectedRow: selectedRow, e: e});
+      getCommonCodeList(selectedRow, e);
+      setTreeNode(e.node);
+      setHeaderNames(e.node.props.dataRef);
+    }
+    else {
+      getCommonCodeList(selectionNode.selectedRow, selectionNode.e);
+      setTreeNode(selectionNode.e.node);
+      setHeaderNames(e.node.props.dataRef);
+    }
+  }
+
   async function onGridReady() {
     onSearch();
   
-    const commonCodeParmas = {
-      elemGrpCd : {
+    const commonCodeParams = {
+      cdType: {
         grpCd : "ROOT",
-        cd: "G003",
+        cd : "G001",
       },
       upperGrpCd : {
         grpCd : "ROOT",
       },
     };
-  
-    const elemCdParams = {
-      elemCd : {
-        grpCd : "ROOT",
-        cd: "G004",
-      },
-    };
-
-    const commonCodeCombo = await getCodeDatas(commonCodeParmas);
-    const elemCdCombo = await getCodeDatas(elemCdParams);
-
-    setCeGroupList(commonCodeCombo.elemGrpCd);
-    setCeList(elemCdCombo.elemCd);
-
+    const commonCodeCombo = await getCodeDatas(commonCodeParams);
+    setCdType(commonCodeCombo.cdType);
     setUpperGrpCdCombo(commonCodeCombo.upperGrpCd);
-  }
-
-  async function elemGrpCdSelectionChanged(e) {
-    const elemCdParams = {
-      elemCd : {
-        grpCd : "ROOT",
-        cd: "G004",
-        upperGrpCd: "G003",
-        upperCd: e.value,
-      },
-    };
-
-    const elemCdCombo = await getCodeDatas(elemCdParams);
-    setCeList(elemCdCombo.elemCd);
   }
 
   const closeearchUpperCodePopup = () => {
@@ -423,28 +388,11 @@ function CodeMng(props) {
     <P2Page menuProps={props.menuProps} onSearch={onSearch} onSave={onSave} loading={loading}>
       <P2SearchArea onSearch={onSearch} ref={searchArea}>
         <div className="flex flex-row gap-1">
-          <label className="text-xl" htmlFor='attribGrpId'>속성그룹ID</label>
+          <label className="text-xl" htmlFor='attribGrpId'>그룹코드ID</label>
           <P2Input type="combo" id="attribGrpId" name="attribGrpId" className="text-sm bg-white border border-gray-200 rounded-md"/>
         </div>
-        <div className="flex flex-row gap-2 justify-center">
-          <label htmlFor='ceGroupList'>C/E 그룹</label>
-          <P2Select id="ceGroupList" name="ceGroupList" className="w-40 text-sm"
-            defaultOption="ALL"
-            value=""
-            onChange={elemGrpCdSelectionChanged}
-            datas={ceGroupList}
-          />
-        </div>
-        <div className="flex flex-row gap-2 justify-center">
-          <label htmlFor='ceList'>C/E</label>
-          <P2Select id="ceList" name="ceList" className="w-40 text-sm"
-            defaultOption="ALL"
-            value=""
-            datas={ceList}
-          />
-        </div>
       </P2SearchArea>
-      <P2GridButtonBar title="속성관리" onAddRow={onAddRow} onDeleteRow={onDeleteRow} count={count}>
+      <P2GridButtonBar title="코드관리" onAddRow={onAddRow} onDeleteRow={onDeleteRow} count={count}>
         <button className="grid-btn">
           <span>임시버튼1</span>
         </button>
@@ -459,19 +407,7 @@ function CodeMng(props) {
             nodeKeyField={"cd"}
             parentKeyField={"parentCd"}
             nodeTitleField={nodeTitleFunc}
-            onSelect={(selectedRow, e) => {
-              if (e.selectedNodes.length > 0) {
-                setSectionNode({selectedRow: selectedRow, e: e});
-                getAttributeList(selectedRow, e);
-                setTreeNode(e.node);
-                setHeaderNames(e.node.props.dataRef);
-              }
-              else {
-                getAttributeList(selectionNode.selectedRow, selectionNode.e);
-                setTreeNode(selectionNode.e.node);
-                setHeaderNames(e.node.props.dataRef);
-              }
-            }}
+            onSelect={onSelect}
             defaultExpandedKeys={['ROOT']}
           />
           <P2AgGrid 
