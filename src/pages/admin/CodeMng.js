@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { P2Page, P2SearchArea, P2GridButtonBar } from 'components/layout/index';
-import { P2AgGrid } from 'components/grid/index';
+import { P2AgGrid, onlyInsertRow, InvalidFunction } from 'components/grid/index';
 import { P2Select, P2Input, P2MessageBox, P2Tree } from 'components/control/index';
 import SplitterLayout from 'react-splitter-layout';
 import "react-splitter-layout/lib/index.css";
@@ -9,7 +9,6 @@ import axios from 'axios';
 import { useCommonCode } from '../../hooks/useCommonCode';
 import SearchUpperCodePopup from './SearchUpperCodePopup';
 import * as Utils from 'utils/Utils';
-import { insertStatus } from 'components/grid/P2AgGrid';
 
 function CodeMng(props) {
   const searchArea = useRef(null);
@@ -58,17 +57,12 @@ function CodeMng(props) {
       { 
         field: "cd",
         headerName: "코드", 
-        editable: (params) => params.data._status === insertStatus,
+        editable: onlyInsertRow,
         required: true,
         width: 120,
         align: "left",
         pinned: "left",
-        invalid: (params) => {
-          if (params.node && Utils.isEmpty(params.node.data[params.colId])) {
-            return "필수 입력 컬럼에 값이 존재하지않습니다1.";
-          }
-          return "";
-        },
+        invalid: InvalidFunction,
       },
       { 
         field: "cdNm",
@@ -78,12 +72,7 @@ function CodeMng(props) {
         width: 150,
         align: "left",
         pinned: "left",
-        invalid: (params) => {
-          if (params.node && Utils.isEmpty(params.node.data[params.colId])) {
-            return "필수 입력 컬럼에 값이 존재하지않습니다2.";
-          }
-          return "";
-        },
+        invalid: InvalidFunction,
       },
       { 
         field: "cdDesc",
