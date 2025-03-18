@@ -63,7 +63,7 @@ function CodeMng(props) {
         width: 120,
         align: "left",
         pinned: "left",
-        valid: (params) => {
+        invalid: (params) => {
           if (params && Utils.isEmpty(params.data.cd)) {
             return "필수 입력 컬럼에 값이 존재하지않습니다1.";
           }
@@ -78,7 +78,7 @@ function CodeMng(props) {
         width: 150,
         align: "left",
         pinned: "left",
-        valid: (params) => {
+        invalid: (params) => {
           if (params && Utils.isEmpty(params.data.cdNm)) {
             return "필수 입력 컬럼에 값이 존재하지않습니다2.";
           }

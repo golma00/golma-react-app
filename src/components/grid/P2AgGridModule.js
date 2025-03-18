@@ -371,32 +371,35 @@ const P2AgGridModule = {
           }
       }
     },
-    validate: function (beans) {
+    validate: async function (beans) {
       let message = "";
       let onMessage = false;
       let colDefs = beans.getColumnDefs();
+      let modifiedRowNodes = await beans.getModifiedRowNodes();
 
-      let valid = {
+      console.log("modifiedRowNodes => ", modifiedRowNodes);
+
+      let invalid = {
         'error-cell': (params) => {
-          if (params.colDef.valid) {
-            return !Utils.isEmpty(params.colDef.valid(params));
+          if (params.colDef.invalid) {
+            return !Utils.isEmpty(params.colDef.invalid(params));
           }
           return false;
         }
       };
 
-      beans.forEachNode((node) => {
+      modifiedRowNodes.forEach((node) => {
         const rowNum = node.rowIndex + 1;
         var colDetails = "";
         colDefs.forEach((col) => {
-          if (col.valid && col.valid instanceof Function) {
-            const result = col.valid(node);
+          if (col.invalid && col.invalid instanceof Function) {
+            const result = col.invalid(node);
             if (result) {
               const headerName = col.headerName.replace("*", "");
               const rowDetails = `[${rowNum}] 행에서 오류가 발생했습니다.`;
               colDetails += `[${headerName}] : ` + result + "\n";
-              
-              col.cellClassRules = valid;
+
+              col.cellClassRules = invalid;
               col.tooltipValueGetter = (params) => result;
               if (Utils.isEmpty(message)) {
                 message += rowDetails + "\n";
