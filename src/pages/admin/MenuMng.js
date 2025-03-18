@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { P2Page, P2SearchArea, P2GridButtonBar, P2FormArea } from 'components/layout/index';
-import { P2Input, P2Checkbox, P2Tree, P2DatePicker, P2MessageBox, P2RadioGroup, P2Select } from 'components/control/index';
-import { Divider, Radio } from 'antd';
+import { P2Input, P2Checkbox, P2Tree, P2DatePicker, P2MessageBox } from 'components/control/index';
+import { Divider } from 'antd';
 import * as Utils from 'utils/Utils';
 import SplitterLayout from 'react-splitter-layout';
 import axios from 'axios';
@@ -52,7 +52,6 @@ function MenuMng(props) {
     
     // 에러 검증
     const validErrors = formArea.current.api.validate();
-    console.log(formArea.current.api.validate());
     if (validErrors) {
       const errorMessage = Object.values(validErrors).join("\n"); // 여러 개의 에러 메시지 줄바꿈 처리
       P2MessageBox.warn(errorMessage); // 에러 메시지 표시
@@ -244,7 +243,6 @@ function MenuMng(props) {
                 <div className="flex flex-row gap-2 w-1/3">
                   <label htmlFor='menuCd' className="w-28 self-center text-right">메뉴코드</label>
                   <P2Input id="menuCd" name="menuCd" className="text-sm bg-white border border-gray-200 rounded-md" />
-                  <Radio id="menuCd" name="menuCd" className="text-sm bg-white border border-gray-200 rounded-md" />
                 </div>
                 <div className="flex flex-row gap-2 w-2/3">
                   <label htmlFor='menuIconVal' className="w-28 self-center text-right">메뉴ICON</label>
