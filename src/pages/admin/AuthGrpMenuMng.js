@@ -53,6 +53,9 @@ function AuthGrpMenuMng(props) {
     try {
       setLoading(true);
       gridAuthGrp.current.api.refresh();
+      if (gridMenu.current.api) {
+        gridMenu.current.api.refresh();
+      }
 
       const searchData = searchArea.current.api.get();
       searchData["useYn"] = "Y";
@@ -127,7 +130,7 @@ function AuthGrpMenuMng(props) {
       if (res.data.code === "00") {
         P2MessageBox.success({
           content: '저장이 완료 되었습니다.',
-          onOk: () => onSearch(),
+          onOk: () => onSearchMenu(),
         });
       }
       else {
