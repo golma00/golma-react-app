@@ -25,7 +25,7 @@ function P2Tree(props, ref) {
 
   useImperativeHandle(ref, () => ({
     api: {
-      refresh: () => {
+      clear: () => {
         setSelectKeys([]);
         setSelectedTreeNode(null);
         setExpandedKeys(props.defaultExpandedKeys || []);
@@ -37,6 +37,9 @@ function P2Tree(props, ref) {
       },
       getRowData: () => {
         return rowData;
+      },
+      setRowData: (rowData) => {
+        setRowData([...rowData]);
       },
       getModifiedRows: () => {
         return rowData.filter((item) => item[statusField] !== "");
@@ -122,9 +125,6 @@ function P2Tree(props, ref) {
       },
       setSelectedTreeNode: (key) => {
         setSelectKeys([key]);
-      },
-      setTreeRowData: (rowData) => {
-        setRowData([...rowData]);
       },
     }
   }));
