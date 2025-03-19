@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { P2Page, P2SearchArea, P2GridButtonBar } from 'components/layout/index';
 import { P2AgGrid, onlyInsertRow, InvalidFunction } from 'components/grid/index';
-import { P2Select, P2Input, P2MessageBox, P2Tree } from 'components/control/index';
+import { P2Input, P2MessageBox, P2Tree } from 'components/control/index';
 import SplitterLayout from 'react-splitter-layout';
 import "react-splitter-layout/lib/index.css";
 import "../../css/splitter.css";
@@ -19,13 +19,9 @@ function CodeMng(props) {
   const [loading, setLoading] = useState(false);
 
   // Tree 영역 조회 데이터
-  const [treeNode, setTreeNode] = useState(null);
   const [rowData, setRowData] = useState([]);
   const [selectedRow, setSelectedRow] = useState(null);
   const [selectionNode, setSectionNode] = useState({selectedRow: [], e: []});
-  
-  const [cdType, setCdType] = useState([]);
-  const [upperGrpCdCombo, setUpperGrpCdCombo] = useState([]);
 
   const [isSearchUpperCodePopupVisible, setSearchUpperCodePopupVisible] = useState(false);
   const [selectedAgGridRowData, setSelectedAgGridRowData] = useState(null);
@@ -215,14 +211,7 @@ function CodeMng(props) {
         }
       }
     });
-    grid.current.api.setGridOption("columnDefs", columnDefinition);
-  }
-
-  // 다른 그리드 세팅 이후 마지막에 실행해주어야 적용됨
-  function setGridComboDatas() {
-    grid.current.api.setColumnComboDatas("upperGrpCd", upperGrpCdCombo, "grpCd", "grpNm");
-    grid.current.api.setColumnComboDatas("upperCd", upperGrpCdCombo, "cd", "cdNm");
-    grid.current.api.setColumnComboDatas("cdType", cdType, "cd", "cdNm");
+    setColumnDefs(columnDefinition);
   }
 
   async function onSearch() {
@@ -265,7 +254,7 @@ function CodeMng(props) {
     for (let saveData of saveDatas) {
       let checkCnt = 0;
       for (let data of allRowDatas) {
-        if (data.data._status != "D" && (data.data.cd == saveData.cd)) {
+        if (data.data._status !== "D" && (data.data.cd === saveData.cd)) {
           checkCnt++;
           if (checkCnt > 1) {
             P2MessageBox.warn('중복된 코드를 등록할 수 없습니다. 확인 후 다시 시도해 주십시오.');
@@ -298,7 +287,6 @@ function CodeMng(props) {
           onOk: () => {
             onSearch();
             getCommonCodeList(selectionNode.selectedRow, selectionNode.e);
-            setTreeNode(selectionNode.e.node);
           }
         });
       }
@@ -322,8 +310,10 @@ function CodeMng(props) {
     grid.current.api.addRow({
       grpCd: selectedRow.cd,
       grpNm: selectedRow.cdNm,
+      parentGrpCd: selectedRow.grpCd,
+      parentCd: selectedRow.cd,
       useYn: "Y",
-      cdType: selectedRow.cd == "ROOT" ? "G" : "C",
+      cdType: selectedRow.cd === "ROOT" ? "G" : "C",
     });
   }
 
@@ -364,15 +354,11 @@ function CodeMng(props) {
     if (e.selectedNodes.length > 0) {
       setSectionNode({selectedRow: selectedRow, e: e});
       getCommonCodeList(selectedRow, e);
-      setTreeNode(e.node);
       setHeaderNames(e.node.props.dataRef);
-      setGridComboDatas();
     }
     else {
       getCommonCodeList(selectionNode.selectedRow, selectionNode.e);
-      setTreeNode(selectionNode.e.node);
       setHeaderNames(e.node.props.dataRef);
-      setGridComboDatas();
     }
   }
 
@@ -391,9 +377,10 @@ function CodeMng(props) {
     };
     //한번 조회로 모든 결과 불러오기
     const commonCodeCombo = await getCodeDatas(commonCodeParams);
-    //불러온 조회값에서 각각 필요한 데이터 뽑아서 UseSate 변수에 set
-    setCdType(commonCodeCombo.cdType);
-    setUpperGrpCdCombo(commonCodeCombo.upperGrpCd);
+    //불러온 조회값에서 각각 필요한 데이터 뽑아서 Combo 세팅
+    grid.current.api.setColumnComboDatas("upperGrpCd", commonCodeCombo.upperGrpCd, "grpCd", "grpNm");
+    grid.current.api.setColumnComboDatas("upperCd", commonCodeCombo.upperGrpCd, "cd", "cdNm");
+    grid.current.api.setColumnComboDatas("cdType", commonCodeCombo.cdType, "cd", "cdNm");
   }
 
   const closeearchUpperCodePopup = () => {
