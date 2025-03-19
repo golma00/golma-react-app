@@ -18,7 +18,7 @@ function CodeMng(props) {
   const [loading, setLoading] = useState(false);
 
   // Tree 영역 조회 데이터
-  const [rowData, setRowData] = useState([]);
+  //const [rowData, setRowData] = useState([]);
   const [selectedRow, setSelectedRow] = useState(null);
   const [selectionNode, setSectionNode] = useState({selectedRow: [], e: []});
 
@@ -207,7 +207,8 @@ function CodeMng(props) {
 
       setLoading(false);
       if (res.data.code === "00") {
-        setRowData(res.data.data.result);
+        //setRowData(res.data.data.result);
+        tree.current.api.setTreeRowData(res.data.data.result);
         setCount(res.data.data.result.length);
       }
       else {
@@ -402,7 +403,6 @@ function CodeMng(props) {
       <div className="w-full h-[500px]">
         <SplitterLayout split="vertical" percentage={true} primaryMinSize={20} secondaryMinSize={20} secondaryInitialSize={80}>
           <P2Tree ref={tree} 
-            rowData={rowData}
             nodeKeyField={"cd"}
             parentKeyField={"parentCd"}
             nodeTitleField={nodeTitleFunc}

@@ -123,6 +123,9 @@ function P2Tree(props, ref) {
       setSelectedTreeNode: (key) => {
         setSelectKeys([key]);
       },
+      setTreeRowData: (rowData) => {
+        setRowData([...rowData]);
+      },
     }
   }));
 
