@@ -52,8 +52,8 @@ function AuthGrpMenuMng(props) {
   async function onSearch() {
     try {
       setLoading(true);
-      gridAuthGrp.current.api.refresh();
-      gridMenu.current.api?.refresh();
+      gridAuthGrp.current.api.clear();
+      gridMenu.current.api?.clear();
 
       const searchData = searchArea.current.api.get();
       searchData["useYn"] = "Y";
