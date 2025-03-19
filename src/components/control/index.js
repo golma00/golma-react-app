@@ -5,3 +5,4 @@ export { P2RadioGroup } from "components/control/P2RadioGroup";
 export { default as P2Select } from "components/control/P2Select";
 export { default as P2Tree } from "components/control/P2Tree";
 export { default as P2MessageBox } from "components/control/P2MessageBox";
+export { useCommonCode } from "hooks/useCommonCode";

@@ -4,10 +4,9 @@ import { P2AgGrid, onlyInsertRow, InvalidFunction } from 'components/grid/index'
 import { P2Input, P2MessageBox, P2Tree } from 'components/control/index';
 import SplitterLayout from 'react-splitter-layout';
 import "react-splitter-layout/lib/index.css";
-import "../../css/splitter.css";
 import axios from 'axios';
-import { useCommonCode } from '../../hooks/useCommonCode';
-import SearchUpperCodePopup from './SearchUpperCodePopup';
+import { useCommonCode } from 'hooks/useCommonCode';
+import SearchUpperCodePopup from 'pages/admin/SearchUpperCodePopup';
 import * as Utils from 'utils/Utils';
 
 function CodeMng(props) {
@@ -257,7 +256,9 @@ function CodeMng(props) {
         if (data.data._status !== "D" && (data.data.cd === saveData.cd)) {
           checkCnt++;
           if (checkCnt > 1) {
-            P2MessageBox.warn('중복된 코드를 등록할 수 없습니다. 확인 후 다시 시도해 주십시오.');
+            console.log("data => ", data);
+            let rowNum = data.rowIndex + 1;
+            P2MessageBox.warn(`[${rowNum}]행: 중복된 코드를 등록할 수 없습니다.\n확인 후 다시 시도해 주십시오.`);
             return;
           }
         }

@@ -1,16 +1,14 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef } from 'react';
 import { Modal, Button } from 'antd';
 import { P2Page, P2SearchArea, P2GridButtonBar } from 'components/layout/index';
 import { P2AgGrid } from 'components/grid/index';
 import { P2Input, P2MessageBox } from 'components/control/index';
-import { useCommonCode } from '../../hooks/useCommonCode';
+import { useCommonCode } from 'hooks/useCommonCode';
 import axios from 'axios';
 
 const SearchUpperCodePopup = ({ props, visible, onOk, onClose, params }) => {
   const searchArea = useRef(null);
   const grid = useRef(0);
-
-  const [cdType, setCdType] = useState([]);
   
   const [selectedRow, setSelectedRow] = useState(null);
 

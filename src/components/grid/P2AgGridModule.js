@@ -396,7 +396,7 @@ const P2AgGridModule = {
               node
             });
             if (result) {
-              const headerName = col.headerName.replace("*", "");
+              const headerName = col.headerName.replace("* ", "");
               const rowDetails = `[${rowNum}] 행에서 오류가 발생했습니다.`;
               colDetails += `[${headerName}] : ${result}\n`;
 

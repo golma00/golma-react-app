@@ -11,3 +11,4 @@ export { default as FiveGridPage } from "pages/FiveGridPage";
 
 export { default as MenuMng } from "pages/admin/MenuMng";
 export { default as AuthGrpMenuMng } from "pages/admin/AuthGrpMenuMng";
+export { default as SearchUpperCodePopup } from "pages/admin/SearchUpperCodePopup";
