@@ -52,6 +52,36 @@ export function isArray(value) {
   return Array.isArray(value);
 }
 
+export function getByteLength(str) {
+  if (isEmpty(str)) {
+    return 0;
+  }
 
+  let size = 0;
 
+  for (let i = 0; i < str.length; i++ ) {
+    size += charByteSize(str.charAt(i));
+  }
+  return size;
+}
 
+function charByteSize(char) {
+  if (isEmpty(char)) {
+    return 0;
+  }
+
+  let charCode = char.charCodeAt( 0 );
+
+  if (charCode <= 0x00007F) {
+    return 1;
+  } 
+  else if (charCode <= 0x0007FF) {
+    return 2;
+  }
+  else if( charCode <= 0x00FFFF) {
+    return 3;
+  }
+  else {
+    return 4;
+  }
+}
