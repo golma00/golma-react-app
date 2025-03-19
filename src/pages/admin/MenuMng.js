@@ -50,13 +50,11 @@ function MenuMng(props) {
     console.log(formArea.current.api.get());
     const saveDatas = await tree.current.api.getModifiedRows();
     
-    // 에러 검증
-    const validErrors = formArea.current.api.validate();
-    if (validErrors) {
-      const errorMessage = Object.values(validErrors).join("\n"); // 여러 개의 에러 메시지 줄바꿈 처리
-      P2MessageBox.warn(errorMessage); // 에러 메시지 표시
-      return;
-    }
+    // 에러 검증 (valid , validate)
+    //  const validErrors = formArea.current.api.validate();
+    //  if (validErrors) {
+    //    return;
+    //  }
   
 
     if (saveDatas.length === 0) {
@@ -65,12 +63,6 @@ function MenuMng(props) {
     }
 
     let errors = {};
-    // 에러 문구 작성 하는 곳
-    saveDatas.forEach((data) => {
-      if (Utils.isEmpty(data.menuNm)) errors.menuNm = "메뉴명을 입력하세요.";
-      if (Utils.isEmpty(data.menuUrl)) errors.menuUrl = "메뉴 PATH를 입력하세요.";
-      if (Utils.isEmpty(data.menuCd)) errors.menuCd = "메뉴 코드를 입력하세요.";
-    });
 
 
     // saveDatas.forEach((item) => {
@@ -228,7 +220,7 @@ function MenuMng(props) {
           </div>
           <div className="h-[600px] flex flex-col gap-1">
             <P2GridButtonBar title="메뉴 상세"/>
-            <P2FormArea ref={formArea} className="p2-form-area h-[550px] overflow-y-auto" treeNode={treeNode}>
+            <P2FormArea ref={formArea} className="p2-form-area h-[550px] overflow-y-auto" treeNode={treeNode} >
               <div className="flex flex-row justify-stretch gap-5">
                 <div className="flex flex-row gap-2 w-1/3">
                   <label htmlFor='menuNm' className="w-28 self-center text-right">메뉴명</label>

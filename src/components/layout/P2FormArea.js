@@ -11,7 +11,8 @@ import {
   P2InputTextArea,
   P2Checkbox,
   P2Switch,
-  P2RadioGroup 
+  P2RadioGroup, 
+  P2MessageBox
 } from "components/control/index";
 import { statusField, insertStatus, updateStatus, deleteStatus } from "components/grid/P2AgGrid";
 import { Tooltip } from "antd";
@@ -93,6 +94,7 @@ function P2FormArea(props, ref) {
           }));
         });
         setErrors({});
+        setValid({});
       },
       setValid(valid) {
         Object.keys(valid).forEach((key) => {
@@ -106,37 +108,42 @@ function P2FormArea(props, ref) {
         setErrors(valid);
       },
       validate() {
-        let errors = {};
-
-        //검증 규칙 정의
-        const validationRules = {
-          menuNm: { required: true, message: "메뉴 이름을 작성하십시오" },
-          menuCd: { required: true, message: "메뉴 코드를 작성하십시오" },
-          menuUrl: { required: true, message: "메뉴 PATH를 작성하여야 합니다" },
-        };
-        // 검증 결과
-        Object.keys(formData).forEach((key) => {
-          const value = formData[key];
-          const rules = validationRules[key]; // 해당 필드의 검증 규칙 가져오기
-      
-          if (rules) {
-            if (rules.required && (value === "" || value === undefined)) {
-              errors[key] = rules.message || "필수 입력 항목입니다.";
-            }
-          }
-        });  
-        if (Object.keys(errors).length > 0) {
-          setValid(errors);
-          setErrors(errors);
-          return errors;  // 에러 메세지 반환
+        // 공백인지 확인
+        function isEmpty(value) {
+          return value === undefined || value === null || value === "" || (Array.isArray(value) && value.length === 0);
         }
+      
+        const requiredFields = props.requiredFields || Object.keys(formData); // 필수로 지정할 값 prop 전달 (없으면 전체)
+      
+        // 필수 입력값 체크
+        const newErrors = requiredFields.reduce((acc, key) => {
+          if (isEmpty(formData[key])) {
+            acc[key] = `[${key}] 필수 입력 항목입니다.`;
+          }
+          return acc;
+        }, {});
 
-        setErrors({});
+        // A 가 존재시 B도 존재해야 함 prop으로 전달 ( dependencies={{menuNm: "menuUrl"}} )
+        if (props.dependencies) {
+          Object.entries(props.dependencies).forEach(([keyA, keyB]) => {
+            if (!isEmpty(formData[keyA]) && isEmpty(formData[keyB]) || (isEmpty(formData[keyA]) && !isEmpty(formData[keyB]))) {
+              newErrors[keyB] = `[${keyB}] 필수 입력 항목입니다. (필수 조건: ${keyA} 또는 ${keyB} 입력값이 있을 경우)`;
+            }
+          });
+        }
+        if (Object.keys(newErrors).length > 0) {
+          return new Promise((resolve) => {
+            setErrors(newErrors);
+            setValid(newErrors);
+            resolve();
+          }).then(() => {
+            const errorMessages = Object.values(newErrors).join("\n");
+            P2MessageBox.warn(`입력값을 확인해 주세요:\n${errorMessages}`);
+          });
+        }
+      
         return null;
-      },
-      resetErrors() {
-        setErrors({});
-      },
+      }, 
     }
   }));
 
