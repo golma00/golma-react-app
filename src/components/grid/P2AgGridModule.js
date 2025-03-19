@@ -371,14 +371,8 @@ const P2AgGridModule = {
           }
       }
     },
-    setHeaderName: async function (beans, columnField, changeFieldName) {
-      var columnDefinition = await beans.getColumnDefs();
-      columnDefinition.forEach((col) => {
-        if (col.field && col.field === columnField) {
-          col.headerName = changeFieldName;
-        }
-      });
-      beans.setGridOption("columnDefs", columnDefinition);
+    setHeaderName: function (beans, columnField, changeFieldName) {
+      beans.getColumn(columnField).userProvidedColDef.headerName = changeFieldName;
     },
     validate: async function (beans) {
       let message = "";
