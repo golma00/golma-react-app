@@ -195,23 +195,6 @@ function CodeMng(props) {
         align: "left" 
       },
   ];
-  
-  const [columnDefs, setColumnDefs] = useState(colDefs);
-
-  function setHeaderNames(parentData) {
-    var columnDefinition = grid.current.api.getGridOption("columnDefs");
-    columnDefinition.forEach((colDef) => {
-      if (colDef.field && colDef.field.startsWith("cdRefVal")) {
-        if (parentData && parentData[colDef.field]) {
-          colDef.headerName = parentData[colDef.field];
-        }
-        else {
-          colDef.headerName = "비고 " + colDef.field.slice(-2);
-        }
-      }
-    });
-    setColumnDefs(columnDefinition);
-  }
 
   async function onSearch() {
     try {
@@ -355,12 +338,11 @@ function CodeMng(props) {
     if (e.selectedNodes.length > 0) {
       setSectionNode({selectedRow: selectedRow, e: e});
       getCommonCodeList(selectedRow, e);
-      setHeaderNames(e.node.props.dataRef);
     }
     else {
       getCommonCodeList(selectionNode.selectedRow, selectionNode.e);
-      setHeaderNames(e.node.props.dataRef);
     }
+    grid.current.api.setHeaderNames(e.node.props.dataRef);
   }
 
   async function onGridReady() {
@@ -417,7 +399,7 @@ function CodeMng(props) {
           <P2AgGrid 
             debug={true}
             ref={grid}
-            columnDefs={columnDefs}
+            columnDefs={colDefs}
             showStatusColumn={true}
             showCheckedColumn={true}
             onGridReady={onGridReady}
