@@ -11,16 +11,20 @@ import {
   P2InputTextArea,
   P2Checkbox,
   P2Switch,
-  P2RadioGroup 
+  P2RadioGroup, 
+  P2MessageBox
 } from "components/control/index";
 import { statusField, insertStatus, updateStatus, deleteStatus } from "components/grid/P2AgGrid";
+import { Tooltip } from "antd";
 
 function P2FormArea(props, ref) {
 
   const [formData, setFormData] = useState({});
-  const [formHide, setFormHide] = useState({});
+  const [formHidden, setFormHidden] = useState({});
   const [formDisabled, setFormDisabled] = useState({});
   const [childrenMap, setChildrenMap] = useState({});
+  const [valid, setValid] = useState({});
+  const [errors, setErrors] = useState({});
 
   useEffect(() => {
     if (props.rowNode) {
@@ -54,17 +58,17 @@ function P2FormArea(props, ref) {
           [name]: value,
         })); 
       },
-      hide(name, hide) {
-        setFormHide((prev) => ({
+      hidden(name, hidden) {
+        setFormHidden((prev) => ({
           ...prev,
-          [name]: hide,
+          [name]: hidden,
         }));
       },
-      allHide(hide) {
+      allHidden(hidden) {
         Object.keys(formData).forEach((key) => {
-          setFormHide((prev) => ({
+          setFormHidden((prev) => ({
             ...prev,
-            [key]: hide,
+            [key]: hidden,
           }));
         });
       },
@@ -89,7 +93,57 @@ function P2FormArea(props, ref) {
             [key]: undefined,
           }));
         });
+        setErrors({});
+        setValid({});
       },
+      setValid(valid) {
+        Object.keys(valid).forEach((key) => {
+          if (valid[key]) {
+            setValid((prev) => ({
+              ...prev,
+              [key]: valid[key],
+            }));
+          }
+        });
+        setErrors(valid);
+      },
+      validate() {
+        // 공백인지 확인
+        function isEmpty(value) {
+          return value === undefined || value === null || value === "" || (Array.isArray(value) && value.length === 0);
+        }
+      
+        const requiredFields = props.requiredFields || Object.keys(formData); // 필수로 지정할 값 prop 전달 (없으면 전체)
+      
+        // 필수 입력값 체크
+        const newErrors = requiredFields.reduce((acc, key) => {
+          if (isEmpty(formData[key])) {
+            acc[key] = `[${key}] 필수 입력 항목입니다.`;
+          }
+          return acc;
+        }, {});
+
+        // A 가 존재시 B도 존재해야 함 prop으로 전달 ( dependencies={{menuNm: "menuUrl"}} )
+        if (props.dependencies) {
+          Object.entries(props.dependencies).forEach(([keyA, keyB]) => {
+            if (!isEmpty(formData[keyA]) && isEmpty(formData[keyB]) || (isEmpty(formData[keyA]) && !isEmpty(formData[keyB]))) {
+              newErrors[keyB] = `[${keyB}] 필수 입력 항목입니다. (필수 조건: ${keyA} 또는 ${keyB} 입력값이 있을 경우)`;
+            }
+          });
+        }
+        if (Object.keys(newErrors).length > 0) {
+          return new Promise((resolve) => {
+            setErrors(newErrors);
+            setValid(newErrors);
+            resolve();
+          }).then(() => {
+            const errorMessages = Object.values(newErrors).join("\n");
+            P2MessageBox.warn(`입력값을 확인해 주세요:\n${errorMessages}`);
+          });
+        }
+      
+        return null;
+      }, 
     }
   }));
 
@@ -205,6 +259,18 @@ function P2FormArea(props, ref) {
   }, [])
 
   function recursiveRender(child, index) {
+
+    const name = child.props.name;    
+    // 타입 별 클래스
+    const errorClass = errors[name] && (
+      child.type === P2Checkbox
+        ? "ant-checkbox-status-error"
+        : child.type === P2RadioGroup
+        ? "ant-radio-status-error"
+        : "ant-status-error"
+    );
+    const tooltipText = errors[name] || child.props.tooltip;  // 툴팁 메시지
+
     if (child.props.children && (child.props.children instanceof Object || child.props.children instanceof Array)) {
       const children = [...Children.map(child.props.children, (child, index) => {
         return recursiveRender(child, index);
@@ -233,60 +299,20 @@ function P2FormArea(props, ref) {
         case "search":
         case "tel":
         case "time":
-          return (
+          return formHidden[child.props.name] !== true && (
             <React.Fragment key={index}>
-              {React.cloneElement(child, {
-                value: formData[child.props.name] || "",
-                hide: formHide[child.props.name] || false,
-                disabled: formDisabled[child.props.name] || false,
-                onChange: (e) => {
-                  if (child.props.onChange) {
-                    child.props.onChange(e);
-                  }
-                  const targetValue = e.target && e.target.value;
-                  setFormData((prev) => ({
-                    ...prev,
-                    [child.props.name]: targetValue,
-                  }));
-                  if (props.rowNode) {
-                    updateRowData(child.props.name, targetValue);
-                  }
-                  if (props.treeNode) {
-                    updateTreeNodeData(child.props.name, targetValue);
-                  }
-                },
-                onKeyDown: (e) => {
-                  if (child.props.onKeyDown) {
-                    child.props.onKeyDown(e);
-                  }
-                  const targetValue = e.target && e.target.value;
-                  setFormData((prev) => ({
-                    ...prev,
-                    [child.props.name]: targetValue,
-                  }));
-                  if (props.rowNode) {
-                    updateRowData(child.props.name, targetValue);
-                  }
-                  if (props.treeNode) {
-                    updateTreeNodeData(child.props.name, targetValue);
-                  }
-                },
-              })}
-            </React.Fragment>
-          );
-          case "number":
-            return (
-              <React.Fragment key={index}>
+              <Tooltip key={index} title={tooltipText} placement="bottom">
                 {React.cloneElement(child, {
-                  value: formData[child.props.name] || 0,
-                  hide: formHide[child.props.name] || false,
+                  className: `${child.props.className || ""} ${errorClass || ""}`.trim(),
+                  value: formData[child.props.name] || "",
+                  hidden: formHidden[child.props.name] || false,
                   disabled: formDisabled[child.props.name] || false,
                   onChange: (e) => {
                     if (child.props.onChange) {
                       child.props.onChange(e);
                     }
                     const targetValue = e.target && e.target.value;
-                    formData((prev) => ({
+                    setFormData((prev) => ({
                       ...prev,
                       [child.props.name]: targetValue,
                     }));
@@ -302,7 +328,7 @@ function P2FormArea(props, ref) {
                       child.props.onKeyDown(e);
                     }
                     const targetValue = e.target && e.target.value;
-                    formData((prev) => ({
+                    setFormData((prev) => ({
                       ...prev,
                       [child.props.name]: targetValue,
                     }));
@@ -314,56 +340,108 @@ function P2FormArea(props, ref) {
                     }
                   },
                 })}
+              </Tooltip>
+            </React.Fragment>
+          );
+          case "number":
+            return formHidden[child.props.name] !== true && (
+              <React.Fragment key={index}>
+                <Tooltip key={index} title={tooltipText} placement="bottom">
+                  {React.cloneElement(child, {
+                    className: `${child.props.className || ""} ${errorClass || ""}`.trim(),
+                    value: formData[child.props.name] || 0,
+                    hidden: formHidden[child.props.name] || false,
+                    disabled: formDisabled[child.props.name] || false,
+                    onChange: (e) => {
+                      if (child.props.onChange) {
+                        child.props.onChange(e);
+                      }
+                      const targetValue = e.target && e.target.value;
+                      formData((prev) => ({
+                        ...prev,
+                        [child.props.name]: targetValue,
+                      }));
+                      if (props.rowNode) {
+                        updateRowData(child.props.name, targetValue);
+                      }
+                      if (props.treeNode) {
+                        updateTreeNodeData(child.props.name, targetValue);
+                      }
+                    },
+                    onKeyDown: (e) => {
+                      if (child.props.onKeyDown) {
+                        child.props.onKeyDown(e);
+                      }
+                      const targetValue = e.target && e.target.value;
+                      formData((prev) => ({
+                        ...prev,
+                        [child.props.name]: targetValue,
+                      }));
+                      if (props.rowNode) {
+                        updateRowData(child.props.name, targetValue);
+                      }
+                      if (props.treeNode) {
+                        updateTreeNodeData(child.props.name, targetValue);
+                      }
+                    },
+                  })}
+                </Tooltip>
               </React.Fragment>
             );
         case "checkbox":
-          return (
+          return formHidden[child.props.name] !== true && (
             <React.Fragment key={index}>
-              {React.cloneElement(child, {
-                checked: formData[child.props.name] === "Y" || false,
-                onChange: (e) => {
-                  if (child.props.onChange) {
-                    child.props.onChange(e);
-                  }
-                  const targetValue = e.target && e.target.checked ? "Y" : "N";
-                  setFormData((prev) => ({
-                    ...prev,
-                    [child.props.name]: targetValue,
-                  }));
-                  if (props.rowNode) {
-                    updateRowData(child.props.name, targetValue);
-                  }
-                  if (props.treeNode) {
-                    updateTreeNodeData(child.props.name, targetValue);
-                  }
-                },
-              })}
+              <Tooltip key={index} title={tooltipText} placement="bottom">
+                {React.cloneElement(child, {
+                  className: `${child.props.className || ""} ${errorClass || ""}`.trim(),
+                  checked: formData[child.props.name] === "Y" || false,
+                  onChange: (e) => {
+                    if (child.props.onChange) {
+                      child.props.onChange(e);
+                    }
+                    const targetValue = e.target && e.target.checked ? "Y" : "N";
+                    setFormData((prev) => ({
+                      ...prev,
+                      [child.props.name]: targetValue,
+                    }));
+                    if (props.rowNode) {
+                      updateRowData(child.props.name, targetValue);
+                    }
+                    if (props.treeNode) {
+                      updateTreeNodeData(child.props.name, targetValue);
+                    }
+                  },
+                })}
+              </Tooltip>
             </React.Fragment>
           );
         case "radio":
-          return (
+          return formHidden[child.props.name] !== true && (
             <React.Fragment key={index}>
-              {React.cloneElement(child, {
-                value: formData[child.props.name] || "",
-                hide: formHide[child.props.name] || false,
-                disabled: formDisabled[child.props.name] || false,
-                onChange: (e) => {
-                  if (child.props.onChange) {
-                    child.props.onChange(e);
-                  }
-                  const targetValue = e.target && e.target.value;
-                  setFormData((prev) => ({
-                    ...prev,
-                    [child.props.name]: targetValue,
-                  }));
-                  if (props.rowNode) {
-                    updateRowData(child.props.name, targetValue);
-                  }
-                  if (props.treeNode) {
-                    updateTreeNodeData(child.props.name, targetValue);
-                  }
-                },
-              })}
+              <Tooltip key={index} title={tooltipText} placement="bottom">
+                {React.cloneElement(child, {
+                  className: `${child.props.className || ""} ${errorClass || ""}`.trim(),
+                  value: formData[child.props.name] || "",
+                  hidden: formHidden[child.props.name] || false,
+                  disabled: formDisabled[child.props.name] || false,
+                  onChange: (e) => {
+                    if (child.props.onChange) {
+                      child.props.onChange(e);
+                    }
+                    const targetValue = e.target && e.target.value;
+                    setFormData((prev) => ({
+                      ...prev,
+                      [child.props.name]: targetValue,
+                    }));
+                    if (props.rowNode) {
+                      updateRowData(child.props.name, targetValue);
+                    }
+                    if (props.treeNode) {
+                      updateTreeNodeData(child.props.name, targetValue);
+                    }
+                  },
+                })}
+              </Tooltip>
             </React.Fragment>
           );
         default:
@@ -371,219 +449,241 @@ function P2FormArea(props, ref) {
       }
     }
     else if (child.type === "textarea" || child.type === P2InputTextArea) {
-      return (
+      return formHidden[child.props.name] !== true && (
         <React.Fragment key={index}>
-          {React.cloneElement(child, {
-            value: formData[child.props.name] || "",
-            hide: formHide[child.props.name] || false,
-            disabled: formDisabled[child.props.name] || false,
-            onChange: (e) => {
-              if (child.props.onChange) {
-                child.props.onChange(e);
-              }
-              const targetValue = e.target && e.target.value;
-              setFormData((prev) => ({
-                ...prev,
-                [child.props.name]: targetValue,
-              }));
-              if (props.rowNode) {
-                updateRowData(child.props.name, targetValue);
-              }
-              if (props.treeNode) {
-                updateTreeNodeData(child.props.name, targetValue);
-              }
-            },
-          })}
+          <Tooltip key={index} title={tooltipText} placement="bottom">
+            {React.cloneElement(child, {
+              className: `${child.props.className || ""} ${errorClass || ""}`.trim(),
+              value: formData[child.props.name] || "",
+              hidden: formHidden[child.props.name] || false,
+              disabled: formDisabled[child.props.name] || false,
+              onChange: (e) => {
+                if (child.props.onChange) {
+                  child.props.onChange(e);
+                }
+                const targetValue = e.target && e.target.value;
+                setFormData((prev) => ({
+                  ...prev,
+                  [child.props.name]: targetValue,
+                }));
+                if (props.rowNode) {
+                  updateRowData(child.props.name, targetValue);
+                }
+                if (props.treeNode) {
+                  updateTreeNodeData(child.props.name, targetValue);
+                }
+              },
+            })}
+          </Tooltip>
         </React.Fragment>
       );
     }
     else if (child.type === P2Select) {
-      return (
-        <React.Fragment key={index}>
-          {React.cloneElement(child, {
-            optionValue: formData[child.props.name] || "",
-            hide: formHide[child.props.name] || false,
-            disabled: formDisabled[child.props.name] || false,
-            onChange: (e) => {
-              if (child.props.onChange) {
-                child.props.onChange(e);
-              }
-              const targetValue = child.props.isMulti ? e.map(item => item.value) : e.value;
-              setFormData((prev) => ({
-                ...prev,
-                [child.props.name]: targetValue,
-              }));
-              if (props.rowNode) {
-                updateRowData(child.props.name, targetValue);
-              }
-              if (props.treeNode) {
-                updateTreeNodeData(child.props.name, targetValue);
-              }
-            },
-          })}
-        </React.Fragment>
+      return formHidden[child.props.name] !== true && (
+          <React.Fragment key={index}>
+            <Tooltip key={index} title={tooltipText} placement="bottom">
+              {React.cloneElement(child, {
+                className: `${child.props.className || ""} ${errorClass || ""}`.trim(),
+                optionValue: formData[child.props.name] || "",
+                hidden: formHidden[child.props.name] || false,
+                onChange: (e) => {
+                  if (child.props.onChange) {
+                    child.props.onChange(e);
+                  }
+                  const targetValue = child.props.isMulti ? e.map(item => item.value) : e.value;
+                  setFormData((prev) => ({
+                    ...prev,
+                    [child.props.name]: targetValue,
+                  }));
+                  if (props.rowNode) {
+                    updateRowData(child.props.name, targetValue);
+                  }
+                  if (props.treeNode) {
+                    updateTreeNodeData(child.props.name, targetValue);
+                  }
+                },
+              })}
+            </Tooltip>
+          </React.Fragment>
       );
     }
     else if (child.type === P2Input) {
-      return (
+      return formHidden[child.props.name] !== true && (
         <React.Fragment key={index}>
-          {React.cloneElement(child, {
-            value: formData[child.props.name] || "",
-            hide: formHide[child.props.name] || false,
-            disabled: formDisabled[child.props.name] || false,
-            onChange: (e) => {
-              if (child.props.onChange) {
-                child.props.onChange(e);
-              }
-              const targetValue = e.target && e.target.value;
-              setFormData((prev) => ({
-                ...prev,
-                [child.props.name]: targetValue,
-              }));
-              if (props.rowNode) {
-                updateRowData(child.props.name, targetValue);
-              }
-              if (props.treeNode) {
-                updateTreeNodeData(child.props.name, targetValue);
-              }
-            },
-            
-          })}
+          <Tooltip key={index} title={tooltipText} placement="bottom">
+            {React.cloneElement(child, {
+              className: `${child.props.className || ""} ${errorClass || ""}`.trim(),
+              value: formData[child.props.name] || "",
+              hidden: formHidden[child.props.name] || false,
+              disabled: formDisabled[child.props.name] || false,
+              onChange: (e) => {
+                if (child.props.onChange) {
+                  child.props.onChange(e);
+                }
+                const targetValue = e.target && e.target.value;
+                setFormData((prev) => ({
+                  ...prev,
+                  [child.props.name]: targetValue,
+                }));
+                if (props.rowNode) {
+                  updateRowData(child.props.name, targetValue);
+                }
+                if (props.treeNode) {
+                  updateTreeNodeData(child.props.name, targetValue);
+                }
+              },
+            })}
+          </Tooltip>
         </React.Fragment>
       );
     }
     else if (child.type === P2DatePicker || child.type === P2MonthPicker || child.type === P2TimePicker) {
-      return (
+      return formHidden[child.props.name] !== true && (
         <React.Fragment key={index}>
-          {React.cloneElement(child, {
-            value: formData[child.props.name] || "",
-            hide: formHide[child.props.name] || false,
-            disabled: formDisabled[child.props.name] || false,
-            onChange: (e, formatString) => {
-              if (child.props.onChange) {
-                child.props.onChange(e, formatString);
+          <Tooltip key={index} title={tooltipText} placement="bottom">
+            {React.cloneElement(child, {
+              className: `${child.props.className || ""} ${errorClass || ""}`.trim(),
+              value: formData[child.props.name] || "",
+              hidden: formHidden[child.props.name] || false,
+              disabled: formDisabled[child.props.name] || false,
+              onChange: (e, formatString) => {
+                if (child.props.onChange) {
+                  child.props.onChange(e, formatString);
+                }
+                const targetValue = formatString;
+                setFormData((prev) => ({
+                  ...prev,
+                  [child.props.name]: targetValue,
+                }));
+                if (props.rowNode) {
+                  updateRowData(child.props.name, targetValue);
+                }
+                if (props.treeNode) {
+                  updateTreeNodeData(child.props.name, targetValue);
+                }
               }
-              const targetValue = formatString;
-              setFormData((prev) => ({
-                ...prev,
-                [child.props.name]: targetValue,
-              }));
-              if (props.rowNode) {
-                updateRowData(child.props.name, targetValue);
-              }
-              if (props.treeNode) {
-                updateTreeNodeData(child.props.name, targetValue);
-              }
-            }
-          })}
+            })}
+          </Tooltip>
         </React.Fragment>
       );
     }
     else if (child.type === P2RangePicker) {
-      return (
+      return formHidden[child.props.name] !== true && (
         <React.Fragment key={index}>
-          {React.cloneElement(child, {
-            value: formData[child.props.name] || [null, null],
-            hide: formHide[child.props.name] || false,
-            disabled: formDisabled[child.props.name] || false,
-            onChange: (e, formatStrings) => {
-              if (child.props.onChange) {
-                child.props.onChange(e, formatStrings);
+          <Tooltip key={index} title={tooltipText} placement="bottom">
+            {React.cloneElement(child, {
+              className: `${child.props.className || ""} ${errorClass || ""}`.trim(),
+              value: formData[child.props.name] || [null, null],
+              hidden: formHidden[child.props.name] || false,
+              disabled: formDisabled[child.props.name] || false,
+              onChange: (e, formatStrings) => {
+                if (child.props.onChange) {
+                  child.props.onChange(e, formatStrings);
+                }
+                const targetValue = formatStrings;
+                setFormData((prev) => ({
+                  ...prev,
+                  [child.props.name]: targetValue,
+                }));
+                if (props.rowNode) {
+                  updateRowData(child.props.name, targetValue);
+                }
+                if (props.treeNode) {
+                  updateTreeNodeData(child.props.name, targetValue);
+                }
               }
-              const targetValue = formatStrings;
-              setFormData((prev) => ({
-                ...prev,
-                [child.props.name]: targetValue,
-              }));
-              if (props.rowNode) {
-                updateRowData(child.props.name, targetValue);
-              }
-              if (props.treeNode) {
-                updateTreeNodeData(child.props.name, targetValue);
-              }
-            }
-          })}
+            })}
+          </Tooltip>
         </React.Fragment>
       );
     }
     else if (child.type === P2InputNumber) {
-      return (
+      return formHidden[child.props.name] !== true && (
         <React.Fragment key={index}>
-          {React.cloneElement(child, {
-            value: formData[child.props.name] || 0,
-            hide: formHide[child.props.name] || false,
-            disabled: formDisabled[child.props.name] || false,
-            onChange: (value) => {
-              if (child.props.onChange) {
-                child.props.onChange(value);
-              }
-              const targetValue = value;
-              setFormData((prev) => ({
-                ...prev,
-                [child.props.name]: targetValue,
-              }));
-              if (props.rowNode) {
-                updateRowData(child.props.name, targetValue);
-              }
-              if (props.treeNode) {
-                updateTreeNodeData(child.props.name, targetValue);
-              }
-            },
-          })}
+          <Tooltip key={index} title={tooltipText} placement="bottom">
+            {React.cloneElement(child, {
+              className: `${child.props.className || ""} ${errorClass || ""}`.trim(),
+              value: formData[child.props.name] || 0,
+              hidden: formHidden[child.props.name] || false,
+              disabled: formDisabled[child.props.name] || false,
+              onChange: (value) => {
+                if (child.props.onChange) {
+                  child.props.onChange(value);
+                }
+                const targetValue = value;
+                setFormData((prev) => ({
+                  ...prev,
+                  [child.props.name]: targetValue,
+                }));
+                if (props.rowNode) {
+                  updateRowData(child.props.name, targetValue);
+                }
+                if (props.treeNode) {
+                  updateTreeNodeData(child.props.name, targetValue);
+                }
+              },
+            })}
+          </Tooltip>
         </React.Fragment>
       );
     }
     else if (child.type === P2Checkbox || child.type === P2Switch) {
-      return (
+      return formHidden[child.props.name] !== true && (
         <React.Fragment key={index}>
-          {React.cloneElement(child, {
-            value: formData[child.props.name] || child.props.falseValue,
-            hide: formHide[child.props.name] || false,
-            disabled: formDisabled[child.props.name] || false,
-            onChange: (checked) => {
-              if (child.props.onChange) {
-                child.props.onChange(checked);
-              }
-              const targetValue = checked ? child.props.trueValue : child.props.falseValue;
-              setFormData((prev) => ({
-                ...prev,
-                [child.props.name]: targetValue,
-              }));
-              if (props.rowNode) {
-                updateRowData(child.props.name, targetValue);
-              }
-              if (props.treeNode) {
-                updateTreeNodeData(child.props.name, targetValue);
-              }
-            },
-          })}
+          <Tooltip key={index} title={tooltipText} placement="bottom">
+            {React.cloneElement(child, {
+              className: `${child.props.className || ""} ${errorClass || ""}`.trim(),
+              value: formData[child.props.name] || child.props.falseValue,
+              hidden: formHidden[child.props.name] || false,
+              disabled: formDisabled[child.props.name] || false,
+              onChange: (checked) => {
+                if (child.props.onChange) {
+                  child.props.onChange(checked);
+                }
+                const targetValue = checked ? child.props.trueValue : child.props.falseValue;
+                setFormData((prev) => ({
+                  ...prev,
+                  [child.props.name]: targetValue,
+                }));
+                if (props.rowNode) {
+                  updateRowData(child.props.name, targetValue);
+                }
+                if (props.treeNode) {
+                  updateTreeNodeData(child.props.name, targetValue);
+                }
+              },
+            })}
+          </Tooltip>
         </React.Fragment>
       );
     }
     else if (child.type === P2RadioGroup) {
-      return (
+      return formHidden[child.props.name] !== true && (
         <React.Fragment key={index}>
-          {React.cloneElement(child, {
-            value: formData[child.props.name] || "",
-            hide: formHide[child.props.name] || false,
-            disabled: formDisabled[child.props.name] || false,
-            onChange: (e) => {
-              if (child.props.onChange) {
-                child.props.onChange(e);
-              }
-              const targetValue = e.target && e.target.value;
-              setFormData((prev) => ({
-                ...prev,
-                [child.props.name]: targetValue,
-              }));
-              if (props.rowNode) {
-                updateRowData(child.props.name, targetValue);
-              }
-              if (props.treeNode) {
-                updateTreeNodeData(child.props.name, targetValue);
-              }
-            },
-          })}
+          <Tooltip key={index} title={tooltipText} placement="bottom">
+            {React.cloneElement(child, {
+              className: `${child.props.className || ""} ${errorClass || ""}`.trim(),
+              value: formData[child.props.name] || "",
+              hidden: formHidden[child.props.name] || false,
+              disabled: formDisabled[child.props.name] || false,
+              onChange: (e) => {
+                if (child.props.onChange) {
+                  child.props.onChange(e);
+                }
+                const targetValue = e.target && e.target.value;
+                setFormData((prev) => ({
+                  ...prev,
+                  [child.props.name]: targetValue,
+                }));
+                if (props.rowNode) {
+                  updateRowData(child.props.name, targetValue);
+                }
+                if (props.treeNode) {
+                  updateTreeNodeData(child.props.name, targetValue);
+                }
+              },
+            })}
+          </Tooltip>
         </React.Fragment>
       );
     }

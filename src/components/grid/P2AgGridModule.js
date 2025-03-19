@@ -1,4 +1,6 @@
 import { insertStatus, updateStatus, deleteStatus, statusField } from "components/grid/P2AgGrid";
+import P2MessageBox from "components/control/P2MessageBox";
+import * as Utils from 'utils/Utils';
 
 const P2AgGridModule = {
   moduleName: "P2AgGrid",
@@ -336,7 +338,7 @@ const P2AgGridModule = {
      * @param data
      *
      */
-    setColumComboDatas: function (beans, colId, datas, valueField, displayField) {
+    setColumnComboDatas: function (beans, colId, datas, valueField, displayField) {
       const column = beans.getColumn(colId);
       if (column) {
           column.colDef.cellEditorParams = {
@@ -368,6 +370,57 @@ const P2AgGridModule = {
               return null;
           }
       }
+    },
+    validate: async function (beans) {
+      let message = "";
+      let onMessage = false;
+      let colDefs = beans.getColumnDefs();
+      let modifiedRowNodes = await beans.getModifiedRowNodes();
+
+      let invalid = {
+        'error-cell': (params) => {
+          if (params.colDef.invalid) {
+            return Utils.isNotEmpty(params.colDef.invalid({colId: params.colDef.field, node: params.node}));
+          }
+          return false;
+        }
+      };
+
+      modifiedRowNodes.forEach((node) => {
+        const rowNum = node.rowIndex + 1;
+        var colDetails = "";
+        colDefs.forEach((col) => {
+          if (col.invalid && col.invalid instanceof Function) {
+            const result = col.invalid({
+              colId: col.field,
+              node
+            });
+            if (result) {
+              const headerName = col.headerName.replace("* ", "");
+              const rowDetails = `[${rowNum}] 행에서 오류가 발생했습니다.`;
+              colDetails += `[${headerName}] : ${result}\n`;
+
+              col.cellClassRules = invalid;
+              col.tooltipValueGetter = (params) => result;
+              if (Utils.isEmpty(message)) {
+                message += `${rowDetails}\n`;
+              }
+            }
+          }
+        });
+
+        if (message && !onMessage) {
+          onMessage = true;
+          message += colDetails;
+          P2MessageBox.warn(message);
+          return false;
+        }
+        else if (message && onMessage) {
+          return false;
+        }
+      });
+      beans.setGridOption("columnDefs", colDefs);
+      return message;
     },
   },
 }; 

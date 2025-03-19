@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { P2Page, P2SearchArea, P2GridButtonBar, P2FormArea } from 'components/layout/index';
-import { P2Select, P2Input, P2Checkbox, P2Tree, P2DatePicker, P2MessageBox } from 'components/control/index';
+import { P2Input, P2Checkbox, P2Tree, P2DatePicker, P2MessageBox } from 'components/control/index';
 import { Divider } from 'antd';
 import * as Utils from 'utils/Utils';
 import SplitterLayout from 'react-splitter-layout';
@@ -17,6 +17,7 @@ function MenuMng(props) {
   const [count, setCount] = useState(0);
 
   useEffect(() => {
+
     onSearch();
   }, []);
 
@@ -47,43 +48,28 @@ function MenuMng(props) {
 
   async function onSave() {
     console.log(formArea.current.api.get());
-
     const saveDatas = await tree.current.api.getModifiedRows();
+    
+    // 에러 검증 (valid , validate)
+    //  const validErrors = formArea.current.api.validate();
+    //  if (validErrors) {
+    //    return;
+    //  }
+  
 
     if (saveDatas.length === 0) {
-      P2MessageBox.warn('저장할 데이터가 없습니다.');
+      P2MessageBox.warn({ content: "저장할 데이터가 없습니다." });
       return;
     }
 
-    let errorMessage = "";
-    for (let i = 0; i < saveDatas.length; i++) {
-      if (Utils.isEmpty(saveDatas[i]["menuNm"])) {
-        errorMessage += "메뉴명을 입력 하세요.\n";
-      }
-      if (Utils.isEmpty(saveDatas[i]["menuUrl"])) {
-        errorMessage += "메뉴PATH를 입력 하세요.\n";
-      }
-      if (Utils.isEmpty(saveDatas[i]["menuCd"])) {
-        errorMessage += "메뉴코드를 입력 하세요.\n";
-      }
+    let errors = {};
 
-      if (Utils.isNotEmpty(errorMessage)) {
-        errorMessage = `메뉴 (${saveDatas[i]["menuId"]}) 정보를 확인 하세요.\n\n${errorMessage}`;
-        P2MessageBox.error(errorMessage);
-        return;
-      }
-    }
 
-    if (errorMessage) {
-      P2MessageBox.error(errorMessage);
-      return;
-    }
-
-    saveDatas.forEach((item) => {
-      if (Utils.isEmpty(item["menuNm"])) {
-        item["menuId"] = null;
-      }
-    });
+    // saveDatas.forEach((item) => {
+    //   if (Utils.isEmpty(item["menuNm"])) {
+    //     item["menuId"] = null;
+    //   }
+    // });
 
     P2MessageBox.confirm({
       content: '저장 하시겠습니까?',
@@ -167,11 +153,43 @@ function MenuMng(props) {
     return (item) => `${item["menuNm"]} (${item["menuId"]})`;
   }
 
-  function onTreeSelect(selectedRow, e) {
-    setTreeNode(e.node);
-    formArea.current.api.allDisabled(e.node.props.dataRef.menuId === 1);
+  function onBeforeTreeSelect(selectedNode) {
+    let errorMessage = "";
+    if (Utils.isEmpty(selectedNode.props.dataRef["menuNm"])) {
+      errorMessage += "메뉴명을 입력 하세요.\n";
+    }
+
+    if (Utils.isNotEmpty(errorMessage)) {
+      P2MessageBox.error(errorMessage);
+      return false;
+    }
+    return true;
   }
 
+  function onTreeSelect(selectedRow, e) {
+    setTreeNode(e.node);
+    formArea.current.api.clear();
+    formArea.current.api.allDisabled(e.node.props.dataRef.menuId === 1);
+    //handleFieldVisibility(e.node.props.dataRef.menuId); // 숨길 키 값 받는 코드
+  }
+
+  //
+  //  function handleFieldVisibility(menuId) {
+  //     숨길 필드 목록을 정의 ( 키 , name 값)
+  //    const hiddenFieldsMap = {
+  //      1: "aaa",  // menuId가 1일 때 숨길 필드
+  //      2: "saveUseYn1",         // menuId가 2일 때 숨길 필드
+  //    };
+  
+  //     //모든 필드 숨김 해제 (초기화 , 다른 key 눌렀을 때 )
+  //    formArea.current.api.allHidden(false);
+  
+  //    // 선택된 menuId에 해당하는 필드 숨기기
+  //    if (hiddenFieldsMap[menuId]) {
+  //      formArea.current.api.hidden(hiddenFieldsMap[menuId], true);
+  //    }
+  //  }
+  
   return (
     <P2Page menuProps={props.menuProps} onSearch={onSearch} onSave={onSave} loading={loading}>
       <P2SearchArea onSearch={onSearch} ref={searchArea}>
@@ -179,14 +197,14 @@ function MenuMng(props) {
       <div className="w-full">
         <SplitterLayout split="vertical" customClassName="w-full h-[600px]">
           <div className="h-[600px] flex flex-col gap-1">
-            <P2GridButtonBar title="메뉴 목록" count={count}>
-              <button className="grid-btn" onClick={onAddTreeNode.bind(this, "after")}>
+            <P2GridButtonBar title="메뉴 목록" count={count} menuProps={props.menuProps}>
+              <button className="grid-btn" onClick={onAddTreeNode.bind(this, "after")} auth={"saveUseYn"}>
                 메뉴 추가
               </button>
-              <button className="grid-btn" onClick={onAddTreeNode.bind(this, "child")}>
+              <button className="grid-btn" onClick={onAddTreeNode.bind(this, "child")} auth={"saveUseYn"}>
                 자식 추가
               </button>
-              <button className="grid-btn" onClick={onDeleteTreeNode}>
+              <button className="grid-btn" onClick={onDeleteTreeNode} auth={"saveUseYn"}>
                 메뉴 삭제
               </button>
             </P2GridButtonBar>
@@ -196,12 +214,13 @@ function MenuMng(props) {
               parentKeyField={"upperMenuId"}
               nodeTitleField={nodeTitleFunc}
               onSelect={onTreeSelect}
+              onBeforeSelect={onBeforeTreeSelect}
               defaultExpandedKeys={['1']}
             />
           </div>
           <div className="h-[600px] flex flex-col gap-1">
             <P2GridButtonBar title="메뉴 상세"/>
-            <P2FormArea ref={formArea} className="p2-form-area h-[550px] overflow-y-auto" treeNode={treeNode}>
+            <P2FormArea ref={formArea} className="p2-form-area h-[550px] overflow-y-auto" treeNode={treeNode} >
               <div className="flex flex-row justify-stretch gap-5">
                 <div className="flex flex-row gap-2 w-1/3">
                   <label htmlFor='menuNm' className="w-28 self-center text-right">메뉴명</label>

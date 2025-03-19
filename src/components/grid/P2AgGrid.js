@@ -20,6 +20,13 @@ export const deleteStatus = "D"
 export const statusField = "_status" 
 export const rowNumField = "_rowNum"
 export const checkedField = "_checked"
+export const onlyInsertRow = (params) => params.data._status === insertStatus
+export const InvalidFunction = (params) => {
+  if (params.node && Utils.isNotEmpty(params.node.data._status) && Utils.isEmpty(params.node.data[params.colId])) {
+    return "필수 입력 컬럼에 값이 존재하지않습니다.";
+  }
+  return "";
+}
 
 function P2AgGrid(props, ref) {
   const [columnDefs, setColumnDefs] = useState(props.columnDefs || []);
@@ -30,6 +37,7 @@ function P2AgGrid(props, ref) {
   const [rowData] = useState(props.rowData || []);
   const [gridApi, setGridApi] = useState();
   const [defaultHeaderHeight, setDefaultHeaderHeight] = useState(props.headerHeight || 35);
+  const [oldSelectedRowIndex, setOldSelectedRowIndex] = useState(-1);
 
   useImperativeHandle(ref, () => ({
     api: gridApi,
@@ -53,6 +61,7 @@ function P2AgGrid(props, ref) {
           editable: false,
           sortable: false,
           filter: false,
+          pinned: "left",
           cellClass: "text-center",
         };
 
@@ -70,6 +79,7 @@ function P2AgGrid(props, ref) {
           sortable: false,
           filter: false,
           editable: true,
+          pinned: "left",
           cellRenderer: CommonCheckedRenderer,
           cellEditor: CommonCheckedEditor,
           headerComponent: CommonHeaderCheckedComponet,
@@ -90,6 +100,7 @@ function P2AgGrid(props, ref) {
           sortable: false,
           filter: false,
           editable: false,
+          pinned: "left",
           cellClass: "text-center",
           valueFormatter: (params) => {
             return `${parseInt(params.node.childIndex) + 1}`;
@@ -100,7 +111,7 @@ function P2AgGrid(props, ref) {
       }
     }
 
-    let required = {
+    const required = {
       'error-cell': (params) => !params.value
     };
 
@@ -233,9 +244,6 @@ function P2AgGrid(props, ref) {
   }, []);
 
   const onCellValueChanged = useCallback((params) => {
-    if (props.onCellValueChanged) {
-      props.onCellValueChanged(params);
-    }
     if (showStatusColumn && params.oldValue !== params.newValue) {
       if (
         params.data[statusField] !== insertStatus &&
@@ -243,6 +251,29 @@ function P2AgGrid(props, ref) {
       ) {
         params.node.setDataValue(statusField, updateStatus);
       }
+    }
+    if (props.onCellValueChanged) {
+      props.onCellValueChanged(params);
+    }
+  }, []);
+
+  const onSelectionChanged = useCallback(async (params) => {
+    const selectedNode = await params.api.getSelectedNode();
+
+    if (props.onBeforeRowSelected && oldSelectedRowIndex !== selectedNode.rowIndex) {
+      const result = props.onBeforeRowSelected({
+        api: params.api,
+        node: params.api.getDisplayedRowAtIndex(oldSelectedRowIndex),
+      });
+      if (!result) {
+        params.api.getDisplayedRowAtIndex(oldSelectedRowIndex).setSelected(false);
+        return;
+      }
+      setOldSelectedRowIndex(selectedNode.rowIndex);
+    }
+
+    if (props.onSelectionChanged) {
+      props.onSelectionChanged(params);
     }
   }, []);
 
@@ -263,6 +294,7 @@ function P2AgGrid(props, ref) {
       dataTypeDefinitions={dataTypeDefinitions}
       onGridReady={onGridReady}
       onCellValueChanged={onCellValueChanged}
+      onSelectionChanged={onSelectionChanged}
     />
   );
 }

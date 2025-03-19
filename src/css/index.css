@@ -113,3 +113,19 @@ body {
 .ant-spin-nested-loading {
   @apply w-full h-full !important;
 }
+
+.p2-modal .ant-modal-body {
+  @apply px-3 !important;
+}
+.ant-status-error {
+  border-color: red !important;
+  box-shadow: 0 0 0 2px rgba(255, 0, 0, 0.2);
+}
+.ant-checkbox-status-error .ant-checkbox-inner {
+  border: 2px solid red !important;
+  border-radius: 4px;
+}
+.ant-radio-status-error .ant-radio-inner {
+  border: 2px solid red !important;
+  border-radius: 4px;
+}
