@@ -334,7 +334,7 @@ function CodeMng(props) {
     return (item) => item["cd"] === "ROOT" ? item["cd"] : item["cdNm"] + " (" + item["cd"] + ")";
   }
 
-  function onSelect(selectedRow, e) {
+  async function onSelect(selectedRow, e) {
     if (e.selectedNodes.length > 0) {
       setSectionNode({selectedRow: selectedRow, e: e});
       getCommonCodeList(selectedRow, e);
@@ -342,7 +342,21 @@ function CodeMng(props) {
     else {
       getCommonCodeList(selectionNode.selectedRow, selectionNode.e);
     }
-    grid.current.api.setHeaderNames(e.node.props.dataRef);
+    setGridHeaderName(e.node.props.dataRef);
+    //grid.current.api.setHeaderName("grpNm", "변경된\n그룹코드");
+  }
+
+  async function setGridHeaderName (parentData) {
+    colDefs.forEach((col) => {
+      if (col.field && col.field.startsWith("cdRefVal")) {
+        if (parentData && parentData[col.field]) {
+          grid.current.api.setHeaderName(col.field, parentData[col.field]);
+        }
+        else {
+          grid.current.api.setHeaderName(col.field, "비고 " + col.field.slice(-2));
+        }
+      }
+    });
   }
 
   async function onGridReady() {

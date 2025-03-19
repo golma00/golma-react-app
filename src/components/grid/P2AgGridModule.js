@@ -371,19 +371,14 @@ const P2AgGridModule = {
           }
       }
     },
-    setHeaderNames: async function (beans, parentData) {
-      var colDefs = await beans.getColumnDefs();
-      colDefs.forEach((col) => {
-        if (col.field && col.field.startsWith("cdRefVal")) {
-          if (parentData && parentData[col.field]) {
-            col.headerName = parentData[col.field];
-          }
-          else {
-            col.headerName = "비고 " + col.field.slice(-2);
-          }
+    setHeaderName: async function (beans, columnField, changeFieldName) {
+      var columnDefinition = await beans.getColumnDefs();
+      columnDefinition.forEach((col) => {
+        if (col.field && col.field === columnField) {
+          col.headerName = changeFieldName;
         }
       });
-      beans.setGridOption("columnDefs", colDefs);
+      beans.setGridOption("columnDefs", columnDefinition);
     },
     validate: async function (beans) {
       let message = "";
