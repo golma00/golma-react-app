@@ -52,9 +52,9 @@ function AuthGrpMenuMng(props) {
   async function onSearch() {
     try {
       setLoading(true);
-      gridAuthGrp.current.api.refresh();
+      gridAuthGrp.current.api.clear();
       if (gridMenu.current.api) {
-        gridMenu.current.api.refresh();
+        gridMenu.current.api.clear();
       }
 
       const searchData = searchArea.current.api.get();
@@ -82,7 +82,7 @@ function AuthGrpMenuMng(props) {
   async function onSearchMenu() {
     try {
       setLoading(true);
-      gridMenu.current.api.refresh();
+      gridMenu.current.api.clear();
 
       const selectedRow = await gridAuthGrp.current.api.getSelectedRow();
       const res = await axios.post("/api/v1/authGrpMenu/authGrpMenuList", selectedRow);

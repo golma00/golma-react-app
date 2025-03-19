@@ -199,8 +199,8 @@ function CodeMng(props) {
   async function onSearch() {
     try {
       setLoading(true);
-      tree.current.api.refresh();
-      grid.current.api.refresh();
+      tree.current.api.clear();
+      grid.current.api.clear();
 
       const searchData = searchArea.current.api.get();
       const res = await axios.post("/api/v1/code/getGrpCodeList", searchData);
@@ -208,7 +208,7 @@ function CodeMng(props) {
       setLoading(false);
       if (res.data.code === "00") {
         //setRowData(res.data.data.result);
-        tree.current.api.setTreeRowData(res.data.data.result);
+        tree.current.api.setRowData(res.data.data.result);
         setCount(res.data.data.result.length);
       }
       else {
@@ -308,7 +308,7 @@ function CodeMng(props) {
 
   async function getCommonCodeList(selectedCodeId, item) {
     try {
-      grid.current.api.refresh();
+      grid.current.api.clear();
       const params = {
         grpCodeId: item.node.props.dataRef.grpCd,
         codeId: selectedCodeId[0],
