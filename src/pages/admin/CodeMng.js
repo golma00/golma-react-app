@@ -343,7 +343,6 @@ function CodeMng(props) {
       getCommonCodeList(selectionNode.selectedRow, selectionNode.e);
     }
     setGridHeaderName(e.node.props.dataRef);
-    //grid.current.api.setHeaderName("grpNm", "변경된\n그룹코드");
   }
 
   async function setGridHeaderName (parentData) {
