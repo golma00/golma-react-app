@@ -21,7 +21,7 @@ export const statusField = "_status"
 export const rowNumField = "_rowNum"
 export const checkedField = "_checked"
 export const onlyInsertRow = (params) => params.data._status === insertStatus
-export const InvalidFunction = (params) => {
+export const requiredFunction = (params) => {
   if (params.node && Utils.isNotEmpty(params.node.data._status) && Utils.isEmpty(params.node.data[params.colId])) {
     return "필수 입력 컬럼에 값이 존재하지않습니다.";
   }
