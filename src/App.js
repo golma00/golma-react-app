@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import * as pages from 'pages/index';
 import { P2PageWrapper } from 'components/layout/index';
 import { P2MessageBox } from 'components/control/index';
 import { BrowserRouter } from 'react-router-dom';
@@ -10,22 +9,6 @@ function App() {
 
   const [currentTab, setCurrentTab] = useState("pages/CommonPage");
   const [tabs, setTabs] = useState([]);
-
-  const [pagePaths, setPagePaths] = useState({
-    "pages/CommonPage": <pages.CommonPage />,
-    "pages/OneGridPage": <pages.OneGridPage />,
-    "pages/TwoGridPage": <pages.TwoGridPage />,
-    "pages/ThreeGridPage": <pages.ThreeGridPage />,
-    "pages/FourGridPage": <pages.FourGridPage />,
-    "pages/GridFormPage": <pages.GridFormPage />,
-    "pages/TreeFormPage": <pages.TreeFormPage />,
-    "pages/TreePage": <pages.TreePage />,
-    "pages/admin/FiveGridPage": <pages.FiveGridPage />,
-    "pages/admin/CodeMng": <pages.CodeMng />,
-    "pages/admin/MenuMng": <pages.MenuMng />,
-    "pages/admin/AuthGrpMenuMng": <pages.AuthGrpMenuMng />,
-  });
-
   const [menuList, setMenuList] = useState([]);
 
   useEffect(() => {
@@ -87,8 +70,7 @@ function App() {
     if (tab.length === 0) {
       setTabs(prev => [...prev, 
         <Tabs.TabPane tab={menuInfo.item.props.title} key={menuInfo.key}>
-          <P2PageWrapper menuId={menuInfo.key}>
-            {pagePaths[menuInfo.item.props.path]}
+          <P2PageWrapper menuId={menuInfo.key} menuPath={menuInfo.item.props.path}>
           </P2PageWrapper>
         </Tabs.TabPane>,
       ]);
