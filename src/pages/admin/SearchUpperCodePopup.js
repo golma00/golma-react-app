@@ -150,7 +150,7 @@ const SearchUpperCodePopup = ({ props, visible, onOk, onClose, params }) => {
   async function getUpperCodeList() {
     try {
       setLoading(true);
-      grid.current.api.refresh();
+      grid.current.api.clear();
       const res = await axios.post("/api/v1/code/getCommonCodeList", params);
 
       setLoading(false);

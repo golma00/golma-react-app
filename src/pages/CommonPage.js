@@ -49,7 +49,7 @@ function CommonPage(props) {
   }
 
   function loadData() {
-    grid.current.api.refresh();
+    grid.current.api.clear();
     grid.current.api.setGridOption("rowData", structuredClone(rowData));
     grid.current.api.firstRowSelected();
 

@@ -22,7 +22,7 @@ function OneGridPage(props) {
   async function onSearch() {
     try {
       setLoading(true);
-      grid.current.api.refresh();
+      grid.current.api.clear();
 
       const searchData = searchArea.current.api.get();
       const res = await axios.post("/api/v1/auth/list", searchData);
