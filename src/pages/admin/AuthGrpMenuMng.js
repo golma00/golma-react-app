@@ -53,9 +53,7 @@ function AuthGrpMenuMng(props) {
     try {
       setLoading(true);
       gridAuthGrp.current.api.refresh();
-      if (gridMenu.current.api) {
-        gridMenu.current.api.refresh();
-      }
+      gridMenu.current.api?.refresh();
 
       const searchData = searchArea.current.api.get();
       searchData["useYn"] = "Y";
@@ -160,6 +158,9 @@ function AuthGrpMenuMng(props) {
         }
       });
     }
+  }, []);
+
+  useEffect(() => {
   }, []);
 
   return (
