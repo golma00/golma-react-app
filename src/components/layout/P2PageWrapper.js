@@ -37,7 +37,7 @@ function P2PageWrapper(props) {
 
   return (
     <>
-      { success && Page ? <Page menuProps={menuProps}/> : <div>Loading...</div>}
+      { success && Page && <Page menuProps={menuProps}/> }
     </>
   )
 }
