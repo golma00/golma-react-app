@@ -202,6 +202,8 @@ function CodeMng(props) {
       setLoading(true);
       tree.current.api.clear();
       grid.current.api.clear();
+      setSelectedRow(null);
+      setSectionNode({selectedRow: [], e: []});
 
       const searchData = searchArea.current.api.get();
       const res = await axios.post("/api/v1/code/getGrpCodeList", searchData);
