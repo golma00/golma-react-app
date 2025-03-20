@@ -14,6 +14,10 @@
   justify-content: center;
 }
 
+.ag-input-field-input {
+  padding: 0px 5px 0px 5px;
+}
+
 .error-cell {
   border: 1px solid red !important;
 }
