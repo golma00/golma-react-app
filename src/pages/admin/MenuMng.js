@@ -65,7 +65,7 @@ function MenuMng(props) {
         if (params.value === "Y" && Utils.isEmpty(params.menuProps?.extBtnNm1)) {
           return "기타 버튼을 사용할 경우 버튼명을 입력해야 합니다.";
         }
-        if (params.value === "N" && Utils.isNotEmpty(params.menuProps?.extBtnNm1 !== "") ) {
+        if (params.value === "N" && Utils.isNotEmpty(params.menuProps?.extBtnNm1) ) {
           return "버튼명을 입력한 경우, 기타 버튼1을 체크해야 합니다.";
         }
       },
@@ -221,7 +221,7 @@ function MenuMng(props) {
     <P2Page menuProps={props.menuProps} onSearch={onSearch} onSave={onSave} loading={loading}>
       <P2SearchArea onSearch={onSearch} ref={searchArea}>
       </P2SearchArea>
-      <div className="w-full h-[600px]">
+      <div className="w-full">
         <SplitterLayout split="vertical" customClassName="w-full h-[600px]">
           <div className="h-[600px] flex flex-col gap-1">
             <P2GridButtonBar title="메뉴 목록" count={count} menuProps={props.menuProps}>
