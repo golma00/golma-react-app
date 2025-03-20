@@ -386,10 +386,10 @@ const P2AgGridModule = {
       let colDefs = beans.getColumnDefs();
       let modifiedRowNodes = await beans.getModifiedRowNodes();
 
-      let invalid = {
+      let valid = {
         'error-cell': (params) => {
-          if (params.colDef.invalid) {
-            return Utils.isNotEmpty(params.colDef.invalid({colId: params.colDef.field, node: params.node}));
+          if (params.colDef.valid) {
+            return Utils.isNotEmpty(params.colDef.valid({key: params.colDef.field, value: params.node.data[params.colDef.field], data: params.node.data}));
           }
           return false;
         }
@@ -399,17 +399,18 @@ const P2AgGridModule = {
         const rowNum = node.rowIndex + 1;
         var colDetails = "";
         colDefs.forEach((col) => {
-          if (col.invalid && col.invalid instanceof Function) {
-            const result = col.invalid({
-              colId: col.field,
-              node
+          if (col.valid && col.valid instanceof Function) {
+            const result = col.valid({
+              key: col.field,
+              value: node.data[col.field],
+              data: node.data
             });
             if (result) {
               const headerName = col.headerName.replace("* ", "");
               const rowDetails = `[${rowNum}] 행에서 오류가 발생했습니다.`;
               colDetails += `[${headerName}] : ${result}\n`;
 
-              col.cellClassRules = invalid;
+              col.cellClassRules = valid;
               col.tooltipValueGetter = (params) => result;
               if (Utils.isEmpty(message)) {
                 message += `${rowDetails}\n`;

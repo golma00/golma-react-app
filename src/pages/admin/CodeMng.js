@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { P2Page, P2SearchArea, P2GridButtonBar } from 'components/layout/index';
-import { P2AgGrid, onlyInsertRow, requiredFunction } from 'components/grid/index';
+import { P2AgGrid, onlyInsertRow } from 'components/grid/index';
 import { P2Input, P2MessageBox, P2Tree } from 'components/control/index';
 import SplitterLayout from 'react-splitter-layout';
 import "react-splitter-layout/lib/index.css";
@@ -8,6 +8,7 @@ import axios from 'axios';
 import { useCommonCode } from 'hooks/useCommonCode';
 import SearchUpperCodePopup from 'pages/admin/SearchUpperCodePopup';
 import * as Utils from 'utils/Utils';
+import { validateRequired } from 'utils/Validate';
 
 function CodeMng(props) {
   const searchArea = useRef(null);
@@ -57,7 +58,7 @@ function CodeMng(props) {
         width: 120,
         align: "left",
         pinned: "left",
-        invalid: requiredFunction,
+        valid: (params) => params.data._status ? validateRequired(params.data[params.key]) : ""
       },
       { 
         field: "cdNm",
@@ -67,7 +68,7 @@ function CodeMng(props) {
         width: 150,
         align: "left",
         pinned: "left",
-        invalid: requiredFunction,
+        valid: (params) => params.data._status ? validateRequired(params.data[params.key]) : ""
       },
       { 
         field: "cdDesc",
