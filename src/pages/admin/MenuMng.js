@@ -17,6 +17,39 @@ function MenuMng(props) {
   const [count, setCount] = useState(0);
 
   useEffect(() => {
+    formArea.current.api.setValid({
+      menuNm: (params) => {
+        if (Utils.isEmpty(params.value)) {
+          return "메뉴명은 필수적으로 기입하여야 합니다.";
+        }
+      },
+      extBtnNm1: (params) => {
+        if (params.data.extUseYn1 === "Y" && Utils.isEmpty(params.value)) {
+          return "기타 버튼을 사용할 경우 버튼명을 입력해야 합니다.";
+        }
+      },
+      extBtnNm2: (params) => {
+        if (params.data.extUseYn2 === "Y" && Utils.isEmpty(params.value)) {
+          return "기타 버튼을 사용할 경우 버튼명을 입력해야 합니다.";
+        }
+      },
+      extBtnNm3: (params) => {
+        if (params.data.extUseYn3 === "Y" && Utils.isEmpty(params.value)) {
+          return "기타 버튼을 사용할 경우 버튼명을 입력해야 합니다.";
+        }
+      },
+      extBtnNm4: (params) => {
+        if (params.data.extUseYn4 === "Y" && Utils.isEmpty(params.value)) {
+          return "기타 버튼을 사용할 경우 버튼명을 입력해야 합니다.";
+        }
+      },
+      extBtnNm5: (params) => {
+        if (params.data.extUseYn5 === "Y" && Utils.isEmpty(params.value)) {
+          return "기타 버튼을 사용할 경우 버튼명을 입력해야 합니다.";
+        }
+      },
+    });
+
     onSearch();
   }, []);
 
@@ -44,34 +77,7 @@ function MenuMng(props) {
       console.log(error);
     }
   }
-  function onValid() {
-    formArea.current.api.setValid({
-      menuNm: (params) => {
-        if (Utils.isEmpty(params.value)) {
-          return "메뉴명은 필수적으로 기입하여야 합니다.";
-        }
-      },
-      menuUrl: (params) => {
-        if (Utils.isEmpty(params.value)) {
-          return "메뉴 Path 는 필수적으로 기입하여야 합니다.";
-        }
-      },
-      menuCd: (params) => {
-        if (Utils.isEmpty(params.value)) {
-          return "메뉴 코드는 필수적으로 기입하여야 합니다.";
-        }
-      },
-      extUseYn1: (params) => {
-        if (params.value === "Y" && Utils.isEmpty(params.menuProps?.extBtnNm1)) {
-          return "기타 버튼을 사용할 경우 버튼명을 입력해야 합니다.";
-        }
-        if (params.value === "N" && params.menuProps?.extBtnNm1 !== "" ) {
-          return "버튼명을 입력한 경우, 기타 버튼1을 체크해야 합니다.";
-        }
-      },
-    });
-    return "";
-  }
+  
   async function onSave() {
     
     console.log(formArea.current.api.get());
@@ -82,22 +88,9 @@ function MenuMng(props) {
       return;
     }
 
-    onValid();
-    const validateResult = formArea.current.api.validate();
-    if (validateResult) {
-      P2MessageBox.warn({ content: validateResult });
+    if (Utils.isNotEmpty(formArea.current.api.validate())) {
       return;
     }
-    if (!validateResult) {
-      return; // 유효성 검사 실패 시 저장 진행 X
-    }
-  
-    //console.log(onValid(),'ㅇㅇ');
-    // saveDatas.forEach((item) => {
-    //   if (Utils.isEmpty(item["menuNm"])) {
-    //     item["menuId"] = null;
-    //   }
-    // });
 
     P2MessageBox.confirm({
       content: '저장 하시겠습니까?',
@@ -198,25 +191,7 @@ function MenuMng(props) {
     setTreeNode(e.node);
     formArea.current.api.clear();
     formArea.current.api.allDisabled(e.node.props.dataRef.menuId === 1);
-    //handleFieldVisibility(e.node.props.dataRef.menuId); // 숨길 키 값 받는 코드
   }
-
-  //
-  //  function handleFieldVisibility(menuId) {
-  //     숨길 필드 목록을 정의 ( 키 , name 값)
-  //    const hiddenFieldsMap = {
-  //      1: "aaa",  // menuId가 1일 때 숨길 필드
-  //      2: "saveUseYn1",         // menuId가 2일 때 숨길 필드
-  //    };
-  
-  //     //모든 필드 숨김 해제 (초기화 , 다른 key 눌렀을 때 )
-  //    formArea.current.api.allHidden(false);
-  
-  //    // 선택된 menuId에 해당하는 필드 숨기기
-  //    if (hiddenFieldsMap[menuId]) {
-  //      formArea.current.api.hidden(hiddenFieldsMap[menuId], true);
-  //    }
-  //  }
   
   return (
     <P2Page menuProps={props.menuProps} onSearch={onSearch} onSave={onSave} loading={loading}>
