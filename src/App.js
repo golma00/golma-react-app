@@ -9,21 +9,6 @@ function App() {
 
   const [currentTab, setCurrentTab] = useState("pages/CommonPage");
   const [tabs, setTabs] = useState([]);
-
-  const [pagePaths, setPagePaths] = useState({
-    "pages/CommonPage": <pages.CommonPage />,
-    "pages/OneGridPage": <pages.OneGridPage />,
-    "pages/TwoGridPage": <pages.TwoGridPage />,
-    "pages/ThreeGridPage": <pages.ThreeGridPage />,
-    "pages/FourGridPage": <pages.FourGridPage />,
-    "pages/GridFormPage": <pages.GridFormPage />,
-    "pages/TreeFormPage": <pages.TreeFormPage />,
-    "pages/TreePage": <pages.TreePage />,
-    "pages/AttributeMng": <pages.AttributeMng />,
-    "pages/FiveGridPage": <pages.FiveGridPage />,
-    "pages/admin/MenuMng": <pages.MenuMng />,
-  });
-
   const [menuList, setMenuList] = useState([]);
 
   useEffect(() => {
