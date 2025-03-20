@@ -108,43 +108,36 @@ function P2FormArea(props, ref) {
         setErrors(valid);
       },
       validate() {
-        // 공백인지 확인
-        function isEmpty(value) {
-          return value === undefined || value === null || value === "" || (Array.isArray(value) && value.length === 0);
-        }
-      
-        const requiredFields = props.requiredFields || Object.keys(formData); // 필수로 지정할 값 prop 전달 (없으면 전체)
-      
-        // 필수 입력값 체크
-        const newErrors = requiredFields.reduce((acc, key) => {
-          if (isEmpty(formData[key])) {
-            acc[key] = `[${key}] 필수 입력 항목입니다.`;
-          }
-          return acc;
-        }, {});
-
-        // A 가 존재시 B도 존재해야 함 prop으로 전달 ( dependencies={{menuNm: "menuUrl"}} )
-        if (props.dependencies) {
-          Object.entries(props.dependencies).forEach(([keyA, keyB]) => {
-            if (!isEmpty(formData[keyA]) && isEmpty(formData[keyB]) || (isEmpty(formData[keyA]) && !isEmpty(formData[keyB]))) {
-              newErrors[keyB] = `[${keyB}] 필수 입력 항목입니다. (필수 조건: ${keyA} 또는 ${keyB} 입력값이 있을 경우)`;
+        let newErrors = {};
+        let keyName = "";
+        let errorMessages = [];
+        Object.keys(valid).forEach((key) => {
+          const validationFunction = valid[key];
+          if (typeof validationFunction === "function") {
+            const errorMessage = validationFunction({ value: formData[key] });
+            if (errorMessage) {
+              newErrors[key] = errorMessage;
+              errorMessages.push(errorMessage);
+              if (!keyName) {
+                keyName = key;
+              }
             }
-          });
+          }
+        });      
+        setErrors(newErrors);        
+        if (errorMessages.length > 0) {
+          P2MessageBox.warn({ content: errorMessages.join("\n") });
+          return false; // 유효성 검사 실패
         }
-        if (Object.keys(newErrors).length > 0) {
-          return new Promise((resolve) => {
-            setErrors(newErrors);
-            setValid(newErrors);
-            resolve();
-          }).then(() => {
-            const errorMessages = Object.values(newErrors).join("\n");
-            P2MessageBox.warn(`입력값을 확인해 주세요:\n${errorMessages}`);
-          });
+        //return Object.keys(newErrors).length === 0;
+        if (newErrors) {
+          return newErrors[keyName];
         }
-      
-        return null;
-      }, 
-    }
+        else {
+          return "";
+        }
+      },
+    },
   }));
 
   useEffect(() => {
