@@ -4,6 +4,7 @@ import { P2Input, P2MessageBox } from 'components/control/index';
 import { P2AgGrid } from 'components/grid/index';
 import SplitterLayout from 'react-splitter-layout';
 import axios from 'axios';
+import * as Utils from 'utils/Utils';
 
 function AuthGrpMenuMng(props) {
 
@@ -49,11 +50,24 @@ function AuthGrpMenuMng(props) {
     },
   ];
 
+    useEffect(() => {
+      searchArea.current.api.setValid({
+        authGrpId: (params) => {
+            return "권한 그룹 ID 값이 없습니다.";
+          },
+          authGrpNm: (params) => {
+            return "권한 그룹 값이 없습니다.";
+          },
+        });
+      
+    onSearchMenu();
+    }, []);
   async function onSearch() {
     try {
       setLoading(true);
       gridAuthGrp.current.api.clear();
       gridMenu.current.api?.clear();
+      searchArea.current.api.clear();
 
       const searchData = searchArea.current.api.get();
       searchData["useYn"] = "Y";
@@ -105,6 +119,10 @@ function AuthGrpMenuMng(props) {
     const saveDatas = await gridMenu.current.api.getModifiedRows();
     if (saveDatas.length === 0) {
       P2MessageBox.warn('저장할 데이터가 없습니다.');
+      return;
+    }
+
+    if (Utils.isNotEmpty(searchArea.current.api.validate())) {
       return;
     }
 
@@ -160,12 +178,10 @@ function AuthGrpMenuMng(props) {
     }
   }, []);
 
-  useEffect(() => {
-  }, []);
 
   return (
     <P2Page menuProps={props.menuProps} onSearch={onSearch} onSave={onSave} loading={loading}>
-      <P2SearchArea onSearch={onSearch} ref={searchArea}>
+      <P2SearchArea onSearch={onSearch} ref={searchArea} >
         <div className="flex flex-row gap-2">
           <label className="text-xl" htmlFor='authGrpId'>권한그룹ID</label>
           <P2Input id="authGrpId" name="authGrpId" className="text-sm bg-white border border-gray-200 rounded-md"/>

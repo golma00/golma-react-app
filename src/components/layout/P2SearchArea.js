@@ -15,6 +15,7 @@ import {
   P2RadioGroup,
   P2MessageBox
 } from "components/control/index";
+import { Tooltip } from "antd";
 
 function P2SearchArea(props, ref) {
   const className = props.className || "p2-search-area";
@@ -61,7 +62,7 @@ function P2SearchArea(props, ref) {
         Object.keys(valid).forEach((key) => {
           const validationFunction = valid[key];
           if (typeof validationFunction === "function") {
-            const errorMessage = validationFunction({ value: searchData[key], data: searchData, key });
+            const errorMessage = validationFunction({ value: searchData[key], data: searchData, key: key });
             if (errorMessage) {
               const label = lables[key] ? `[${lables[key]}]: ` : "";
               newErrors[key] = errorMessage;
@@ -181,6 +182,19 @@ function P2SearchArea(props, ref) {
   }, [changeAfterSearch]);
 
   function recursiveRender(child, index) {
+
+    const name = child.props.name;
+
+    const errorClass = errors[name] && (
+      child.type === P2Checkbox
+        ? "ant-checkbox-status-error"
+        : child.type === P2RadioGroup
+        ? "ant-radio-status-error"
+        : "ant-status-error"
+    );
+
+    const tooltipText = errors[name] || child.props.tooltip; //메세지
+
     if (child.props.children && (child.props.children instanceof Object || child.props.children instanceof Array)) {
 
       const children = [...Children.map(child.props.children, (child, index) => {
@@ -212,105 +226,117 @@ function P2SearchArea(props, ref) {
         case "time":
           return (
             <React.Fragment key={index}>
-              {React.cloneElement(child, {
-                value: searchData[child.props.name] || "",
-                onChange: (e) => {
-                  if (child.props.onChange) {
-                    child.props.onChange(e);
-                  }
-                  const targetValue = e.target && e.target.value;
-                  setSearchData((prev) => ({
-                    ...prev,
-                    [child.props.name]: targetValue,
-                  }));
-                },
-                onKeyDown: (e) => {
-                  if (child.props.onKeyDown) {
-                    child.props.onKeyDown(e);
-                  }
-                  const targetValue = e.target && e.target.value;
-                  setSearchData((prev) => ({
-                    ...prev,
-                    [child.props.name]: targetValue,
-                  }));
-                  if (e.key === "Enter") {
-                    setChangeAfterSearch(true);
-                  }
-                },
-              })}
+              <Tooltip key={index} title={tooltipText} placement="bottom">
+                {React.cloneElement(child, {
+                  className: `${child.props.className || ""} ${errorClass || ""}`.trim(),
+                  value: searchData[child.props.name] || "",
+                  onChange: (e) => {
+                    if (child.props.onChange) {
+                      child.props.onChange(e);
+                    }
+                    const targetValue = e.target && e.target.value;
+                    setSearchData((prev) => ({
+                      ...prev,
+                      [child.props.name]: targetValue,
+                    }));
+                  },
+                  onKeyDown: (e) => {
+                    if (child.props.onKeyDown) {
+                      child.props.onKeyDown(e);
+                    }
+                    const targetValue = e.target && e.target.value;
+                    setSearchData((prev) => ({
+                      ...prev,
+                      [child.props.name]: targetValue,
+                    }));
+                    if (e.key === "Enter") {
+                      setChangeAfterSearch(true);
+                    }
+                  },
+                })}
+              </Tooltip>
             </React.Fragment>
           );
         case "number":
           return (
             <React.Fragment key={index}>
-              {React.cloneElement(child, {
-                value: searchData[child.props.name] || 0,
-                onChange: (e) => {
-                  if (child.props.onChange) {
-                    child.props.onChange(e);
-                  }
-                  const targetValue = e.target && e.target.value;
-                  setSearchData((prev) => ({
-                    ...prev,
-                    [child.props.name]: targetValue,
-                  }));
-                },
-                onKeyDown: (e) => {
-                  if (child.props.onKeyDown) {
-                    child.props.onKeyDown(e);
-                  }
-                  const targetValue = e.target && e.target.value;
-                  setSearchData((prev) => ({
-                    ...prev,
-                    [child.props.name]: targetValue,
-                  }));
-                  if (e.key === "Enter") {
-                    setChangeAfterSearch(true);
-                  }
-                },
-              })}
+              <Tooltip key={index} title={tooltipText} placement="bottom">
+                {React.cloneElement(child, {
+                  className: `${child.props.className || ""} ${errorClass || ""}`.trim(),
+                  value: searchData[child.props.name] || 0,
+                  onChange: (e) => {
+                    if (child.props.onChange) {
+                      child.props.onChange(e);
+                    }
+                    const targetValue = e.target && e.target.value;
+                    setSearchData((prev) => ({
+                      ...prev,
+                      [child.props.name]: targetValue,
+                    }));
+                  },
+                  onKeyDown: (e) => {
+                    if (child.props.onKeyDown) {
+                      child.props.onKeyDown(e);
+                    }
+                    const targetValue = e.target && e.target.value;
+                    setSearchData((prev) => ({
+                      ...prev,
+                      [child.props.name]: targetValue,
+                    }));
+                    if (e.key === "Enter") {
+                      setChangeAfterSearch(true);
+                    }
+                  },
+                })}
+              </Tooltip>
             </React.Fragment>
           );
         case "checkbox":
           return (
             <React.Fragment key={index}>
-              {React.cloneElement(child, {
-                checked: searchData[child.props.name] || false,
-                onChange: (e) => {
-                  if (child.props.onChange) {
-                    child.props.onChange(e);
-                  }
-                  const targetValue = e.target && e.target.checked;
-                  setSearchData((prev) => ({
-                    ...prev,
-                    [child.props.name]: targetValue,
-                  }));
-                  if (child.props.changeAfterSearch) {
-                    setChangeAfterSearch(true);
-                  }
-                },
-              })}
+              <Tooltip key={index} title={tooltipText} placement="bottom">
+                {React.cloneElement(child, {
+                  className: `${child.props.className || ""} ${errorClass || ""}`.trim(),
+                  checked: searchData[child.props.name] || false,
+                  onChange: (e) => {
+                    if (child.props.onChange) {
+                      child.props.onChange(e);
+                    }
+                    const targetValue = e.target && e.target.checked;
+                    setSearchData((prev) => ({
+                      ...prev,
+                      [child.props.name]: targetValue,
+                    }));
+                    if (child.props.changeAfterSearch) {
+                      setChangeAfterSearch(true);
+                    }
+                  },
+                })}
+              </Tooltip>
             </React.Fragment>
           );
         case "radio":
           return (
             <React.Fragment key={index}>
-              {React.cloneElement(child, {
-                value: searchData[child.props.name] || "",
-                onChange: (e) => {
-                  if (child.props.onChange) {
-                    child.props.onChange(e);
-                  }
-                  const targetValue = e.target && e.target.value;
-                  setSearchData((prev) => ({
-                    ...prev,
-                    [child.props.name]: targetValue,
-                  }));
-                  if (child.props.changeAfterSearch) {
-                    setChangeAfterSearch(true);
-                  }
-                },
-              })}
+              <Tooltip key={index} title={tooltipText} placement="bottom">
+                {React.cloneElement(child, {
+                  className: `${child.props.className || ""} ${errorClass || ""}`.trim(),
+                  value: searchData[child.props.name] || "",
+                  onChange: (e) => {
+                    if (child.props.onChange) {
+                      child.props.onChange(e);
+                    }
+                    const targetValue = e.target && e.target.value;
+                    setSearchData((prev) => ({
+                      ...prev,
+                      [child.props.name]: targetValue,
+                    }));
+                    if (child.props.changeAfterSearch) {
+                      setChangeAfterSearch(true);
+                    }
+                  },
+                })}
+              </Tooltip>
             </React.Fragment>
           );
         default:
@@ -320,183 +346,207 @@ function P2SearchArea(props, ref) {
     else if (child.type === "textarea" || child.type === P2InputTextArea) {
       return (
         <React.Fragment key={index}>
-          {React.cloneElement(child, {
-            value: searchData[child.props.name] || "",
-            onChange: (e) => {
-              if (child.props.onChange) {
-                child.props.onChange(e);
-              }
-              const targetValue = e.target && e.target.value;
-              setSearchData((prev) => ({
-                ...prev,
-                [child.props.name]: targetValue,
-              }));
-              if (child.props.changeAfterSearch) {
-                setChangeAfterSearch(true);
-              }
-            },
-          })}
+          <Tooltip key={index} title={tooltipText} placement="bottom">
+            {React.cloneElement(child, {
+              className: `${child.props.className || ""} ${errorClass || ""}`.trim(),
+              value: searchData[child.props.name] || "",
+              onChange: (e) => {
+                if (child.props.onChange) {
+                  child.props.onChange(e);
+                }
+                const targetValue = e.target && e.target.value;
+                setSearchData((prev) => ({
+                  ...prev,
+                  [child.props.name]: targetValue,
+                }));
+                if (child.props.changeAfterSearch) {
+                  setChangeAfterSearch(true);
+                }
+              },
+            })}
+          </Tooltip>
         </React.Fragment>
       );
     }
     else if (child.type === P2Select) {
       return (
         <React.Fragment key={index}>
-          {React.cloneElement(child, {
-            optionValue: searchData[child.props.name] || [],
-            onChange: (e) => {
-              if (child.props.onChange) {
-                child.props.onChange(e);
-              }
-              const targetValue = child.props.isMulti ? e.map(item => item.value) : e.value;
-              setSearchData((prev) => ({
-                ...prev,
-                [child.props.name]: targetValue,
-              }));
-              if (child.props.changeAfterSearch) {
-                setChangeAfterSearch(true);
-              }
-            },
-          })}
+          <Tooltip key={index} title={tooltipText} placement="bottom">
+            {React.cloneElement(child, {
+              className: `${child.props.className || ""} ${errorClass || ""}`.trim(),
+              optionValue: searchData[child.props.name] || [],
+              onChange: (e) => {
+                if (child.props.onChange) {
+                  child.props.onChange(e);
+                }
+                const targetValue = child.props.isMulti ? e.map(item => item.value) : e.value;
+                setSearchData((prev) => ({
+                  ...prev,
+                  [child.props.name]: targetValue,
+                }));
+                if (child.props.changeAfterSearch) {
+                  setChangeAfterSearch(true);
+                }
+              },
+            })}
+          </Tooltip>
         </React.Fragment>
       );
     }
     else if (child.type === P2Input) {
       return (
         <React.Fragment key={index}>
-          {React.cloneElement(child, {
-            value: searchData[child.props.name] || "",
-            onChange: (e) => {
-              if (child.props.onChange) {
-                child.props.onChange(e);
-              }
-              const targetValue = e.target && e.target.value;
-              setSearchData((prev) => ({
-                ...prev,
-                [child.props.name]: targetValue,
-              }));
-            },
-            onKeyDown: (e) => {
-              if (child.props.onKeyDown) {
-                child.props.onKeyDown(e);
-              }
-              const targetValue = e.target && e.target.value;
-              setSearchData((prev) => ({
-                ...prev,
-                [child.props.name]: targetValue,
-              }));
-              if (e.key === "Enter") {
-                setChangeAfterSearch(true);
-              }
-            },
-          })}
+          <Tooltip key={index} title={tooltipText} placement="bottom">
+            {React.cloneElement(child, {
+              className: `${child.props.className || ""} ${errorClass || ""}`.trim(),
+              value: searchData[child.props.name] || "",
+              onChange: (e) => {
+                if (child.props.onChange) {
+                  child.props.onChange(e);
+                }
+                const targetValue = e.target && e.target.value;
+                setSearchData((prev) => ({
+                  ...prev,
+                  [child.props.name]: targetValue,
+                }));
+              },
+              onKeyDown: (e) => {
+                if (child.props.onKeyDown) {
+                  child.props.onKeyDown(e);
+                }
+                const targetValue = e.target && e.target.value;
+                setSearchData((prev) => ({
+                  ...prev,
+                  [child.props.name]: targetValue,
+                }));
+                if (e.key === "Enter") {
+                  setChangeAfterSearch(true);
+                }
+              },
+            })}
+          </Tooltip>
         </React.Fragment>
       );
     }
     else if (child.type === P2DatePicker || child.type === P2MonthPicker || child.type === P2TimePicker) {
       return (
         <React.Fragment key={index}>
-          {React.cloneElement(child, {
-            value: searchData[child.props.name] || "",
-            onChange: (e, formatString) => {
-              if (child.props.onChange) {
-                child.props.onChange(e, formatString);
+          <Tooltip key={index} title={tooltipText} placement="bottom">
+            {React.cloneElement(child, {
+              className: `${child.props.className || ""} ${errorClass || ""}`.trim(),
+              value: searchData[child.props.name] || "",
+              onChange: (e, formatString) => {
+                if (child.props.onChange) {
+                  child.props.onChange(e, formatString);
+                }
+                const targetValue = formatString;
+                setSearchData((prev) => ({
+                  ...prev,
+                  [child.props.name]: targetValue,
+                }));
+                if (child.props.changeAfterSearch) {
+                  setChangeAfterSearch(true);
+                }
               }
-              const targetValue = formatString;
-              setSearchData((prev) => ({
-                ...prev,
-                [child.props.name]: targetValue,
-              }));
-              if (child.props.changeAfterSearch) {
-                setChangeAfterSearch(true);
-              }
-            }
-          })}
+            })}
+          </Tooltip>
         </React.Fragment>
       );
     }
     else if (child.type === P2RangePicker) {
       return (
         <React.Fragment key={index}>
-          {React.cloneElement(child, {
-            value: searchData[child.props.name] || [null, null],
-            onChange: (e, formatStrings) => {
-              if (child.props.onChange) {
-                child.props.onChange(e, formatStrings);
+          <Tooltip key={index} title={tooltipText} placement="bottom">
+            {React.cloneElement(child, {
+              className: `${child.props.className || ""} ${errorClass || ""}`.trim(),
+              value: searchData[child.props.name] || [null, null],
+              onChange: (e, formatStrings) => {
+                if (child.props.onChange) {
+                  child.props.onChange(e, formatStrings);
+                }
+                const targetValue = formatStrings;
+                setSearchData((prev) => ({
+                  ...prev,
+                  [child.props.name]: targetValue,
+                }));
+                if (child.props.changeAfterSearch) {
+                  setChangeAfterSearch(true);
+                }
               }
-              const targetValue = formatStrings;
-              setSearchData((prev) => ({
-                ...prev,
-                [child.props.name]: targetValue,
-              }));
-              if (child.props.changeAfterSearch) {
-                setChangeAfterSearch(true);
-              }
-            }
-          })}
+            })}
+          </Tooltip>
         </React.Fragment>
       );
     }
     else if (child.type === P2InputNumber) {
       return (
         <React.Fragment key={index}>
-          {React.cloneElement(child, {
-            value: searchData[child.props.name] || 0,
-            onChange: (value) => {
-              if (child.props.onChange) {
-                child.props.onChange(value);
-              }
-              const targetValue = value;
-              setSearchData((prev) => ({
-                ...prev,
-                [child.props.name]: targetValue,
-              }));
-            },
-          })}
+          <Tooltip key={index} title={tooltipText} placement="bottom">
+            {React.cloneElement(child, {
+              className: `${child.props.className || ""} ${errorClass || ""}`.trim(),
+              value: searchData[child.props.name] || 0,
+              onChange: (value) => {
+                if (child.props.onChange) {
+                  child.props.onChange(value);
+                }
+                const targetValue = value;
+                setSearchData((prev) => ({
+                  ...prev,
+                  [child.props.name]: targetValue,
+                }));
+              },
+            })}
+          </Tooltip>
         </React.Fragment>
       );
     }
     else if (child.type === P2Checkbox || child.type === P2Switch) {
       return (
         <React.Fragment key={index}>
-          {React.cloneElement(child, {
-            checked: searchData[child.props.name] || false,
-            onChange: (checked) => {
-              if (child.props.onChange) {
-                child.props.onChange(checked);
-              }
-              const targetValue = checked;
-              setSearchData((prev) => ({
-                ...prev,
-                [child.props.name]: targetValue,
-              }));
-              if (child.props.changeAfterSearch) {
-                setChangeAfterSearch(true);
-              }
-            },
-          })}
+          <Tooltip key={index} title={tooltipText} placement="bottom">
+            {React.cloneElement(child, {
+              className: `${child.props.className || ""} ${errorClass || ""}`.trim(),
+              checked: searchData[child.props.name] || false,
+              onChange: (checked) => {
+                if (child.props.onChange) {
+                  child.props.onChange(checked);
+                }
+                const targetValue = checked;
+                setSearchData((prev) => ({
+                  ...prev,
+                  [child.props.name]: targetValue,
+                }));
+                if (child.props.changeAfterSearch) {
+                  setChangeAfterSearch(true);
+                }
+              },
+            })}
+          </Tooltip>
         </React.Fragment>
       );
     }
     else if (child.type === P2RadioGroup) {
       return (
         <React.Fragment key={index}>
-          {React.cloneElement(child, {
-            value: searchData[child.props.name] || "",
-            onChange: (e) => {
-              if (child.props.onChange) {
-                child.props.onChange(e);
-              }
-              const targetValue = e.target && e.target.value;
-              setSearchData((prev) => ({
-                ...prev,
-                [child.props.name]: targetValue,
-              }));
-              if (child.props.changeAfterSearch) {
-                setChangeAfterSearch(true);
-              }
-            },
-          })}
+          <Tooltip key={index} title={tooltipText} placement="bottom">
+            {React.cloneElement(child, {
+              className: `${child.props.className || ""} ${errorClass || ""}`.trim(),
+              value: searchData[child.props.name] || "",
+              onChange: (e) => {
+                if (child.props.onChange) {
+                  child.props.onChange(e);
+                }
+                const targetValue = e.target && e.target.value;
+                setSearchData((prev) => ({
+                  ...prev,
+                  [child.props.name]: targetValue,
+                }));
+                if (child.props.changeAfterSearch) {
+                  setChangeAfterSearch(true);
+                }
+              },
+            })}
+          </Tooltip>
         </React.Fragment>
       );
     }
