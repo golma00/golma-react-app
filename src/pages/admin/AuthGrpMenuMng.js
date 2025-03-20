@@ -64,13 +64,13 @@ function AuthGrpMenuMng(props) {
     }, []);
   async function onSearch() {
     try {
-        if (Utils.isNotEmpty(searchArea.current.api.validate())) {
-          return;
-        }
+      if (Utils.isEmpty(searchArea.current.api.validate())) {
+        return;
+      }
       setLoading(true);
       gridAuthGrp.current.api.clear();
-      gridMenu.current.api?.clear();
       searchArea.current.api.clear();
+      gridMenu.current.api?.clear();
 
       const searchData = searchArea.current.api.get();
       searchData["useYn"] = "Y";
@@ -89,7 +89,7 @@ function AuthGrpMenuMng(props) {
     }
     catch (error) {
       setLoading(false);
-      P2MessageBox.error('시스템 오류가 발생했습니다.22');
+      P2MessageBox.error('시스템 오류가 발생했습니다.');
       console.log(error);
     }
   }
