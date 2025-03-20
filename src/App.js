@@ -3,13 +3,16 @@ import { P2PageWrapper } from 'components/layout/index';
 import { P2MessageBox } from 'components/control/index';
 import { BrowserRouter } from 'react-router-dom';
 import { Menu, Tabs } from 'antd';
+import { TabNavigateContext } from 'hooks/useTabNavigate';
 import axios from 'axios';
+import * as Utils from 'utils/Utils';
 
 function App() {
 
-  const [currentTab, setCurrentTab] = useState("pages/CommonPage");
+  const [currentTab, setCurrentTab] = useState(-1);
   const [tabs, setTabs] = useState([]);
   const [menuList, setMenuList] = useState([]);
+  const [menuData, setMenuData] = useState([]);
 
   useEffect(() => {
     async function getAuthMenuList() {
@@ -18,10 +21,12 @@ function App() {
         if (res.data.code === "00") {
           let keyByMenu = {};
           let menus = [];
+
+          setMenuData(res.data.data.result);
           res.data.data.result.forEach(row => {
             const menu = row.leaf ? 
-              <Menu.Item key={row.menuId} path={row.menuUrl} title={row.menuNm}>{row.menuNm}</Menu.Item> :
-              <Menu.SubMenu title={row.menuNm} children={[]}></Menu.SubMenu>;
+              <Menu.Item key={row.menuId} path={row.menuUrl} title={row.menuNm} menuId={row.menuId}>{row.menuNm}</Menu.Item> :
+              <Menu.SubMenu key={row.menuId} title={row.menuNm} menuId={row.menuId} children={[]}></Menu.SubMenu>;
 
             if (keyByMenu.hasOwnProperty(row.upperMenuId)) {
               keyByMenu[row.upperMenuId].props.children.push(menu);
@@ -66,16 +71,42 @@ function App() {
   }
 
   function onMenuClick(menuInfo) {
-    const tab = tabs.filter(tab => tab.key === menuInfo.key);
+    addTab({
+      menuId: menuInfo.item.props.menuId,
+      title: menuInfo.item.props.title,
+      path: menuInfo.item.props.path,
+    });
+  }
+
+  function addTab(menu) {
+    if (Utils.isEmpty(menu.menuId) && Utils.isNotEmpty(menu.path)) {
+      const m = findMenuByPath(menu.path);
+      if (m) {
+        menu.menuId = m.menuId;
+        menu.title  = m.menuNm;
+      }
+      else {
+        return;
+      }
+    }
+    if (Utils.isEmpty(menu.path)) {
+      return;
+    }
+
+    const tab = tabs.filter(tab => tab.key === menu.menuId);
     if (tab.length === 0) {
       setTabs(prev => [...prev, 
-        <Tabs.TabPane tab={menuInfo.item.props.title} key={menuInfo.key}>
-          <P2PageWrapper menuId={menuInfo.key} menuPath={menuInfo.item.props.path}>
+        <Tabs.TabPane tab={menu.title} key={menu.menuId} menuId={menu.menuId} menuPath={menu.path}>
+          <P2PageWrapper key={menu.menuId} menuId={menu.menuId} menuPath={menu.path}>
           </P2PageWrapper>
         </Tabs.TabPane>,
       ]);
     }
-    setCurrentTab(menuInfo.key);
+    setCurrentTab(menu.menuId);
+  }
+
+  function findMenuByPath(path) {
+    return menuData.find(menu => menu.menuUrl === path);
   }
 
   return (
@@ -92,9 +123,11 @@ function App() {
           </div>
         </div>
         <div className='flex flex-row p-2'>
-          <Tabs hideAdd activeKey={currentTab} onChange={onTabChange} onEdit={onTabEdit} type="editable-card">
-            {tabs}
-          </Tabs>
+          <TabNavigateContext.Provider value={[tabs, addTab, removeTab, setCurrentTab, findMenuByPath, menuData]}>
+            <Tabs hideAdd activeKey={currentTab + ""} onChange={onTabChange} onEdit={onTabEdit} type="editable-card">
+              {tabs}
+            </Tabs>
+          </TabNavigateContext.Provider>
         </div>
       </div>
     </BrowserRouter>

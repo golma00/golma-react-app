@@ -6,7 +6,8 @@
       "components/*": ["components/*"],
       "pages/*": ["pages/*"],
       "utils/*": ["utils/*"],
-      "locales/*": ["locales/*"]
+      "locales/*": ["locales/*"],
+      "hooks/*": ["hooks/*"]
     }
   },
   "include": ["src"]
