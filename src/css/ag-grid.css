@@ -28,6 +28,10 @@
   padding-right: 3px;
 }
 
+.ag-header-cell-resize {
+  width: 4px !important;
+}
+
 .error-cell {
   border: 1px solid red !important;
 }

@@ -29,9 +29,6 @@ function CodeMng(props) {
   //코드 조회용 공통 function
   const {getCodeDatas} = useCommonCode();
 
-  useEffect(() => {
-  }, []);
-
   const colDefs = [
       { 
         field: "grpCd",

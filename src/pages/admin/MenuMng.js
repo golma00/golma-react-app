@@ -14,7 +14,6 @@ function MenuMng(props) {
 
   const [loading, setLoading] = useState(false);
   const [treeNode, setTreeNode] = useState(null);
-  const [rowData, setRowData] = useState([]);
   const [count, setCount] = useState(0);
 
   useEffect(() => {
@@ -52,6 +51,10 @@ function MenuMng(props) {
 
   async function onSearch() {
     try {
+      if (Utils.isNotEmpty(searchArea.current.api.validate())) {
+        return;
+      }
+
       setLoading(true);
       tree.current.api.clear();
       formArea.current.api.clear();
@@ -61,7 +64,7 @@ function MenuMng(props) {
 
       setLoading(false);
       if (res.data.code === "00") {
-        setRowData(res.data.data.result);
+        tree.current.api.setRowData(res.data.data.result);
         setCount(res.data.data.result.length);
       }
       else {
@@ -76,8 +79,6 @@ function MenuMng(props) {
   }
   
   async function onSave() {
-    
-    console.log(formArea.current.api.get());
     const saveDatas = await tree.current.api.getModifiedRows();
 
     if (saveDatas.length === 0) {
@@ -172,13 +173,7 @@ function MenuMng(props) {
   }
 
   function onBeforeTreeSelect(selectedNode) {
-    let errorMessage = "";
-    if (Utils.isEmpty(selectedNode.props.dataRef["menuNm"])) {
-      errorMessage += "메뉴명을 입력 하세요.\n";
-    }
-
-    if (Utils.isNotEmpty(errorMessage)) {
-      P2MessageBox.error(errorMessage);
+    if (Utils.isNotEmpty(formArea.current.api.validate())) {
       return false;
     }
     return true;
@@ -189,7 +184,7 @@ function MenuMng(props) {
     formArea.current.api.clear();
     formArea.current.api.allDisabled(e.node.props.dataRef.menuId === 1);
   }
-  
+
   return (
     <P2Page menuProps={props.menuProps} onSearch={onSearch} onSave={onSave} loading={loading}>
       <P2SearchArea onSearch={onSearch} ref={searchArea}>
@@ -209,7 +204,6 @@ function MenuMng(props) {
               </button>
             </P2GridButtonBar>
             <P2Tree ref={tree} 
-              rowData={rowData}
               nodeKeyField={"menuId"}
               parentKeyField={"upperMenuId"}
               nodeTitleField={nodeTitleFunc}
