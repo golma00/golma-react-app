@@ -54,7 +54,6 @@ function P2SearchArea(props, ref) {
             }));
           }
         });
-        setErrors(valid);
       },
       validate() {
         let newErrors = {};

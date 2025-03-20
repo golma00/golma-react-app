@@ -105,7 +105,6 @@ function P2FormArea(props, ref) {
             }));
           }
         });
-        setErrors(valid);
       },
       validate() {
         let newErrors = {};
