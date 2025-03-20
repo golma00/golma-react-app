@@ -52,7 +52,8 @@ function AuthGrpMenuMng(props) {
   async function onSearch() {
     try {
       setLoading(true);
-      gridAuthGrp.current.api.refresh();
+      gridAuthGrp.current.api.clear();
+      gridMenu.current.api?.clear();
 
       const searchData = searchArea.current.api.get();
       searchData["useYn"] = "Y";
@@ -79,7 +80,7 @@ function AuthGrpMenuMng(props) {
   async function onSearchMenu() {
     try {
       setLoading(true);
-      gridMenu.current.api.refresh();
+      gridMenu.current.api.clear();
 
       const selectedRow = await gridAuthGrp.current.api.getSelectedRow();
       const res = await axios.post("/api/v1/authGrpMenu/authGrpMenuList", selectedRow);
@@ -127,7 +128,7 @@ function AuthGrpMenuMng(props) {
       if (res.data.code === "00") {
         P2MessageBox.success({
           content: '저장이 완료 되었습니다.',
-          onOk: () => onSearch(),
+          onOk: () => onSearchMenu(),
         });
       }
       else {
@@ -157,6 +158,9 @@ function AuthGrpMenuMng(props) {
         }
       });
     }
+  }, []);
+
+  useEffect(() => {
   }, []);
 
   return (

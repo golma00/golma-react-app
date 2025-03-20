@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import * as pages from 'pages/index';
 import { P2PageWrapper } from 'components/layout/index';
 import { P2MessageBox } from 'components/control/index';
 import { BrowserRouter } from 'react-router-dom';
@@ -86,8 +85,7 @@ function App() {
     if (tab.length === 0) {
       setTabs(prev => [...prev, 
         <Tabs.TabPane tab={menuInfo.item.props.title} key={menuInfo.key}>
-          <P2PageWrapper menuId={menuInfo.key}>
-            {pagePaths[menuInfo.item.props.path]}
+          <P2PageWrapper menuId={menuInfo.key} menuPath={menuInfo.item.props.path}>
           </P2PageWrapper>
         </Tabs.TabPane>,
       ]);

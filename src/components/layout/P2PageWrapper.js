@@ -5,8 +5,15 @@ import { P2MessageBox } from 'components/control/index';
 function P2PageWrapper(props) {
   const [success, setSuccess] = useState(false);
   const [menuProps, setMenuProps] = useState({});
+  const [Page, setPage] = useState(null);
 
   useEffect(() => {
+    const loadComponent = async () => {
+      const { default: loadedComponent } = await import(`../../${props.menuPath}.js`);
+      setPage(() => loadedComponent);
+    };
+    loadComponent();
+
     async function getMenuAuth() {
       try {
         const res = await axios.post('/api/v1/auth/menuAuth', { menuId: props.menuId });
@@ -25,17 +32,12 @@ function P2PageWrapper(props) {
       }
     }
     getMenuAuth();
-  }, []);
 
-  function loadMenu() {
-    return React.cloneElement(props.children, {
-      menuProps,
-    });
-  }
+  }, []);
 
   return (
     <>
-      { success && loadMenu() }
+      { success && Page && <Page menuProps={menuProps}/> }
     </>
   )
 }

@@ -22,7 +22,7 @@ function OneGridPage(props) {
   async function onSearch() {
     try {
       setLoading(true);
-      grid.current.api.refresh();
+      grid.current.api.clear();
 
       const searchData = searchArea.current.api.get();
       const res = await axios.post("/api/v1/auth/list", searchData);
@@ -107,7 +107,7 @@ function OneGridPage(props) {
           <P2Input type="text" id="authGrpNm" name="authGrpNm" className="text-sm bg-white border border-gray-200 rounded-md"/>
         </div>
       </P2SearchArea>
-      <P2GridButtonBar title="권한그룹 목록" onAddRow={onAddRow} onDeleteRow={onDeleteRow} count={count}>
+      <P2GridButtonBar menuProps={props.menuProps} title="권한그룹 목록" onAddRow={onAddRow} onDeleteRow={onDeleteRow} count={count}>
       </P2GridButtonBar>
       <div className="w-full h-[500px]">
         <P2AgGrid  

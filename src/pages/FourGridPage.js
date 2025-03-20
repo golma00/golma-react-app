@@ -19,7 +19,7 @@ function FourGridPage(props) {
 
   useEffect(() => {
     if (msgst === 1) {
-        grid.current.api.refresh();
+        grid.current.api.clear();
         grid.current.api.setGridOption("rowData", structuredClone(rowData));
         setCount(grid.current.api.getDisplayedRowCount());          
         grid.current.api.firstRowSelected();

@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { P2Page, P2SearchArea, P2GridButtonBar } from 'components/layout/index';
-import { P2AgGrid, onlyInsertRow, InvalidFunction } from 'components/grid/index';
+import { P2AgGrid, onlyInsertRow, requiredFunction } from 'components/grid/index';
 import { P2Input, P2MessageBox, P2Tree } from 'components/control/index';
 import SplitterLayout from 'react-splitter-layout';
 import "react-splitter-layout/lib/index.css";
@@ -18,7 +18,7 @@ function CodeMng(props) {
   const [loading, setLoading] = useState(false);
 
   // Tree 영역 조회 데이터
-  const [rowData, setRowData] = useState([]);
+  //const [rowData, setRowData] = useState([]);
   const [selectedRow, setSelectedRow] = useState(null);
   const [selectionNode, setSectionNode] = useState({selectedRow: [], e: []});
 
@@ -57,7 +57,7 @@ function CodeMng(props) {
         width: 120,
         align: "left",
         pinned: "left",
-        invalid: InvalidFunction,
+        invalid: requiredFunction,
       },
       { 
         field: "cdNm",
@@ -67,7 +67,7 @@ function CodeMng(props) {
         width: 150,
         align: "left",
         pinned: "left",
-        invalid: InvalidFunction,
+        invalid: requiredFunction,
       },
       { 
         field: "cdDesc",
@@ -195,36 +195,20 @@ function CodeMng(props) {
         align: "left" 
       },
   ];
-  
-  const [columnDefs, setColumnDefs] = useState(colDefs);
-
-  function setHeaderNames(parentData) {
-    var columnDefinition = grid.current.api.getGridOption("columnDefs");
-    columnDefinition.forEach((colDef) => {
-      if (colDef.field && colDef.field.startsWith("cdRefVal")) {
-        if (parentData && parentData[colDef.field]) {
-          colDef.headerName = parentData[colDef.field];
-        }
-        else {
-          colDef.headerName = "비고 " + colDef.field.slice(-2);
-        }
-      }
-    });
-    setColumnDefs(columnDefinition);
-  }
 
   async function onSearch() {
     try {
       setLoading(true);
-      tree.current.api.refresh();
-      grid.current.api.refresh();
+      tree.current.api.clear();
+      grid.current.api.clear();
 
       const searchData = searchArea.current.api.get();
       const res = await axios.post("/api/v1/code/getGrpCodeList", searchData);
 
       setLoading(false);
       if (res.data.code === "00") {
-        setRowData(res.data.data.result);
+        //setRowData(res.data.data.result);
+        tree.current.api.setRowData(res.data.data.result);
         setCount(res.data.data.result.length);
       }
       else {
@@ -324,7 +308,7 @@ function CodeMng(props) {
 
   async function getCommonCodeList(selectedCodeId, item) {
     try {
-      grid.current.api.refresh();
+      grid.current.api.clear();
       const params = {
         grpCodeId: item.node.props.dataRef.grpCd,
         codeId: selectedCodeId[0],
@@ -351,16 +335,28 @@ function CodeMng(props) {
     return (item) => item["cd"] === "ROOT" ? item["cd"] : item["cdNm"] + " (" + item["cd"] + ")";
   }
 
-  function onSelect(selectedRow, e) {
+  async function onSelect(selectedRow, e) {
     if (e.selectedNodes.length > 0) {
       setSectionNode({selectedRow: selectedRow, e: e});
       getCommonCodeList(selectedRow, e);
-      setHeaderNames(e.node.props.dataRef);
     }
     else {
       getCommonCodeList(selectionNode.selectedRow, selectionNode.e);
-      setHeaderNames(e.node.props.dataRef);
     }
+    setGridHeaderName(e.node.props.dataRef);
+  }
+
+  async function setGridHeaderName (parentData) {
+    colDefs.forEach((col) => {
+      if (col.field && col.field.startsWith("cdRefVal")) {
+        if (parentData && parentData[col.field]) {
+          grid.current.api.setHeaderName(col.field, parentData[col.field]);
+        }
+        else {
+          grid.current.api.setHeaderName(col.field, "비고 " + col.field.slice(-2));
+        }
+      }
+    });
   }
 
   async function onGridReady() {
@@ -407,7 +403,6 @@ function CodeMng(props) {
       <div className="w-full h-[500px]">
         <SplitterLayout split="vertical" percentage={true} primaryMinSize={20} secondaryMinSize={20} secondaryInitialSize={80}>
           <P2Tree ref={tree} 
-            rowData={rowData}
             nodeKeyField={"cd"}
             parentKeyField={"parentCd"}
             nodeTitleField={nodeTitleFunc}
@@ -417,7 +412,7 @@ function CodeMng(props) {
           <P2AgGrid 
             debug={true}
             ref={grid}
-            columnDefs={columnDefs}
+            columnDefs={colDefs}
             showStatusColumn={true}
             showCheckedColumn={true}
             onGridReady={onGridReady}
