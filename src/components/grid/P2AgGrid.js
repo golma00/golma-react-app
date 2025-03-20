@@ -179,7 +179,7 @@ function P2AgGrid(props, ref) {
 
       if (c.required === true) {
         if (c.headerName) {
-          c.headerName = "* " + c.headerName;
+          c.headerClass = "ag-header-required";
           c.cellClassRules = required;
           c.tooltipValueGetter = (params) => Utils.isEmpty(params.value) ? "필수입력" : "";
         }
