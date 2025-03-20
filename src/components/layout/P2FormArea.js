@@ -634,7 +634,7 @@ function P2FormArea(props, ref) {
                 if (child.props.onChange) {
                   child.props.onChange(checked);
                 }
-                const targetValue = checked ? child.props.trueValue : child.props.falseValue;
+                const targetValue = checked === child.props.trueValue ? child.props.trueValue : child.props.falseValue;
                 setFormData((prev) => ({
                   ...prev,
                   [child.props.name]: targetValue,
