@@ -3,6 +3,7 @@ import { P2Page, P2SearchArea, P2GridButtonBar, P2FormArea } from 'components/la
 import { P2Input, P2Checkbox, P2Tree, P2DatePicker, P2MessageBox } from 'components/control/index';
 import { Divider } from 'antd';
 import * as Utils from 'utils/Utils';
+import * as Validate from 'utils/Validate';
 import SplitterLayout from 'react-splitter-layout';
 import axios from 'axios';
 
@@ -18,11 +19,7 @@ function MenuMng(props) {
 
   useEffect(() => {
     formArea.current.api.setValid({
-      menuNm: (params) => {
-        if (Utils.isEmpty(params.value)) {
-          return "메뉴명은 필수적으로 기입하여야 합니다.";
-        }
-      },
+      menuNm: (params) => Validate.validateRequired(params.value),
       extBtnNm1: (params) => {
         if (params.data.extUseYn1 === "Y" && Utils.isEmpty(params.value)) {
           return "기타 버튼을 사용할 경우 버튼명을 입력해야 합니다.";
