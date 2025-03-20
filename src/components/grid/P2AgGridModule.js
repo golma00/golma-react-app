@@ -12,7 +12,7 @@ const P2AgGridModule = {
     /**
      * 그리드 초기화
      */
-    refresh: function (beans) {
+    clear: function (beans) {
       beans.setGridOption("rowData", []);
     },
     /**
@@ -371,11 +371,11 @@ const P2AgGridModule = {
           }
       }
     },
-    setHeaderName: async function (beans, columnField, changeFieldName) {
-      var columnDefinition = await beans.getColumnDefs();
+    setHeaderName: function (beans, columnField, changeHeaderName) {
+      var columnDefinition = beans.getColumnDefs();
       columnDefinition.forEach((col) => {
         if (col.field && col.field === columnField) {
-          col.headerName = changeFieldName;
+          col.headerName = changeHeaderName;
         }
       });
       beans.setGridOption("columnDefs", columnDefinition);

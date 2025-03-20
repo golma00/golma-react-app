@@ -21,7 +21,7 @@ function FiveGridPage(props) {
   async function onSearch() {
     try {
       setLoading(true);
-      grid.current.api.refresh();
+      grid.current.api.clear();
       let iempNo = await searchArea.current.api.get('empNo').empNo;
       if (iempNo === undefined ) {iempNo=""};
 

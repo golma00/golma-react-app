@@ -23,7 +23,7 @@ function MenuMng(props) {
   async function onSearch() {
     try {
       setLoading(true);
-      tree.current.api.refresh();
+      tree.current.api.clear();
       formArea.current.api.clear();
 
       const searchData = searchArea.current.api.get(); 

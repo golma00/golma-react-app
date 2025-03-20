@@ -86,7 +86,7 @@ const saveApi = (async() => {
     if (msgst != 0) {
       if (msgst == 1) {
         console.log('gridApi=',data);
-        gridApi.refresh();
+        gridApi.clear();
         gridApi.setGridOption("rowData", data);
         console.log("Grid Row Data:", gridApi.getDisplayedRowCount());
         console.log("Selected Rows:", gridApi.getSelectedRows());

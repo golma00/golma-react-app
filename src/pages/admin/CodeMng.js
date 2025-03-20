@@ -18,7 +18,7 @@ function CodeMng(props) {
   const [loading, setLoading] = useState(false);
 
   // Tree 영역 조회 데이터
-  const [rowData, setRowData] = useState([]);
+  //const [rowData, setRowData] = useState([]);
   const [selectedRow, setSelectedRow] = useState(null);
   const [selectionNode, setSectionNode] = useState({selectedRow: [], e: []});
 
@@ -199,15 +199,16 @@ function CodeMng(props) {
   async function onSearch() {
     try {
       setLoading(true);
-      tree.current.api.refresh();
-      grid.current.api.refresh();
+      tree.current.api.clear();
+      grid.current.api.clear();
 
       const searchData = searchArea.current.api.get();
       const res = await axios.post("/api/v1/code/getGrpCodeList", searchData);
 
       setLoading(false);
       if (res.data.code === "00") {
-        setRowData(res.data.data.result);
+        //setRowData(res.data.data.result);
+        tree.current.api.setRowData(res.data.data.result);
         setCount(res.data.data.result.length);
       }
       else {
@@ -307,7 +308,7 @@ function CodeMng(props) {
 
   async function getCommonCodeList(selectedCodeId, item) {
     try {
-      grid.current.api.refresh();
+      grid.current.api.clear();
       const params = {
         grpCodeId: item.node.props.dataRef.grpCd,
         codeId: selectedCodeId[0],
@@ -343,7 +344,6 @@ function CodeMng(props) {
       getCommonCodeList(selectionNode.selectedRow, selectionNode.e);
     }
     setGridHeaderName(e.node.props.dataRef);
-    //grid.current.api.setHeaderName("grpNm", "변경된\n그룹코드");
   }
 
   async function setGridHeaderName (parentData) {
@@ -403,7 +403,6 @@ function CodeMng(props) {
       <div className="w-full h-[500px]">
         <SplitterLayout split="vertical" percentage={true} primaryMinSize={20} secondaryMinSize={20} secondaryInitialSize={80}>
           <P2Tree ref={tree} 
-            rowData={rowData}
             nodeKeyField={"cd"}
             parentKeyField={"parentCd"}
             nodeTitleField={nodeTitleFunc}

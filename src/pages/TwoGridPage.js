@@ -80,9 +80,9 @@ function TwoGridPage(params) {
 
   async function loadData() {
     await openClipLoader();
-    gridApi.refresh();
+    gridApi.clear();
     gridApi.setGridOption("rowData", rowData);
-    gridApi2.refresh();
+    gridApi2.clear();
     gridApi2.setGridOption("rowData", rowData);
 
     await setTimeout(() => closeClipLoader(), 1500);
