@@ -65,7 +65,7 @@ function MenuMng(props) {
         if (params.value === "Y" && Utils.isEmpty(params.menuProps?.extBtnNm1)) {
           return "기타 버튼을 사용할 경우 버튼명을 입력해야 합니다.";
         }
-        if (params.value === "N" && params.menuProps?.extBtnNm1 !== "" ) {
+        if (params.value === "N" && Utils.isNotEmpty(params.menuProps?.extBtnNm1 !== "") ) {
           return "버튼명을 입력한 경우, 기타 버튼1을 체크해야 합니다.";
         }
       },
@@ -92,7 +92,6 @@ function MenuMng(props) {
       return; // 유효성 검사 실패 시 저장 진행 X
     }
   
-    //console.log(onValid(),'ㅇㅇ');
     // saveDatas.forEach((item) => {
     //   if (Utils.isEmpty(item["menuNm"])) {
     //     item["menuId"] = null;
