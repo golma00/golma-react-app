@@ -12,7 +12,8 @@ import {
   P2InputTextArea,
   P2Checkbox,
   P2Switch,
-  P2RadioGroup 
+  P2RadioGroup,
+  P2MessageBox
 } from "components/control/index";
 
 function P2SearchArea(props, ref) {
@@ -20,6 +21,9 @@ function P2SearchArea(props, ref) {
 
   const [searchData, setSearchData] = useState({});
   const [changeAfterSearch, setChangeAfterSearch] = useState(false);
+  const [valid, setValid] = useState({});
+  const [errors, setErrors] = useState({});
+  const [lables, setLables] = useState({});
 
   useImperativeHandle(ref, () => ({
     api: {
@@ -39,7 +43,40 @@ function P2SearchArea(props, ref) {
             [key]: undefined,
           }));
         });
-      }
+      },
+      setValid(valid) {
+        Object.keys(valid).forEach((key) => {
+          if (valid[key]) {
+            setValid((prev) => ({
+              ...prev,
+              [key]: valid[key],
+            }));
+          }
+        });
+        setErrors(valid);
+      },
+      validate() {
+        let newErrors = {};
+        let errorMessages = [];
+        Object.keys(valid).forEach((key) => {
+          const validationFunction = valid[key];
+          if (typeof validationFunction === "function") {
+            const errorMessage = validationFunction({ value: searchData[key], data: searchData, key });
+            if (errorMessage) {
+              const label = lables[key] ? `[${lables[key]}]: ` : "";
+              newErrors[key] = errorMessage;
+              errorMessages.push(`${label}${errorMessage}`);
+            }
+          }
+        });
+        setErrors(newErrors);
+        if (errorMessages.length > 0) {
+          const message = errorMessages.join("\n");
+          P2MessageBox.warn(message);
+          return message;
+        }
+        return "";
+      },
     }
   }));
 
@@ -72,6 +109,10 @@ function P2SearchArea(props, ref) {
               case "checkbox":
                 if (child.props.name) {
                   initData[child.props.name] = child.props.checked || false;
+
+                  if (child.props.children) {
+                    setLables(prev => ({ ...prev, [child.props.name]: child.props.children }));
+                  }
                 }
                 break;
               case "radio":
@@ -91,6 +132,11 @@ function P2SearchArea(props, ref) {
           else if (child.type === P2Select) {
             if (child.props.name) {
               initData[child.props.name] = child.props.value || [];
+            }
+          }
+          else if (child.type === "label") {
+            if (child.props.htmlFor) {
+              setLables(prev => ({ ...prev, [child.props.htmlFor]: child.props.children }));
             }
           }
           else if (child.type === P2Input 

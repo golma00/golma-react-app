@@ -25,6 +25,7 @@ function P2FormArea(props, ref) {
   const [childrenMap, setChildrenMap] = useState({});
   const [valid, setValid] = useState({});
   const [errors, setErrors] = useState({});
+  const [lables, setLables] = useState({});
 
   useEffect(() => {
     if (props.rowNode) {
@@ -114,8 +115,9 @@ function P2FormArea(props, ref) {
           if (typeof validationFunction === "function") {
             const errorMessage = validationFunction({ value: formData[key], data: formData, key });
             if (errorMessage) {
+              const label = lables[key] ? `[${lables[key]}]: ` : "";
               newErrors[key] = errorMessage;
-              errorMessages.push(errorMessage);
+              errorMessages.push(`${label}${errorMessage}`);
             }
           }
         });
@@ -170,6 +172,10 @@ function P2FormArea(props, ref) {
                   initHide[child.props.name] = child.props.hide || false;
                   initDisabled[child.props.name] = child.props.disabled || false;
                   setChildrenMap(prev => ({ ...prev, [child.props.name]: child }));
+
+                  if (child.props.children) {
+                    setLables(prev => ({ ...prev, [child.props.name]: child.props.children }));
+                  }
                 }
                 break;
               case "radio":
@@ -190,6 +196,11 @@ function P2FormArea(props, ref) {
               initHide[child.props.name] = child.props.hide || false;
               initDisabled[child.props.name] = child.props.disabled || false;
               setChildrenMap(prev => ({ ...prev, [child.props.name]: child }));
+            }
+          }
+          else if (child.type === "label") {
+            if (child.props.htmlFor) {
+              setLables(prev => ({ ...prev, [child.props.htmlFor]: child.props.children }));
             }
           }
           else if (child.type === P2Select) {
