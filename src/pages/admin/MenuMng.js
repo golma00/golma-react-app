@@ -221,7 +221,7 @@ function MenuMng(props) {
     <P2Page menuProps={props.menuProps} onSearch={onSearch} onSave={onSave} loading={loading}>
       <P2SearchArea onSearch={onSearch} ref={searchArea}>
       </P2SearchArea>
-      <div className="w-full">
+      <div className="w-full h-[600px]">
         <SplitterLayout split="vertical" customClassName="w-full h-[600px]">
           <div className="h-[600px] flex flex-col gap-1">
             <P2GridButtonBar title="메뉴 목록" count={count} menuProps={props.menuProps}>
