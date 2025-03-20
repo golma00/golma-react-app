@@ -175,7 +175,7 @@ function AuthGrpMenuMng(props) {
           <P2Input id="authGrpNm" name="authGrpNm" className="text-sm bg-white border border-gray-200 rounded-md"/>
         </div>
       </P2SearchArea>
-      <div className="w-full">
+      <div className="w-full h-[600px]">
         <SplitterLayout split="vertical" customClassName="w-full h-[600px]" percentage={true} primaryMinSize={20} secondaryMinSize={20} secondaryInitialSize={80} >
           <div className="h-[600px] flex flex-col gap-1">
             <P2GridButtonBar title="권한 그룹 목록" count={countAuthGrp}/>
