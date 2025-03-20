@@ -60,10 +60,13 @@ function AuthGrpMenuMng(props) {
           },
         });
       
-    onSearchMenu();
+      onSearch();
     }, []);
   async function onSearch() {
     try {
+        if (Utils.isNotEmpty(searchArea.current.api.validate())) {
+          return;
+        }
       setLoading(true);
       gridAuthGrp.current.api.clear();
       gridMenu.current.api?.clear();
@@ -81,12 +84,12 @@ function AuthGrpMenuMng(props) {
         gridAuthGrp.current.api.firstRowSelected();
       }
       else {
-        P2MessageBox.error(res.data.message || '시스템 오류가 발생했습니다.');
+        P2MessageBox.error(res.data.message || '시스템 오류가 발생했습니다');
       }
     }
     catch (error) {
       setLoading(false);
-      P2MessageBox.error('시스템 오류가 발생했습니다.');
+      P2MessageBox.error('시스템 오류가 발생했습니다.22');
       console.log(error);
     }
   }
