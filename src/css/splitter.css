@@ -22,6 +22,10 @@
   background-color: #FFFFFF ;
 }
 
+.splitter-layout > .layout-splitter:hover {
+  background-color: #FFFFFF !important;
+}
+
 .splitter-layout.layout-changing {
   cursor: col-resize;
 }
