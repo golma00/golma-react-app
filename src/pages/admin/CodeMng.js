@@ -8,7 +8,7 @@ import axios from 'axios';
 import { useCommonCode } from 'hooks/useCommonCode';
 import SearchUpperCodePopup from 'pages/admin/SearchUpperCodePopup';
 import * as Utils from 'utils/Utils';
-import { validateRequired } from 'utils/Validate';
+import * as Validate from 'utils/Validate';
 
 function CodeMng(props) {
   const searchArea = useRef(null);
@@ -58,7 +58,7 @@ function CodeMng(props) {
         width: 120,
         align: "left",
         pinned: "left",
-        valid: (params) => params.data._status ? validateRequired(params.data[params.key]) : ""
+        valid: (params) => params.data._status ? Validate.validateRequired(params.value) : ""
       },
       { 
         field: "cdNm",
@@ -68,7 +68,7 @@ function CodeMng(props) {
         width: 150,
         align: "left",
         pinned: "left",
-        valid: (params) => params.data._status ? validateRequired(params.data[params.key]) : ""
+        valid: (params) => params.data._status ? Validate.validateRequired(params.value) : ""
       },
       { 
         field: "cdDesc",
