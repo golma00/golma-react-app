@@ -94,7 +94,6 @@ function P2FormArea(props, ref) {
           }));
         });
         setErrors({});
-        setValid({});
       },
       setValid(valid) {
         Object.keys(valid).forEach((key) => {
@@ -109,33 +108,24 @@ function P2FormArea(props, ref) {
       },
       validate() {
         let newErrors = {};
-        let keyName = "";
         let errorMessages = [];
         Object.keys(valid).forEach((key) => {
           const validationFunction = valid[key];
           if (typeof validationFunction === "function") {
-            const errorMessage = validationFunction({ value: formData[key] });
+            const errorMessage = validationFunction({ value: formData[key], data: formData, key });
             if (errorMessage) {
               newErrors[key] = errorMessage;
               errorMessages.push(errorMessage);
-              if (!keyName) {
-                keyName = key;
-              }
             }
           }
-        });      
-        setErrors(newErrors);        
+        });
+        setErrors(newErrors);
         if (errorMessages.length > 0) {
-          P2MessageBox.warn({ content: errorMessages.join("\n") });
-          return false; // 유효성 검사 실패
+          const message = errorMessages.join("\n");
+          P2MessageBox.warn(message);
+          return message;
         }
-        //return Object.keys(newErrors).length === 0;
-        if (newErrors) {
-          return newErrors[keyName];
-        }
-        else {
-          return "";
-        }
+        return "";
       },
     },
   }));
