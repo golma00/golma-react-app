@@ -32,6 +32,10 @@
   width: 4px !important;
 }
 
+.ag-number-field-input {
+  text-align: right;
+}
+
 .error-cell {
   border: 1px solid red !important;
 }
