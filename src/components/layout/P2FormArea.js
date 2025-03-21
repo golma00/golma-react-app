@@ -479,6 +479,7 @@ function P2FormArea(props, ref) {
                 className: `${child.props.className || ""} ${errorClass || ""}`.trim(),
                 optionValue: formData[child.props.name] || "",
                 hidden: formHidden[child.props.name] || false,
+                isDisabled: formDisabled[child.props.name] || false,
                 onChange: (e) => {
                   if (child.props.onChange) {
                     child.props.onChange(e);
