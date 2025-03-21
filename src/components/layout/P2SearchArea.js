@@ -55,7 +55,7 @@ function P2SearchArea(props, ref) {
           }
         });
       },
-      validate() {
+      async validate() {
         let newErrors = {};
         let errorMessages = [];
         Object.keys(valid).forEach((key) => {

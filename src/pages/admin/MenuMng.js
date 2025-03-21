@@ -51,7 +51,7 @@ function MenuMng(props) {
 
   async function onSearch() {
     try {
-      if (Utils.isNotEmpty(searchArea.current.api.validate())) {
+      if (Utils.isNotEmpty(await searchArea.current.api.validate())) {
         return;
       }
 
@@ -86,7 +86,7 @@ function MenuMng(props) {
       return;
     }
 
-    if (Utils.isNotEmpty(formArea.current.api.validate())) {
+    if (Utils.isNotEmpty(await formArea.current.api.validate())) {
       return;
     }
 
@@ -172,8 +172,8 @@ function MenuMng(props) {
     return (item) => `${item["menuNm"]} (${item["menuId"]})`;
   }
 
-  function onBeforeTreeSelect(selectedNode) {
-    if (Utils.isNotEmpty(formArea.current.api.validate())) {
+  async function onBeforeTreeSelect(selectedNode) {
+    if (Utils.isNotEmpty(await formArea.current.api.validate())) {
       return false;
     }
     return true;

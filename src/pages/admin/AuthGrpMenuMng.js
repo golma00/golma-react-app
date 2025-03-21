@@ -5,6 +5,7 @@ import { P2AgGrid } from 'components/grid/index';
 import SplitterLayout from 'react-splitter-layout';
 import axios from 'axios';
 import * as Utils from 'utils/Utils';
+import * as Validate from 'utils/Validate';
 
 function AuthGrpMenuMng(props) {
 
@@ -50,26 +51,20 @@ function AuthGrpMenuMng(props) {
     },
   ];
 
-    useEffect(() => {
-      searchArea.current.api.setValid({
-        authGrpId: (params) => {
-            return "권한 그룹 ID 값이 없습니다.";
-          },
-          authGrpNm: (params) => {
-            return "권한 그룹 값이 없습니다.";
-          },
-        });
+  useEffect(() => {
+    searchArea.current.api.setValid({
       
-      onSearch();
-    }, []);
+    });
+  }, []);
+
   async function onSearch() {
     try {
-      if (Utils.isEmpty(searchArea.current.api.validate())) {
+      if (Utils.isNotEmpty(await searchArea.current.api.validate())) {
         return;
       }
+      
       setLoading(true);
       gridAuthGrp.current.api.clear();
-      searchArea.current.api.clear();
       gridMenu.current.api?.clear();
 
       const searchData = searchArea.current.api.get();
@@ -122,10 +117,6 @@ function AuthGrpMenuMng(props) {
     const saveDatas = await gridMenu.current.api.getModifiedRows();
     if (saveDatas.length === 0) {
       P2MessageBox.warn('저장할 데이터가 없습니다.');
-      return;
-    }
-
-    if (Utils.isNotEmpty(searchArea.current.api.validate())) {
       return;
     }
 
