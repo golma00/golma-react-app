@@ -106,7 +106,7 @@ function P2FormArea(props, ref) {
           }
         });
       },
-      validate() {
+      async validate() {
         let newErrors = {};
         let errorMessages = [];
         Object.keys(valid).forEach((key) => {
