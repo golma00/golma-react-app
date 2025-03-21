@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useImperativeHandle, forwardRef } from "react";
 import { Tree, } from "antd";
-
+import * as Utils from "utils/Utils";
 export const insertStatus = "I"
 export const updateStatus = "U"
 export const deleteStatus = "D"
@@ -219,7 +219,17 @@ function P2Tree(props, ref) {
           const parentNode = keyByTreeNodeMap[item[parentKeyField]];
           parentNode.props.children.push(node);
           keyByTreeNodeMap[item[nodeKeyField]] = node;
-          item[nodeSeqField] = parentNode.props.children.length;
+          if (Utils.isEmpty(item[nodeSeqField])) {
+            item[nodeSeqField] = parentNode.props.children.length;
+          }
+          else {
+            if (item[nodeSeqField] !== parentNode.props.children.length) {
+              if (Utils.isEmpty(item[statusField])) {
+                item[statusField] = updateStatus;
+              }
+            }
+            item[nodeSeqField] = parentNode.props.children.length;
+          }
         }
         else {
           treeNodes.push(node);
@@ -253,6 +263,12 @@ function P2Tree(props, ref) {
         return;
       }
     }
+
+    // 노드를 선택하지 않는 기능은 제외
+    if (!e.selected) {
+      return;
+    }
+
     setSelectedTreeNode(e.node);
     setSelectKeys([e.node.key || e.node.props.eventKey]);
 
@@ -288,7 +304,7 @@ function P2Tree(props, ref) {
 
       let i = 1;
       dragNodesKeys.forEach((key) => {
-        if (key !== dragNode.props.dataRef[nodeKeyField]) {
+        if (Utils.toString(key) !== Utils.toString(dragNode.props.dataRef[nodeKeyField])) {
           if (keyByTreeNode[key].props.dataRef[statusField] === "") {
             keyByTreeNode[key].props.dataRef[statusField] = updateStatus;
           }
@@ -319,7 +335,7 @@ function P2Tree(props, ref) {
 
       let i = 2;
       dragNodesKeys.forEach((key) => {
-        if (key !== dragNode.props.dataRef[nodeKeyField]) {
+        if (Utils.toString(key) !== Utils.toString(dragNode.props.dataRef[nodeKeyField])) {
           if (keyByTreeNode[key].props.dataRef[statusField] === "") {
             keyByTreeNode[key].props.dataRef[statusField] = updateStatus;
           }
@@ -345,7 +361,6 @@ function P2Tree(props, ref) {
   return (
     <div className="h-full border border-gray-300 rounded-md p-2 overflow-y-auto">
       <Tree {...props} 
-        draggable={true}
         blockNode={true}
         expandedKeys={expandedKeys} 
         autoExpandParent={false} 
