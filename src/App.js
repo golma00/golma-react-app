@@ -93,7 +93,7 @@ function App() {
       return;
     }
 
-    const tab = tabs.filter(tab => tab.key === menu.menuId);
+    const tab = tabs.filter(tab => Utils.toString(tab.key) === Utils.toString(menu.menuId));
     if (tab.length === 0) {
       setTabs(prev => [...prev, 
         <Tabs.TabPane tab={menu.title} key={menu.menuId} menuId={menu.menuId} menuPath={menu.path}>
@@ -124,7 +124,7 @@ function App() {
         </div>
         <div className='flex flex-row p-2'>
           <TabNavigateContext.Provider value={[tabs, addTab, removeTab, setCurrentTab, findMenuByPath, menuData]}>
-            <Tabs hideAdd activeKey={currentTab + ""} onChange={onTabChange} onEdit={onTabEdit} type="editable-card">
+            <Tabs hideAdd activeKey={Utils.toString(currentTab)} onChange={onTabChange} onEdit={onTabEdit} type="editable-card">
               {tabs}
             </Tabs>
           </TabNavigateContext.Provider>
