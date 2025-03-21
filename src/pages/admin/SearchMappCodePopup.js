@@ -6,7 +6,7 @@ import { P2Input, P2MessageBox } from 'components/control/index';
 import { useCommonCode } from 'hooks/useCommonCode';
 import axios from 'axios';
 
-const SearchUpperCodePopup = ({ props, visible, onOk, onClose, params }) => {
+const SearchMappCodePopup = ({ props, visible, onOk, onClose, params }) => {
   const searchArea = useRef(null);
   const grid = useRef(0);
   
@@ -242,4 +242,4 @@ const SearchUpperCodePopup = ({ props, visible, onOk, onClose, params }) => {
   );
 };
 
-export default SearchUpperCodePopup;
+export default SearchMappCodePopup;

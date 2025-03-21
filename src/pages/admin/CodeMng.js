@@ -6,7 +6,7 @@ import SplitterLayout from 'react-splitter-layout';
 import "react-splitter-layout/lib/index.css";
 import axios from 'axios';
 import { useCommonCode } from 'hooks/useCommonCode';
-import SearchUpperCodePopup from 'pages/admin/SearchUpperCodePopup';
+import SearchMappCodePopup from 'pages/admin/SearchMappCodePopup';
 import * as Utils from 'utils/Utils';
 import * as Validate from 'utils/Validate';
 
@@ -23,7 +23,7 @@ function CodeMng(props) {
   const [selectedRow, setSelectedRow] = useState(null);
   const [selectionNode, setSectionNode] = useState({selectedRow: [], e: []});
 
-  const [isSearchUpperCodePopupVisible, setSearchUpperCodePopupVisible] = useState(false);
+  const [isSearchMappCodePopupVisible, setSearchMappCodePopupVisible] = useState(false);
   const [selectedAgGridRowData, setSelectedAgGridRowData] = useState(null);
 
   //코드 조회용 공통 function
@@ -91,26 +91,26 @@ function CodeMng(props) {
         cellDataType: "checkbox",
       },
       { 
-        field: "upperGrpCd",
+        field: "mappGrpCd",
         headerName: "종속\n그룹코드", 
         editable: false, 
         width: 120,
         align: "left",
         onCellClicked: async (params) => {
           setSelectedAgGridRowData(params.data);
-          setSearchUpperCodePopupVisible(true);
+          setSearchMappCodePopupVisible(true);
         },
         cellDataType: "combo",
       },
       { 
-        field: "upperCd",
+        field: "mappCd",
         headerName: "종속 코드", 
         editable: false, 
         width: 120,
         align: "left",
         onCellClicked: async (params) => {
           setSelectedAgGridRowData(params.data);
-          setSearchUpperCodePopupVisible(true);
+          setSearchMappCodePopupVisible(true);
         },
         cellDataType: "combo",
       },
@@ -365,29 +365,30 @@ function CodeMng(props) {
     //불러올 공통 코드 개수만큼 Object 생성
     const commonCodeParams = {
       cdType: {
-        grpCd : "ROOT",
+        upperGrpCd : "ROOT",
         cd : "G001",
       },
-      upperGrpCd : {
+      mappGrpCd : {
         grpCd : "ROOT",
       },
     };
     //한번 조회로 모든 결과 불러오기
     const commonCodeCombo = await getCodeDatas(commonCodeParams);
     //불러온 조회값에서 각각 필요한 데이터 뽑아서 Combo 세팅
-    grid.current.api.setColumnComboDatas("upperGrpCd", commonCodeCombo.upperGrpCd, "grpCd", "grpNm");
-    grid.current.api.setColumnComboDatas("upperCd", commonCodeCombo.upperGrpCd, "cd", "cdNm");
+    console.log();
+    grid.current.api.setColumnComboDatas("mappGrpCd", commonCodeCombo.mappGrpCd, "grpCd", "grpNm");
+    grid.current.api.setColumnComboDatas("mappCd", commonCodeCombo.mappGrpCd, "cd", "cdNm");
     grid.current.api.setColumnComboDatas("cdType", commonCodeCombo.cdType, "cd", "cdNm");
   }
 
-  const closeSearchUpperCodePopup = () => {
-    setSearchUpperCodePopupVisible(false);
+  const closeSearchMappCodePopup = () => {
+    setSearchMappCodePopupVisible(false);
   }
 
-  const setUpperCode = async (data) => {
+  const setMappCode = async (data) => {
     const selectedNode = await grid.current.api.getSelectedNode();
-    selectedNode.setDataValue("upperGrpCd", data.grpCd);
-    selectedNode.setDataValue("upperCd", data.cd);
+    selectedNode.setDataValue("mappGrpCd", data.grpCd);
+    selectedNode.setDataValue("mappCd", data.cd);
   }
   
   return (
@@ -419,10 +420,10 @@ function CodeMng(props) {
           />
         </SplitterLayout>
       </div>
-      <SearchUpperCodePopup className="w-[800px]"
-        visible={isSearchUpperCodePopupVisible}
-        onOk={setUpperCode}
-        onClose={closeSearchUpperCodePopup}
+      <SearchMappCodePopup className="w-[800px]"
+        visible={isSearchMappCodePopupVisible}
+        onOk={setMappCode}
+        onClose={closeSearchMappCodePopup}
         params={selectedAgGridRowData}
         props={props}
       />
