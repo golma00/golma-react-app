@@ -52,6 +52,11 @@ export function isArray(value) {
   return Array.isArray(value);
 }
 
+/**
+ * 문자열 바이트 길이 반환
+ * @param {string} str 
+ * @returns {number}
+ */
 export function getByteLength(str) {
   if (isEmpty(str)) {
     return 0;
@@ -64,7 +69,6 @@ export function getByteLength(str) {
   }
   return size;
 }
-
 function charByteSize(char) {
   if (isEmpty(char)) {
     return 0;
@@ -84,4 +88,19 @@ function charByteSize(char) {
   else {
     return 4;
   }
+}
+
+/**
+ * 값을 문자열로 변환
+ * @param {*} value 
+ * @returns {string}
+ */
+export function toString(value) {
+  if (isEmpty(value)) {
+    return "";
+  }
+  else if (isString(value)) {
+    return value;
+  }
+  return value.toString();  
 }
