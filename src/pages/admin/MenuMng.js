@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { P2Page, P2SearchArea, P2GridButtonBar, P2FormArea } from 'components/layout/index';
-import { P2Input, P2Checkbox, P2Tree, P2DatePicker, P2MessageBox } from 'components/control/index';
+import { P2Input, P2Checkbox, P2Tree, P2DatePicker, P2MessageBox, P2Select } from 'components/control/index';
+import { useCommonCode } from 'hooks/index'
 import { Divider } from 'antd';
 import * as Utils from 'utils/Utils';
 import * as Validate from 'utils/Validate';
@@ -16,35 +17,51 @@ function MenuMng(props) {
   const [treeNode, setTreeNode] = useState(null);
   const [count, setCount] = useState(0);
 
+  const { getCodeDatas } = useCommonCode();
+  const [menuTypeCodeList, setMenuTypeCodeList] = useState([]);
+
   useEffect(() => {
+    async function getCommonCode() {
+      const commonCodeParams = {
+        menuType: {
+          grpCd: "MENU_TYPE"
+        }
+      };
+      const codeDatas = await getCodeDatas(commonCodeParams);
+      setMenuTypeCodeList(codeDatas.menuType);
+    }
+    getCommonCode();
+
     formArea.current.api.setValid({
       menuNm: (params) => Validate.validateRequired(params.value),
       extBtnNm1: (params) => {
         if (params.data.extUseYn1 === "Y" && Utils.isEmpty(params.value)) {
-          return "기타 버튼을 사용할 경우 버튼명을 입력해야 합니다.";
+          return "기타 버튼1을 사용할 경우 버튼명1을 입력해야 합니다.";
         }
       },
       extBtnNm2: (params) => {
         if (params.data.extUseYn2 === "Y" && Utils.isEmpty(params.value)) {
-          return "기타 버튼을 사용할 경우 버튼명을 입력해야 합니다.";
+          return "기타 버튼2을 사용할 경우 버튼명2을 입력해야 합니다.";
         }
       },
       extBtnNm3: (params) => {
         if (params.data.extUseYn3 === "Y" && Utils.isEmpty(params.value)) {
-          return "기타 버튼을 사용할 경우 버튼명을 입력해야 합니다.";
+          return "기타 버튼3을 사용할 경우 버튼명3을 입력해야 합니다.";
         }
       },
       extBtnNm4: (params) => {
         if (params.data.extUseYn4 === "Y" && Utils.isEmpty(params.value)) {
-          return "기타 버튼을 사용할 경우 버튼명을 입력해야 합니다.";
+          return "기타 버튼4을 사용할 경우 버튼명4을 입력해야 합니다.";
         }
       },
       extBtnNm5: (params) => {
         if (params.data.extUseYn5 === "Y" && Utils.isEmpty(params.value)) {
-          return "기타 버튼을 사용할 경우 버튼명을 입력해야 합니다.";
+          return "기타 버튼5을 사용할 경우 버튼명5을 입력해야 합니다.";
         }
       },
     });
+
+    formArea.current.api.allDisabled(true);
 
     onSearch();
   }, []);
@@ -179,9 +196,9 @@ function MenuMng(props) {
     return true;
   }
 
-  function onTreeSelect(selectedRow, e) {
-    setTreeNode(e.node);
+  async function onTreeSelect(selectedRow, e) {
     formArea.current.api.clear();
+    setTreeNode(e.node);
     formArea.current.api.allDisabled(e.node.props.dataRef.menuId === 1);
   }
 
@@ -210,6 +227,7 @@ function MenuMng(props) {
               onSelect={onTreeSelect}
               onBeforeSelect={onBeforeTreeSelect}
               defaultExpandedKeys={['1']}
+              draggable={true}
             />
           </div>
           <div className="h-[600px] flex flex-col gap-1">
@@ -245,7 +263,17 @@ function MenuMng(props) {
                   <P2Input id="manualUrl" name="manualUrl" className="text-sm bg-white border border-gray-200 rounded-md" />
                 </div>
               </div>
-              <Divider orientation="left" className="text-xs">공통 버튼</Divider>
+              <div className="flex flex-row justify-stretch gap-5">
+                <div className="flex flex-row gap-2 w-1/3">
+                  <label htmlFor='displayYn' className="w-28 self-center text-right">표시여부</label>
+                  <P2Checkbox id="displayYn" name="displayYn" className="text-sm self-center w-full" trueValue="Y" falseValue="N" />
+                </div>
+                <div className="flex flex-row gap-2 w-2/3">
+                  <label htmlFor='menuType' className="w-28 self-center text-right">메뉴타입</label>
+                  <P2Select id="menuType" name="menuType" datas={menuTypeCodeList} className="text-sm bg-white rounded-md w-full" />
+                </div>
+              </div>
+              <Divider orientation="left" className="text-xs !my-2">공통 버튼</Divider>
               <div className="flex flex-row justify-stretch gap-5">
                 <div className="flex flex-row gap-2 w-3/3">
                   <P2Checkbox id="saveUseYn" name="saveUseYn" className="text-sm self-center text-right" trueValue="Y" falseValue="N">저장 버튼</P2Checkbox>
@@ -256,11 +284,11 @@ function MenuMng(props) {
                   <P2Checkbox id="extUseYn1" name="extUseYn1" className="text-sm self-center" trueValue="Y" falseValue="N">기타 버튼1</P2Checkbox>
                 </div>
                 <div className="flex flex-row gap-2 w-1/3">
-                  <label htmlFor='extBtnNm1' className="w-28 self-center text-right">버튼명</label>
+                  <label htmlFor='extBtnNm1' className="w-28 self-center text-right">버튼명1</label>
                   <P2Input id="extBtnNm1" name="extBtnNm1" className="text-sm self-center w-full" />
                 </div>
                 <div className="flex flex-row gap-2 w-1/3">
-                  <label htmlFor='extBtnIconVal1' className="w-28 self-center text-right">ICON</label>
+                  <label htmlFor='extBtnIconVal1' className="w-28 self-center text-right">ICON1</label>
                   <P2Input id="extBtnIconVal1" name="extBtnIconVal1" className="text-sm self-center w-full" />
                 </div>
               </div>
@@ -269,11 +297,11 @@ function MenuMng(props) {
                   <P2Checkbox id="extUseYn2" name="extUseYn2" className="text-sm self-center" trueValue="Y" falseValue="N">기타 버튼2</P2Checkbox>
                 </div>
                 <div className="flex flex-row gap-2 w-1/3">
-                  <label htmlFor='extBtnNm2' className="w-28 self-center text-right">버튼명</label>
+                  <label htmlFor='extBtnNm2' className="w-28 self-center text-right">버튼명2</label>
                   <P2Input id="extBtnNm2" name="extBtnNm2" className="text-sm self-center w-full" />
                 </div>
                 <div className="flex flex-row gap-2 w-1/3">
-                  <label htmlFor='extBtnIconVal2' className="w-28 self-center text-right">ICON</label>
+                  <label htmlFor='extBtnIconVal2' className="w-28 self-center text-right">ICON2</label>
                   <P2Input id="extBtnIconVal2" name="extBtnIconVal2" className="text-sm self-center w-full" />
                 </div>
               </div>
@@ -282,11 +310,11 @@ function MenuMng(props) {
                   <P2Checkbox id="extUseYn3" name="extUseYn3" className="text-sm self-center" trueValue="Y" falseValue="N">기타 버튼3</P2Checkbox>
                 </div>
                 <div className="flex flex-row gap-2 w-1/3">
-                  <label htmlFor='extBtnNm3' className="w-28 self-center text-right">버튼명</label>
+                  <label htmlFor='extBtnNm3' className="w-28 self-center text-right">버튼명3</label>
                   <P2Input id="extBtnNm3" name="extBtnNm3" className="text-sm self-center w-full" />
                 </div>
                 <div className="flex flex-row gap-2 w-1/3">
-                  <label htmlFor='extBtnIconVal3' className="w-28 self-center text-right">ICON</label>
+                  <label htmlFor='extBtnIconVal3' className="w-28 self-center text-right">ICON3</label>
                   <P2Input id="extBtnIconVal3" name="extBtnIconVal3" className="text-sm self-center w-full" />
                 </div>
               </div>
@@ -295,11 +323,11 @@ function MenuMng(props) {
                   <P2Checkbox id="extUseYn4" name="extUseYn4" className="text-sm self-center" trueValue="Y" falseValue="N">기타 버튼4</P2Checkbox>
                 </div>
                 <div className="flex flex-row gap-2 w-1/3">
-                  <label htmlFor='extBtnNm4' className="w-28 self-center text-right">버튼명</label>
+                  <label htmlFor='extBtnNm4' className="w-28 self-center text-right">버튼명4</label>
                   <P2Input id="extBtnNm4" name="extBtnNm4" className="text-sm self-center w-full" />
                 </div>
                 <div className="flex flex-row gap-2 w-1/3">
-                  <label htmlFor='extBtnIconVal4' className="w-28 self-center text-right">ICON</label>
+                  <label htmlFor='extBtnIconVal4' className="w-28 self-center text-right">ICON4</label>
                   <P2Input id="extBtnIconVal4" name="extBtnIconVal4" className="text-sm self-center w-full" />
                 </div>
               </div>
@@ -308,15 +336,15 @@ function MenuMng(props) {
                   <P2Checkbox id="extUseYn5" name="extUseYn5" className="text-sm self-center" trueValue="Y" falseValue="N">기타 버튼5</P2Checkbox>
                 </div>
                 <div className="flex flex-row gap-2 w-1/3">
-                  <label htmlFor='extBtnNm5' className="w-28 self-center text-right">버튼명</label>
+                  <label htmlFor='extBtnNm5' className="w-28 self-center text-right">버튼명5</label>
                   <P2Input id="extBtnNm5" name="extBtnNm5" className="text-sm self-center w-full" />
                 </div>
                 <div className="flex flex-row gap-2 w-1/3">
-                  <label htmlFor='extBtnIconVal5' className="w-28 self-center text-right">ICON</label>
+                  <label htmlFor='extBtnIconVal5' className="w-28 self-center text-right">ICON5</label>
                   <P2Input id="extBtnIconVal5" name="extBtnIconVal5" className="text-sm self-center w-full" />
                 </div>
               </div>
-              <Divider orientation="left" className="text-xs">노출 조건</Divider>
+              <Divider orientation="left" className="text-xs !my-2">노출 조건</Divider>
               <div className="flex flex-row justify-stretch gap-5">
                 <div className="flex flex-row gap-2 w-1/3">
                   <P2Checkbox id="expoPeriodYn" name="expoPeriodYn" className="text-sm self-center" trueValue="Y" falseValue="N">노출기간 사용</P2Checkbox>
