@@ -61,12 +61,12 @@ function App() {
   }
 
   function removeTab(key) {
-    const index = tabs.findIndex(tab => tab.key === key);
+    const index = tabs.findIndex(tab => Utils.toString(tab.key) === Utils.toString(key));
     if (index > -1) {
       if (tabs.length > 1) {
         setCurrentTab(tabs[(index === 0 ? 1 : index - 1)].key);
       }
-      setTabs([...tabs.filter(tab => tab.key !== key)]);
+      setTabs([...tabs.filter(tab => Utils.toString(tab.key) !== Utils.toString(key))]);
     }
   }
 
