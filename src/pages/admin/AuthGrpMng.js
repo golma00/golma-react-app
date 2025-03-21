@@ -24,12 +24,6 @@ function OneGridPage(props) {
 
   useEffect(() => {
     searchArea.current.api.setValid({
-      authGrpId: (params) => {
-        return Validate.validateRequired(params.value);
-      },
-      authGrpNm: (params) => {
-        return Validate.validateRequired(params.value);
-      },
     });
   }, []);
 
