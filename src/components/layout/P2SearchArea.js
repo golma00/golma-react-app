@@ -25,7 +25,8 @@ function P2SearchArea(props, ref) {
   const [valid, setValid] = useState({});
   const [errors, setErrors] = useState({});
   const [lables, setLables] = useState({});
-
+  const [formHidden, setFormHidden] = useState({});
+  const [formDisabled, setFormDisabled] = useState({});
   useImperativeHandle(ref, () => ({
     api: {
       get() {
@@ -36,6 +37,34 @@ function P2SearchArea(props, ref) {
           ...prev,
           [name]: value,
         })); 
+      },
+      hidden(name, hidden) {
+        setFormHidden((prev) => ({
+          ...prev,
+          [name]: hidden,
+        }));
+      },
+      allHidden(hidden) {
+        Object.keys(searchData).forEach((key) => {
+          setFormHidden((prev) => ({
+            ...prev,
+            [key]: hidden,
+          }));
+        });
+      },
+      disabled(name, disabled) {
+        setFormDisabled((prev) => ({
+          ...prev,
+          [name]: disabled,
+        }));
+      },
+      allDisabled(disabled) {
+        Object.keys(searchData).forEach((key) => {
+          setFormDisabled((prev) => ({
+            ...prev,
+            [key]: disabled,
+          }));
+        });
       },
       clear() {
         Object.keys(searchData).forEach((key) => {
@@ -82,6 +111,8 @@ function P2SearchArea(props, ref) {
 
   useEffect(() => {
     let initData = {};
+    let initHide = {};
+    let initDisabled = {};
     function recursiveSearch(children) {
       if (children) {
         children.forEach((child) => {
@@ -99,16 +130,22 @@ function P2SearchArea(props, ref) {
               case "time":
                 if (child.props.name) {
                   initData[child.props.name] = child.props.value || "";
+                  initHide[child.props.name] = child.props.hide || false;
+                  initDisabled[child.props.name] = child.props.disabled || false;
                 }
                 break;
               case "number":
                 if (child.props.name) {
                   initData[child.props.name] = child.props.value || 0;
+                  initHide[child.props.name] = child.props.hide || false;
+                  initDisabled[child.props.name] = child.props.disabled || false;
                 }
                 break;
               case "checkbox":
                 if (child.props.name) {
                   initData[child.props.name] = child.props.checked || false;
+                  initHide[child.props.name] = child.props.hide || false;
+                  initDisabled[child.props.name] = child.props.disabled || false;
 
                   if (child.props.children) {
                     setLables(prev => ({ ...prev, [child.props.name]: child.props.children }));
@@ -118,6 +155,8 @@ function P2SearchArea(props, ref) {
               case "radio":
                 if (child.props.name) {
                   initData[child.props.name] = child.props.value || "";
+                  initHide[child.props.name] = child.props.hide || false;
+                  initDisabled[child.props.name] = child.props.disabled || false;
                 }
                 break;
               default:
@@ -127,11 +166,15 @@ function P2SearchArea(props, ref) {
           else if (child.type === "textarea" || child.type === P2InputTextArea) {
             if (child.props.name) {
               initData[child.props.name] = child.props.value || "";
+              initHide[child.props.name] = child.props.hide || false;
+              initDisabled[child.props.name] = child.props.disabled || false;
             }
           }
           else if (child.type === P2Select) {
             if (child.props.name) {
               initData[child.props.name] = child.props.value || [];
+              initHide[child.props.name] = child.props.hide || false;
+              initDisabled[child.props.name] = child.props.disabled || false;
             }
           }
           else if (child.type === "label") {
@@ -147,12 +190,18 @@ function P2SearchArea(props, ref) {
             || child.type === P2RadioGroup
           ) {
             initData[child.props.name] = child.props.value || "";
+            initHide[child.props.name] = child.props.hide || false;
+            initDisabled[child.props.name] = child.props.disabled || false;
           }
           else if (child.type === P2InputNumber) {
             initData[child.props.name] = child.props.value || 0;
+            initHide[child.props.name] = child.props.hide || false;
+            initDisabled[child.props.name] = child.props.disabled || false;
           }
           else if (child.type === P2Checkbox || child.type === P2Switch) {
             initData[child.props.name] = child.props.checked || false;
+            initHide[child.props.name] = child.props.hide || false;
+            initDisabled[child.props.name] = child.props.disabled || false;
           }
 
           if (child.props.children && child.props.children instanceof Array) {
@@ -223,12 +272,14 @@ function P2SearchArea(props, ref) {
         case "search":
         case "tel":
         case "time":
-          return (
+          return formHidden[child.props.name] !== true && (
             <React.Fragment key={index}>
               <Tooltip key={index} title={tooltipText} placement="bottom">
                 {React.cloneElement(child, {
                   className: `${child.props.className || ""} ${errorClass || ""}`.trim(),
                   value: searchData[child.props.name] || "",
+                  hidden: formHidden[child.props.name] || false,
+                  disabled: formDisabled[child.props.name] || false,
                   onChange: (e) => {
                     if (child.props.onChange) {
                       child.props.onChange(e);
@@ -257,12 +308,14 @@ function P2SearchArea(props, ref) {
             </React.Fragment>
           );
         case "number":
-          return (
+          return formHidden[child.props.name] !== true && (
             <React.Fragment key={index}>
               <Tooltip key={index} title={tooltipText} placement="bottom">
                 {React.cloneElement(child, {
                   className: `${child.props.className || ""} ${errorClass || ""}`.trim(),
                   value: searchData[child.props.name] || 0,
+                  hidden: formHidden[child.props.name] || false,
+                  disabled: formDisabled[child.props.name] || false,
                   onChange: (e) => {
                     if (child.props.onChange) {
                       child.props.onChange(e);
@@ -291,12 +344,14 @@ function P2SearchArea(props, ref) {
             </React.Fragment>
           );
         case "checkbox":
-          return (
+          return formHidden[child.props.name] !== true && (
             <React.Fragment key={index}>
               <Tooltip key={index} title={tooltipText} placement="bottom">
                 {React.cloneElement(child, {
                   className: `${child.props.className || ""} ${errorClass || ""}`.trim(),
                   checked: searchData[child.props.name] || false,
+                  hidden: formHidden[child.props.name] || false,
+                  disabled: formDisabled[child.props.name] || false,
                   onChange: (e) => {
                     if (child.props.onChange) {
                       child.props.onChange(e);
@@ -315,12 +370,14 @@ function P2SearchArea(props, ref) {
             </React.Fragment>
           );
         case "radio":
-          return (
+          return formHidden[child.props.name] !== true && (
             <React.Fragment key={index}>
               <Tooltip key={index} title={tooltipText} placement="bottom">
                 {React.cloneElement(child, {
                   className: `${child.props.className || ""} ${errorClass || ""}`.trim(),
                   value: searchData[child.props.name] || "",
+                  hidden: formHidden[child.props.name] || false,
+                  disabled: formDisabled[child.props.name] || false,
                   onChange: (e) => {
                     if (child.props.onChange) {
                       child.props.onChange(e);
@@ -343,12 +400,14 @@ function P2SearchArea(props, ref) {
       }
     }
     else if (child.type === "textarea" || child.type === P2InputTextArea) {
-      return (
+      return formHidden[child.props.name] !== true && (
         <React.Fragment key={index}>
           <Tooltip key={index} title={tooltipText} placement="bottom">
             {React.cloneElement(child, {
               className: `${child.props.className || ""} ${errorClass || ""}`.trim(),
               value: searchData[child.props.name] || "",
+              hidden: formHidden[child.props.name] || false,
+              disabled: formDisabled[child.props.name] || false,
               onChange: (e) => {
                 if (child.props.onChange) {
                   child.props.onChange(e);
@@ -368,12 +427,14 @@ function P2SearchArea(props, ref) {
       );
     }
     else if (child.type === P2Select) {
-      return (
+      return formHidden[child.props.name] !== true && (
         <React.Fragment key={index}>
           <Tooltip key={index} title={tooltipText} placement="bottom">
             {React.cloneElement(child, {
               className: `${child.props.className || ""} ${errorClass || ""}`.trim(),
               optionValue: searchData[child.props.name] || [],
+              hidden: formHidden[child.props.name] || false,
+              disabled: formDisabled[child.props.name] || false,
               onChange: (e) => {
                 if (child.props.onChange) {
                   child.props.onChange(e);
@@ -393,12 +454,14 @@ function P2SearchArea(props, ref) {
       );
     }
     else if (child.type === P2Input) {
-      return (
+      return formHidden[child.props.name] !== true && (
         <React.Fragment key={index}>
           <Tooltip key={index} title={tooltipText} placement="bottom">
             {React.cloneElement(child, {
               className: `${child.props.className || ""} ${errorClass || ""}`.trim(),
               value: searchData[child.props.name] || "",
+              hidden: formHidden[child.props.name] || false,
+              disabled: formDisabled[child.props.name] || false,
               onChange: (e) => {
                 if (child.props.onChange) {
                   child.props.onChange(e);
@@ -428,12 +491,14 @@ function P2SearchArea(props, ref) {
       );
     }
     else if (child.type === P2DatePicker || child.type === P2MonthPicker || child.type === P2TimePicker) {
-      return (
+      return formHidden[child.props.name] !== true && (
         <React.Fragment key={index}>
           <Tooltip key={index} title={tooltipText} placement="bottom">
             {React.cloneElement(child, {
               className: `${child.props.className || ""} ${errorClass || ""}`.trim(),
               value: searchData[child.props.name] || "",
+              hidden: formHidden[child.props.name] || false,
+              disabled: formDisabled[child.props.name] || false,
               onChange: (e, formatString) => {
                 if (child.props.onChange) {
                   child.props.onChange(e, formatString);
@@ -453,12 +518,14 @@ function P2SearchArea(props, ref) {
       );
     }
     else if (child.type === P2RangePicker) {
-      return (
+      return formHidden[child.props.name] !== true && (
         <React.Fragment key={index}>
           <Tooltip key={index} title={tooltipText} placement="bottom">
             {React.cloneElement(child, {
               className: `${child.props.className || ""} ${errorClass || ""}`.trim(),
               value: searchData[child.props.name] || [null, null],
+              hidden: formHidden[child.props.name] || false,
+              disabled: formDisabled[child.props.name] || false,
               onChange: (e, formatStrings) => {
                 if (child.props.onChange) {
                   child.props.onChange(e, formatStrings);
@@ -478,12 +545,14 @@ function P2SearchArea(props, ref) {
       );
     }
     else if (child.type === P2InputNumber) {
-      return (
+      return formHidden[child.props.name] !== true && (
         <React.Fragment key={index}>
           <Tooltip key={index} title={tooltipText} placement="bottom">
             {React.cloneElement(child, {
               className: `${child.props.className || ""} ${errorClass || ""}`.trim(),
               value: searchData[child.props.name] || 0,
+              hidden: formHidden[child.props.name] || false,
+              disabled: formDisabled[child.props.name] || false,
               onChange: (value) => {
                 if (child.props.onChange) {
                   child.props.onChange(value);
@@ -500,12 +569,14 @@ function P2SearchArea(props, ref) {
       );
     }
     else if (child.type === P2Checkbox || child.type === P2Switch) {
-      return (
+      return formHidden[child.props.name] !== true && (
         <React.Fragment key={index}>
           <Tooltip key={index} title={tooltipText} placement="bottom">
             {React.cloneElement(child, {
               className: `${child.props.className || ""} ${errorClass || ""}`.trim(),
               checked: searchData[child.props.name] || false,
+              hidden: formHidden[child.props.name] || false,
+              disabled: formDisabled[child.props.name] || false,
               onChange: (checked) => {
                 if (child.props.onChange) {
                   child.props.onChange(checked);
@@ -525,12 +596,14 @@ function P2SearchArea(props, ref) {
       );
     }
     else if (child.type === P2RadioGroup) {
-      return (
+      return formHidden[child.props.name] !== true && (
         <React.Fragment key={index}>
           <Tooltip key={index} title={tooltipText} placement="bottom">
             {React.cloneElement(child, {
               className: `${child.props.className || ""} ${errorClass || ""}`.trim(),
               value: searchData[child.props.name] || "",
+              hidden: formHidden[child.props.name] || false,
+              disabled: formDisabled[child.props.name] || false,
               onChange: (e) => {
                 if (child.props.onChange) {
                   child.props.onChange(e);
