@@ -380,7 +380,7 @@ function CodeMng(props) {
     grid.current.api.setColumnComboDatas("cdType", commonCodeCombo.cdType, "cd", "cdNm");
   }
 
-  const closeearchUpperCodePopup = () => {
+  const closeSearchUpperCodePopup = () => {
     setSearchUpperCodePopupVisible(false);
   }
 
@@ -422,7 +422,7 @@ function CodeMng(props) {
       <SearchUpperCodePopup className="w-[800px]"
         visible={isSearchUpperCodePopupVisible}
         onOk={setUpperCode}
-        onClose={closeearchUpperCodePopup}
+        onClose={closeSearchUpperCodePopup}
         params={selectedAgGridRowData}
         props={props}
       />
