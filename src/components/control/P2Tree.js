@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useImperativeHandle, forwardRef } from "react";
+import React, { useState, useEffect, useCallback, useImperativeHandle, useRef, forwardRef } from "react";
 import { Tree, } from "antd";
 
 export const insertStatus = "I"
@@ -20,15 +20,19 @@ function P2Tree(props, ref) {
 
   const [expandedKeys, setExpandedKeys] = useState(props.defaultExpandedKeys || []);
   const [selectKeys, setSelectKeys] = useState(props.selectKeys || []);
+  const [allKeys, setAllKeys] = useState(null);
 
   const [keyByTreeNode, setKeyByTreeNode] = useState({});
+  
+  // 플래그: 초기 로드 여부
+  const initialLoad = useRef(true);
 
   useImperativeHandle(ref, () => ({
     api: {
       clear: () => {
         setSelectKeys([]);
         setSelectedTreeNode(null);
-        setExpandedKeys(props.defaultExpandedKeys || []);
+        setExpandedKeys(props.defaultExpandedKeys || allKeys);
         setKeyByTreeNode({});
         setTreeData([]);
       },
@@ -179,6 +183,8 @@ function P2Tree(props, ref) {
     const createTree = (data) => {
       let treeNodes = [];
       let keyByTreeNodeMap = {};
+      // 모든 노드의 키를 누적할 배열
+      let allKeys = [];
   
       data.forEach((item, index) => {
         if (!item["_status"]) {
@@ -195,7 +201,7 @@ function P2Tree(props, ref) {
         }
 
         const node = <Tree.TreeNode 
-          key={item[nodeKeyField]}
+        key={String(item[props.nodeKeyField || "key"])}
           title={
             item[statusField] === "I" ? <span className="text-blue-500">{title}</span> :
             item[statusField] === "U" ? <span className="text-red-500">{title}</span> :
@@ -207,6 +213,9 @@ function P2Tree(props, ref) {
           update={update}
           disabled={item["disabled"] === "Y" || item["disabled"] === true}
         />;
+
+        //allKeys.push(item[nodeKeyField]);
+        allKeys.push(String(item[props.nodeKeyField || "key"]));
   
         if (newNodeKey && item[nodeKeyField] === newNodeKey) {
           setNewNodeKey(null);
@@ -229,6 +238,12 @@ function P2Tree(props, ref) {
       });
   
       setKeyByTreeNode(prev => ({ ...prev, ...keyByTreeNodeMap }));
+      // 만약 expandedKeys 상태가 비어있는 경우에만 모든 키로 설정
+      if (initialLoad.current) {
+        setExpandedKeys(allKeys);
+        setAllKeys(allKeys);
+        initialLoad.current = false;
+      }
       return treeNodes;
     }
 
@@ -238,6 +253,9 @@ function P2Tree(props, ref) {
     else {
       setKeyByTreeNode({});
       setTreeData([]);
+      if (initialLoad.current) {
+        setExpandedKeys([]);
+      }
     }
   }, [rowData, nodeKeyField, parentKeyField, nodeTitleField, nodeSeqField, newNodeKey]);
 
@@ -354,6 +372,7 @@ function P2Tree(props, ref) {
         onSelect={onSelect} 
         onDrop={onDrop}
         onExpand={onExpand}
+        dafaultExpandAll
       >
         {treeData}
       </Tree>

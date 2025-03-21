@@ -179,10 +179,12 @@ function MenuMng(props) {
     return true;
   }
 
-  function onTreeSelect(selectedRow, e) {
-    setTreeNode(e.node);
-    formArea.current.api.clear();
-    formArea.current.api.allDisabled(e.node.props.dataRef.menuId === 1);
+  async function onTreeSelect(selectedRow, e) {
+    if (e.selectedNodes.length > 0) {
+      setTreeNode(e.node);
+      formArea.current.api.clear();
+      formArea.current.api.allDisabled(e.node.props.dataRef.menuId === 1);
+    }
   }
 
   return (
@@ -209,7 +211,7 @@ function MenuMng(props) {
               nodeTitleField={nodeTitleFunc}
               onSelect={onTreeSelect}
               onBeforeSelect={onBeforeTreeSelect}
-              defaultExpandedKeys={['1']}
+              //defaultExpandedKeys={['1']}
             />
           </div>
           <div className="h-[600px] flex flex-col gap-1">
