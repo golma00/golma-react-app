@@ -226,7 +226,7 @@ function MenuMng(props) {
               nodeTitleField={nodeTitleFunc}
               onSelect={onTreeSelect}
               onBeforeSelect={onBeforeTreeSelect}
-              defaultExpandedKeys={['1']}
+              //defaultExpandedKeys={['1']}
               draggable={true}
             />
           </div>

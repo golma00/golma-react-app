@@ -406,7 +406,9 @@ const P2AgGridModule = {
               data: node.data
             });
             if (result) {
-              const headerName = col.headerName.replace("* ", "");
+              //헤더에 * 을 붙이는 로직이 변경됨에 따라 아래 치환로직 주석처리
+              //const headerName = col.headerName.replace("* ", "");
+              const headerName = col.headerName;
               const rowDetails = `[${rowNum}] 행에서 오류가 발생했습니다.`;
               colDetails += `[${headerName}] : ${result}\n`;
 
