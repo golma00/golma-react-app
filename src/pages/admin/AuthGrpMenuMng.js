@@ -50,18 +50,18 @@ function AuthGrpMenuMng(props) {
     },
   ];
 
-    useEffect(() => {
-      searchArea.current.api.setValid({
-        authGrpId: (params) => {
-            return "권한 그룹 ID 값이 없습니다.";
-          },
-          authGrpNm: (params) => {
-            return "권한 그룹 값이 없습니다.";
-          },
-        });
-      
-      onSearch();
-    }, []);
+  useEffect(() => {
+    searchArea.current.api.setValid({
+      authGrpId: (params) => {
+          return "권한 그룹 ID 값이 없습니다.";
+        },
+        authGrpNm: (params) => {
+          return "권한 그룹 값이 없습니다.";
+        },
+    });
+    
+    onSearch();
+  }, []);
   async function onSearch() {
     try {
       if (Utils.isEmpty(searchArea.current.api.validate())) {
