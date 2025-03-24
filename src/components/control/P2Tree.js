@@ -23,7 +23,7 @@ function P2Tree(props, ref) {
   const [allKeys, setAllKeys] = useState(null);
 
   const [keyByTreeNode, setKeyByTreeNode] = useState({});
-  const [expandDepth, setExpandDepth] = useState(props.depth || allKeys);
+  const [expandDepth, setExpandDepth] = useState(props.expandDepth || allKeys);
   
   // 플래그: 초기 로드 여부
   const initialLoad = useRef(true);

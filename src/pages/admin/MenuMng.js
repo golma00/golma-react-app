@@ -228,7 +228,7 @@ function MenuMng(props) {
               onBeforeSelect={onBeforeTreeSelect}
               //defaultExpandedKeys={['1']}
               draggable={true}
-              depth={1}
+              expandDepth={2}
             />
           </div>
           <div className="h-full flex flex-col gap-1">
