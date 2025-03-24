@@ -30,7 +30,7 @@ function MenuMng(props) {
       const codeDatas = await getCodeDatas(commonCodeParams);
       setMenuTypeCodeList(codeDatas.menuType);
     }
-    getCommonCode();
+    // getCommonCode();
 
     formArea.current.api.setValid({
       menuNm: (params) => Validate.validateRequired(params.value),

@@ -6,6 +6,7 @@ import { Menu, Tabs } from 'antd';
 import { TabNavigateContext } from 'hooks/useTabNavigate';
 import axios from 'axios';
 import * as Utils from 'utils/Utils';
+import OneGridPage from 'pages/OneGridPage';
 
 function App() {
 
@@ -112,7 +113,7 @@ function App() {
   return (
     <BrowserRouter>
       <div className='w-full h-full p-0'>
-        <div className='h-16 flex flex-row justify-between items-center px-4 bg-primary-900'>
+        <div className='top-menu-bar'>
           <div className='flex flex-row self-center'>
             <div className='text-2xl font-bold text-white'>Equipment Life Cycle Management</div>
           </div>
@@ -122,12 +123,13 @@ function App() {
             </Menu>
           </div>
         </div>
-        <div className='flex flex-row p-2'>
-          <TabNavigateContext.Provider value={[tabs, addTab, removeTab, setCurrentTab, findMenuByPath, menuData]}>
+        <div className='flex flex-row p-2 w-full h-[calc(100vh-var(--top-menu-bar-height))]'>
+          <OneGridPage menuProps={ { menuNm: '권한관리', menuId: 'auth', saveUseYn: 'Y' } }/>
+          {/* <TabNavigateContext.Provider value={[tabs, addTab, removeTab, setCurrentTab, findMenuByPath, menuData]}>
             <Tabs hideAdd activeKey={Utils.toString(currentTab)} onChange={onTabChange} onEdit={onTabEdit} type="editable-card">
               {tabs}
             </Tabs>
-          </TabNavigateContext.Provider>
+          </TabNavigateContext.Provider> */}
         </div>
       </div>
     </BrowserRouter>

@@ -6,6 +6,7 @@ import PropTypes from "prop-types";
 
 export function P2DatePicker(props) {
   const [value, setValue] = useState(props.value || "");
+  const {changeAfterSearch, ...rest} = props;
 
   useEffect(() => {
     setValue(props.value || "");
@@ -19,7 +20,7 @@ export function P2DatePicker(props) {
   }
 
   return (
-    <DatePicker {...props} value={value === "" ? null : moment(value, "YYYYMMDD")} onChange={onChange} locale={locale} />
+    <DatePicker {...rest} value={value === "" ? null : moment(value, "YYYYMMDD")} onChange={onChange} locale={locale} className="text-sm bg-white border border-gray-200 rounded-md"/>
   );
 }
 P2DatePicker.propTypes = {
@@ -28,6 +29,7 @@ P2DatePicker.propTypes = {
 
 export function P2MonthPicker(props) {
   const [value, setValue] = useState(props.value || "");
+  const {changeAfterSearch, ...rest} = props;
 
   useEffect(() => {
     setValue(props.value || "");
@@ -40,7 +42,7 @@ export function P2MonthPicker(props) {
     }
   }
   return (
-    <DatePicker.MonthPicker {...props} value={value === "" ? null : moment(value, "YYYYMM")} onChange={onChange} locale={locale} />
+    <DatePicker.MonthPicker {...rest} value={value === "" ? null : moment(value, "YYYYMM")} onChange={onChange} locale={locale} className="text-sm bg-white border border-gray-200 rounded-md"/>
   );
 }
 P2MonthPicker.propTypes = {
@@ -49,6 +51,7 @@ P2MonthPicker.propTypes = {
 
 export function P2RangePicker(props) {
   const [value, setValue] = useState(props.value || []);
+  const {changeAfterSearch, ...rest} = props;
 
   useEffect(() => {
     setValue(props.value || []);
@@ -61,7 +64,7 @@ export function P2RangePicker(props) {
     }
   }
   return (
-    <DatePicker.RangePicker {...props} value={value.length === 0 ? [null, null] : [moment(value[0], "YYYYMMDD"), moment(value[1], "YYYYMMDD")]} onChange={onChange} locale={locale} />
+    <DatePicker.RangePicker {...rest} value={value.length === 0 ? [null, null] : [moment(value[0], "YYYYMMDD"), moment(value[1], "YYYYMMDD")]} onChange={onChange} locale={locale} className="text-sm bg-white border border-gray-200 rounded-md"/>
   );
 }
 P2RangePicker.propTypes = {
@@ -70,6 +73,7 @@ P2RangePicker.propTypes = {
 
 export function P2TimePicker(props) {
   const [value, setValue] = useState(props.value || "");
+  const {changeAfterSearch, ...rest} = props;
 
   useEffect(() => {
     setValue(props.value || "");
@@ -82,7 +86,7 @@ export function P2TimePicker(props) {
     }
   }
   return (
-    <TimePicker {...props} value={value === "" ? null : moment(value, "HHmmss")} onChange={onChange} locale={locale} />
+    <TimePicker {...rest} value={value === "" ? null : moment(value, "HHmmss")} onChange={onChange} locale={locale} className="text-sm bg-white border border-gray-200 rounded-md"/>
   );
 }
 P2TimePicker.propTypes = {

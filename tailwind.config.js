@@ -5,6 +5,9 @@ module.exports = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        notosans: ["NotoSansKorean"],
+      },
       colors: {
         primary: {
           '50': '#edf9ff',

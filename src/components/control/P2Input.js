@@ -3,6 +3,7 @@ import { Input, InputNumber } from "antd";
 import PropTypes from "prop-types";
 export function P2Input(props) {
   const [value, setValue] = useState(props.value || "");
+  const {changeAfterSearch, ...rest} = props;
 
   useEffect(() => {
     setValue(props.value || "");
@@ -16,7 +17,7 @@ export function P2Input(props) {
   }
 
   return (
-    <Input {...props} value={value} onChange={onChange} />
+    <Input {...rest} value={value} onChange={onChange} className="text-sm bg-white border border-gray-200 rounded-md"/>
   );
 }
 P2Input.propTypes = {
@@ -25,6 +26,7 @@ P2Input.propTypes = {
 
 export function P2InputNumber(props) {
   const [value, setValue] = useState(props.value || "");
+  const {changeAfterSearch, ...rest} = props;
 
   useEffect(() => {
     setValue(props.value || "");
@@ -42,7 +44,7 @@ export function P2InputNumber(props) {
   }, []);
 
   return (
-    <InputNumber formatter={formatter} {...props} value={value} onChange={onChange} />
+    <InputNumber formatter={formatter} {...rest} value={value} onChange={onChange} className="text-sm bg-white border border-gray-200 rounded-md"/>
   );
 }
 P2InputNumber.propTypes = {
@@ -51,6 +53,7 @@ P2InputNumber.propTypes = {
 
 export function P2InputPassword(props) {
   const [value, setValue] = useState(props.value || "");
+  const {changeAfterSearch, ...rest} = props;
 
   useEffect(() => {
     setValue(props.value || "");
@@ -64,7 +67,7 @@ export function P2InputPassword(props) {
   } 
 
   return (
-    <Input.Password {...props} value={value} onChange={onChange} />
+    <Input.Password {...rest} value={value} onChange={onChange} className="text-sm bg-white border border-gray-200 rounded-md"/>
   );
 } 
 P2InputPassword.propTypes = {
@@ -73,6 +76,7 @@ P2InputPassword.propTypes = {
 
 export function P2InputTextArea(props) {
   const [value, setValue] = useState(props.value || "");
+  const {changeAfterSearch, ...rest} = props;
 
   useEffect(() => {
     setValue(props.value || "");
@@ -86,7 +90,7 @@ export function P2InputTextArea(props) {
   }
 
   return (
-    <Input.TextArea {...props} value={value} onChange={onChange} />
+    <Input.TextArea {...rest} value={value} onChange={onChange} className="text-sm bg-white border border-gray-200 rounded-md"/>
   );
 }
 P2InputTextArea.propTypes = {

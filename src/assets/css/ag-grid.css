@@ -1,6 +1,11 @@
+:root {
+  --ag-font-family: "NotoSansKorean";
+
+}
+
 .ag-header-cell-label {
   justify-content: center;
-  font-weight: 500;
+  font-weight: 300;
   color: #000;
   text-align: center;
   white-space: pre-wrap;

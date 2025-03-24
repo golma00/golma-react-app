@@ -1,5 +1,6 @@
-import React, { Children, useState, useEffect } from "react";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import React, { Children } from "react";
+import { ReactComponent as AddRow } from "assets/icons/row_add.svg";
+import { ReactComponent as DeleteRow } from "assets/icons/row_delete.svg";
 
 function P2GridButtonBar(props) {
 
@@ -16,14 +17,18 @@ function P2GridButtonBar(props) {
       <div className="flex flex-row w-full h-8 gap-1 justify-end">
         {props.onAddRow && props.menuProps&& props.menuProps.saveUseYn === "Y" && (
           <button className="grid-btn" onClick={props.onAddRow}>
-            <FontAwesomeIcon icon="fa-plus" className="pr-1" size="sm"/>
-            <span>행추가</span>
+            <div className="flex flex-row gap-1 items-center">
+              <AddRow width={24} height={24} fill="#4B5359"/>
+              <span>행추가</span>
+            </div>
           </button>
         )}
         {props.onDeleteRow && props.menuProps && props.menuProps.saveUseYn === "Y" && (
           <button className="grid-btn" onClick={props.onDeleteRow}>
-            <FontAwesomeIcon icon="fa-minus" className="pr-1" size="sm"/>
-            <span>행삭제</span>
+            <div className="flex flex-row gap-1 items-center">
+              <DeleteRow width={24} height={24} fill="#4B5359"/>
+              <span>행삭제</span>
+            </div>
           </button>
         )}
         {

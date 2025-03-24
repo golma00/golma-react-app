@@ -2,7 +2,18 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --area-border-color: #E5E7EB;
+  --area-bg-color: #FBFBFB;
+  --top-menu-bar-height: 64px;
+  --p2-search-area-height: 50px;
+}
+
 @layer components {
+  .top-menu-bar {
+    @apply h-[var(--top-menu-bar-height)] flex flex-row justify-between items-center px-4 bg-primary-900;
+  }
+
   .common-btn {
     @apply text-sm bg-gray-100 border border-gray-200 rounded-md px-3 py-1 
     text-ellipsis whitespace-nowrap hover:bg-primary-100 !important;
@@ -15,22 +26,40 @@
     @apply text-sm bg-gray-100 border border-gray-200 rounded-md px-[10px] py-1 
     text-ellipsis whitespace-nowrap hover:bg-primary-100 !important;
   }
+  .common-label {
+    @apply text-sm self-center text-ellipsis whitespace-nowrap;
+  }
+  .common-label::before {
+    @apply text-[8px] text-primary-800 content-['■'] mr-1 bottom-0.5 relative;
+  }
+
+  .common-label.required:after {
+    @apply text-red-500;
+  }
 
   .grid-btn {
-    @apply text-sm bg-gray-100 border border-gray-200 rounded-md px-3 py-1 
+    @apply text-sm bg-gray-100 border border-gray-200 rounded-md px-3 py-0 h-8 
     text-ellipsis whitespace-nowrap hover:bg-primary-100 !important;
   }
 
   .p2-search-area {
-    @apply border border-area-border-color rounded-md px-4 py-2 bg-area-bg-color flex flex-row gap-x-5 gap-y-2 flex-wrap min-h-10 !important;
+    @apply w-full min-h-[var(--p2-search-area-height)] border border-area-border-color rounded-md px-4 py-2 bg-area-bg-color flex flex-row gap-x-5 gap-y-2 flex-wrap !important;
   }
 
   .p2-search-area > div > label, .p2-search-area > label {
-    @apply text-sm self-center text-ellipsis whitespace-nowrap !important;
+    @apply text-sm self-center text-ellipsis whitespace-nowrap;
   }
 
   .p2-search-area > div > input, .p2-search-area > input {
-    @apply px-2 h-8 text-sm bg-white rounded-md !important;
+    @apply px-2 h-8 text-sm bg-white rounded-md self-center;
+  }
+
+  .p2-search-area.expanded {
+    @apply absolute left-2 right-2 w-auto !important;
+  }
+
+  .p2-search-area-expand-thumb {
+    @apply w-14 h-4 flex absolute border-t-0 border border-area-border-color bg-area-bg-color cursor-pointer rounded-b-md items-center justify-center !important;
   }
 
   .p2-form-area {
@@ -47,18 +76,13 @@
 
 }
 
-:root {
-  --area-border-color: #E5E7EB;
-  --area-bg-color: #FBFBFB;
-}
-
-body {
+body, #root {
+  width: 100%;
+  height: 100%;
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  box-sizing: border-box;
+  font-family: 'NotoSansKorean';
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
 
 .P2Select__control {
@@ -73,8 +97,16 @@ body {
   @apply p-1 !important;
 }
 
+.menu-width-auth > .P2Select__menu {
+  @apply w-auto !important;
+}
+
 .P2Select__menu {
   z-index: 10 !important;
+}
+
+.P2Select__option {
+  @apply text-ellipsis overflow-hidden !important;
 }
 
 .ant-menu-horizontal {
@@ -111,6 +143,9 @@ body {
   @apply h-8 leading-8 !important;
 }
 .ant-spin-nested-loading {
+  @apply w-full h-full !important;
+}
+.ant-spin-container {
   @apply w-full h-full !important;
 }
 
