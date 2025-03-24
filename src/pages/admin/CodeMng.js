@@ -394,13 +394,13 @@ function CodeMng(props) {
     <P2Page menuProps={props.menuProps} onSearch={onSearch} onSave={onSave} loading={loading}>
       <P2SearchArea onSearch={onSearch} ref={searchArea}>
         <div className="flex flex-row gap-1">
-          <label className="text-xl" htmlFor='attribGrpId'>그룹코드ID</label>
-          <P2Input type="combo" id="attribGrpId" name="attribGrpId" className="text-sm bg-white border border-gray-200 rounded-md"/>
+          <label className="common-label" htmlFor='attribGrpId'>그룹코드ID</label>
+          <P2Input id="attribGrpId" name="attribGrpId" className="w-60"/>
         </div>
       </P2SearchArea>
       <P2GridButtonBar title="코드관리" onAddRow={onAddRow} onDeleteRow={onDeleteRow} count={count} menuProps={props.menuProps}>
       </P2GridButtonBar>
-      <div className="w-full h-[500px]">
+      <div className="w-full h-full">
         <SplitterLayout split="vertical" percentage={true} primaryMinSize={20} secondaryMinSize={20} secondaryInitialSize={80}>
           <P2Tree ref={tree} 
             nodeKeyField={"cd"}

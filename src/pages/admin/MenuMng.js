@@ -235,41 +235,41 @@ function MenuMng(props) {
             <P2FormArea ref={formArea} className="p2-form-area h-full overflow-y-auto" treeNode={treeNode} >
               <div className="flex flex-row justify-stretch gap-5">
                 <div className="flex flex-row gap-2 w-1/3">
-                  <label htmlFor='menuNm' className="w-28 self-center text-right">메뉴명</label>
+                  <label htmlFor='menuNm' className="common-label required w-28">메뉴명</label>
                   <P2Input id="menuNm" name="menuNm" className="text-sm bg-white border border-gray-200 rounded-md" />
                 </div>
                 <div className="flex flex-row gap-2 w-2/3">
-                  <label htmlFor='menuUrl' className="w-28 self-center text-right">메뉴PATH</label>
+                  <label htmlFor='menuUrl' className="common-label w-28">메뉴PATH</label>
                   <P2Input id="menuUrl" name="menuUrl" className="text-sm bg-white border border-gray-200 rounded-md" />
                 </div>
               </div>
               <div className="flex flex-row justify-stretch gap-5">
                 <div className="flex flex-row gap-2 w-1/3">
-                  <label htmlFor='menuCd' className="w-28 self-center text-right">메뉴코드</label>
+                  <label htmlFor='menuCd' className="common-label w-28">메뉴코드</label>
                   <P2Input id="menuCd" name="menuCd" className="text-sm bg-white border border-gray-200 rounded-md" />
                 </div>
                 <div className="flex flex-row gap-2 w-2/3">
-                  <label htmlFor='menuIconVal' className="w-28 self-center text-right">메뉴ICON</label>
+                  <label htmlFor='menuIconVal' className="common-label w-28">메뉴ICON</label>
                   <P2Input id="menuIconVal" name="menuIconVal" className="text-sm bg-white border border-gray-200 rounded-md" />
                 </div>
               </div>
               <div className="flex flex-row justify-stretch gap-5">
                 <div className="flex flex-row gap-2 w-1/3">
-                  <label htmlFor='useYn' className="w-28 self-center text-right">사용여부</label>
+                  <label htmlFor='useYn' className="common-label w-28">사용여부</label>
                   <P2Checkbox id="useYn" name="useYn" className="text-sm self-center w-full" trueValue="Y" falseValue="N" />
                 </div>
                 <div className="flex flex-row gap-2 w-2/3">
-                  <label htmlFor='manualUrl' className="w-28 self-center text-right">매뉴얼URL</label>
+                  <label htmlFor='manualUrl' className="common-label w-28">매뉴얼URL</label>
                   <P2Input id="manualUrl" name="manualUrl" className="text-sm bg-white border border-gray-200 rounded-md" />
                 </div>
               </div>
               <div className="flex flex-row justify-stretch gap-5">
                 <div className="flex flex-row gap-2 w-1/3">
-                  <label htmlFor='displayYn' className="w-28 self-center text-right">표시여부</label>
+                  <label htmlFor='displayYn' className="common-label w-28">표시여부</label>
                   <P2Checkbox id="displayYn" name="displayYn" className="text-sm self-center w-full" trueValue="Y" falseValue="N" />
                 </div>
                 <div className="flex flex-row gap-2 w-2/3">
-                  <label htmlFor='menuType' className="w-28 self-center text-right">메뉴타입</label>
+                  <label htmlFor='menuType' className="common-label w-28">메뉴타입</label>
                   <P2Select id="menuType" name="menuType" datas={menuTypeCodeList} className="text-sm bg-white rounded-md w-full" />
                 </div>
               </div>
@@ -284,11 +284,11 @@ function MenuMng(props) {
                   <P2Checkbox id="extUseYn1" name="extUseYn1" className="text-sm self-center" trueValue="Y" falseValue="N">기타 버튼1</P2Checkbox>
                 </div>
                 <div className="flex flex-row gap-2 w-1/3">
-                  <label htmlFor='extBtnNm1' className="w-28 self-center text-right">버튼명1</label>
+                  <label htmlFor='extBtnNm1' className="common-label w-28">버튼명1</label>
                   <P2Input id="extBtnNm1" name="extBtnNm1" className="text-sm self-center w-full" />
                 </div>
                 <div className="flex flex-row gap-2 w-1/3">
-                  <label htmlFor='extBtnIconVal1' className="w-28 self-center text-right">ICON1</label>
+                  <label htmlFor='extBtnIconVal1' className="common-label w-28">ICON1</label>
                   <P2Input id="extBtnIconVal1" name="extBtnIconVal1" className="text-sm self-center w-full" />
                 </div>
               </div>
@@ -297,11 +297,11 @@ function MenuMng(props) {
                   <P2Checkbox id="extUseYn2" name="extUseYn2" className="text-sm self-center" trueValue="Y" falseValue="N">기타 버튼2</P2Checkbox>
                 </div>
                 <div className="flex flex-row gap-2 w-1/3">
-                  <label htmlFor='extBtnNm2' className="w-28 self-center text-right">버튼명2</label>
+                  <label htmlFor='extBtnNm2' className="common-label w-28">버튼명2</label>
                   <P2Input id="extBtnNm2" name="extBtnNm2" className="text-sm self-center w-full" />
                 </div>
                 <div className="flex flex-row gap-2 w-1/3">
-                  <label htmlFor='extBtnIconVal2' className="w-28 self-center text-right">ICON2</label>
+                  <label htmlFor='extBtnIconVal2' className="common-label w-28">ICON2</label>
                   <P2Input id="extBtnIconVal2" name="extBtnIconVal2" className="text-sm self-center w-full" />
                 </div>
               </div>
@@ -310,11 +310,11 @@ function MenuMng(props) {
                   <P2Checkbox id="extUseYn3" name="extUseYn3" className="text-sm self-center" trueValue="Y" falseValue="N">기타 버튼3</P2Checkbox>
                 </div>
                 <div className="flex flex-row gap-2 w-1/3">
-                  <label htmlFor='extBtnNm3' className="w-28 self-center text-right">버튼명3</label>
+                  <label htmlFor='extBtnNm3' className="common-label w-28">버튼명3</label>
                   <P2Input id="extBtnNm3" name="extBtnNm3" className="text-sm self-center w-full" />
                 </div>
                 <div className="flex flex-row gap-2 w-1/3">
-                  <label htmlFor='extBtnIconVal3' className="w-28 self-center text-right">ICON3</label>
+                  <label htmlFor='extBtnIconVal3' className="common-label w-28">ICON3</label>
                   <P2Input id="extBtnIconVal3" name="extBtnIconVal3" className="text-sm self-center w-full" />
                 </div>
               </div>
@@ -323,11 +323,11 @@ function MenuMng(props) {
                   <P2Checkbox id="extUseYn4" name="extUseYn4" className="text-sm self-center" trueValue="Y" falseValue="N">기타 버튼4</P2Checkbox>
                 </div>
                 <div className="flex flex-row gap-2 w-1/3">
-                  <label htmlFor='extBtnNm4' className="w-28 self-center text-right">버튼명4</label>
+                  <label htmlFor='extBtnNm4' className="common-label w-28">버튼명4</label>
                   <P2Input id="extBtnNm4" name="extBtnNm4" className="text-sm self-center w-full" />
                 </div>
                 <div className="flex flex-row gap-2 w-1/3">
-                  <label htmlFor='extBtnIconVal4' className="w-28 self-center text-right">ICON4</label>
+                  <label htmlFor='extBtnIconVal4' className="common-label w-28">ICON4</label>
                   <P2Input id="extBtnIconVal4" name="extBtnIconVal4" className="text-sm self-center w-full" />
                 </div>
               </div>
@@ -336,11 +336,11 @@ function MenuMng(props) {
                   <P2Checkbox id="extUseYn5" name="extUseYn5" className="text-sm self-center" trueValue="Y" falseValue="N">기타 버튼5</P2Checkbox>
                 </div>
                 <div className="flex flex-row gap-2 w-1/3">
-                  <label htmlFor='extBtnNm5' className="w-28 self-center text-right">버튼명5</label>
+                  <label htmlFor='extBtnNm5' className="common-label w-28">버튼명5</label>
                   <P2Input id="extBtnNm5" name="extBtnNm5" className="text-sm self-center w-full" />
                 </div>
                 <div className="flex flex-row gap-2 w-1/3">
-                  <label htmlFor='extBtnIconVal5' className="w-28 self-center text-right">ICON5</label>
+                  <label htmlFor='extBtnIconVal5' className="common-label w-28">ICON5</label>
                   <P2Input id="extBtnIconVal5" name="extBtnIconVal5" className="text-sm self-center w-full" />
                 </div>
               </div>
@@ -350,11 +350,11 @@ function MenuMng(props) {
                   <P2Checkbox id="expoPeriodYn" name="expoPeriodYn" className="text-sm self-center" trueValue="Y" falseValue="N">노출기간 사용</P2Checkbox>
                 </div>
                 <div className="flex flex-row gap-2 w-1/3">
-                  <label htmlFor='expoStarDt' className="w-28 self-center text-right">시작일자</label>
+                  <label htmlFor='expoStarDt' className="common-label w-28">시작일자</label>
                   <P2DatePicker id="expoStarDt" name="expoStarDt" className="text-sm self-center w-full" />
                 </div>
                 <div className="flex flex-row gap-2 w-1/3">
-                  <label htmlFor='expoEndDt' className="w-28 self-center text-right">종료일자</label>
+                  <label htmlFor='expoEndDt' className="common-label w-28">종료일자</label>
                   <P2DatePicker id="expoEndDt" name="expoEndDt" className="text-sm self-center w-full" />
                 </div>
               </div>

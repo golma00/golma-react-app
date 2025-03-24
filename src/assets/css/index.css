@@ -31,10 +31,9 @@
     @apply text-sm self-center text-ellipsis whitespace-nowrap;
   }
   .common-label::before {
-    @apply text-[8px] text-primary-800 content-['■'] mr-1 bottom-0.5 relative;
+    @apply text-[8px] text-primary-800 content-['■'] mr-1.5 bottom-0.5 relative;
   }
-
-  .common-label.required:after {
+  .common-label.required:before {
     @apply text-red-500;
   }
 

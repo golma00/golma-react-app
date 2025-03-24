@@ -177,12 +177,12 @@ function AuthGrpMenuMng(props) {
     <P2Page menuProps={props.menuProps} onSearch={onSearch} onSave={onSave} loading={loading}>
       <P2SearchArea onSearch={onSearch} ref={searchArea} >
         <div className="flex flex-row gap-2">
-          <label className="text-xl" htmlFor='authGrpId'>권한그룹ID</label>
-          <P2Input id="authGrpId" name="authGrpId" className="text-sm bg-white border border-gray-200 rounded-md"/>
+          <label className="common-label" htmlFor='authGrpId'>권한그룹ID</label>
+          <P2Input id="authGrpId" name="authGrpId" className="w-60"/>
         </div>
         <div className="flex flex-row gap-2">
-          <label className="text-xl" htmlFor='authGrpNm'>권한그룹명</label>
-          <P2Input id="authGrpNm" name="authGrpNm" className="text-sm bg-white border border-gray-200 rounded-md"/>
+          <label className="common-label" htmlFor='authGrpNm'>권한그룹명</label>
+          <P2Input id="authGrpNm" name="authGrpNm" className="w-60"/>
         </div>
       </P2SearchArea>
       <div className="w-full h-full">
