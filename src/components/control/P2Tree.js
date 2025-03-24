@@ -239,9 +239,9 @@ function P2Tree(props, ref) {
   
         if (newNodeKey && item[nodeKeyField] === newNodeKey) {
           setNewNodeKey(null);
-  
+          
           keyByTreeNodeMap[node.props.dataRef[nodeKeyField]] = node;
-          onSelect(newNodeKey, {node: node});
+          onSelect(newNodeKey, { node: node, selected: true });
         }
         
         if (keyByTreeNodeMap.hasOwnProperty(item[parentKeyField])) {
