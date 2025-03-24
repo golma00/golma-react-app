@@ -16,7 +16,7 @@ function P2Page(props) {
 
   return (
     <Spin size="large" className="w-full h-full" spinning={loading}>
-      <div className="flex flex-col w-full h-full gap-1 px-2 py-1">
+      <div className="p2-page">
         {showButtonBar && (
           <P2PageButtonBar 
             menuNm={props.menuProps.menuNm} 

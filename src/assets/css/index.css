@@ -6,6 +6,7 @@
   --area-border-color: #E5E7EB;
   --area-bg-color: #FBFBFB;
   --top-menu-bar-height: 64px;
+  --tabs-bar-height: 32px;
   --p2-search-area-height: 50px;
 }
 
@@ -40,6 +41,10 @@
   .grid-btn {
     @apply text-sm bg-gray-100 border border-gray-200 rounded-md px-3 py-0 h-8 
     text-ellipsis whitespace-nowrap hover:bg-primary-100 !important;
+  }
+
+  .p2-page {
+    @apply flex flex-col w-full h-[calc(100vh-var(--tabs-bar-height)-var(--top-menu-bar-height)-20px)] gap-1 px-2 py-1;
   }
 
   .p2-search-area {
@@ -134,13 +139,13 @@ body, #root {
   @apply w-full h-full !important;
 }
 .ant-tabs-nav-container {
-  @apply h-8 !important;
+  @apply h-[var(--tabs-bar-height)] !important;
 }
 .ant-tabs-bar {
   @apply mb-1 !important;
 }
 .ant-tabs-tab {
-  @apply h-8 leading-8 !important;
+  @apply h-[var(--tabs-bar-height)] leading-[var(--tabs-bar-height)] !important;
 }
 .ant-spin-nested-loading {
   @apply w-full h-full !important;

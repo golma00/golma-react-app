@@ -20,7 +20,8 @@ export function P2DatePicker(props) {
   }
 
   return (
-    <DatePicker {...rest} value={value === "" ? null : moment(value, "YYYYMMDD")} onChange={onChange} locale={locale} className="text-sm bg-white border border-gray-200 rounded-md"/>
+    <DatePicker {...rest} value={value === "" ? null : moment(value, "YYYYMMDD")} 
+      onChange={onChange} locale={locale} className={`text-sm bg-white rounded-md ${props.className}`}/>
   );
 }
 P2DatePicker.propTypes = {
@@ -42,7 +43,8 @@ export function P2MonthPicker(props) {
     }
   }
   return (
-    <DatePicker.MonthPicker {...rest} value={value === "" ? null : moment(value, "YYYYMM")} onChange={onChange} locale={locale} className="text-sm bg-white border border-gray-200 rounded-md"/>
+    <DatePicker.MonthPicker {...rest} value={value === "" ? null : moment(value, "YYYYMM")} 
+      onChange={onChange} locale={locale} className={`text-sm bg-white rounded-md ${props.className}`}/>
   );
 }
 P2MonthPicker.propTypes = {
@@ -64,7 +66,8 @@ export function P2RangePicker(props) {
     }
   }
   return (
-    <DatePicker.RangePicker {...rest} value={value.length === 0 ? [null, null] : [moment(value[0], "YYYYMMDD"), moment(value[1], "YYYYMMDD")]} onChange={onChange} locale={locale} className="text-sm bg-white border border-gray-200 rounded-md"/>
+    <DatePicker.RangePicker {...rest} value={value.length === 0 ? [null, null] : [moment(value[0], "YYYYMMDD"), moment(value[1], "YYYYMMDD")]} 
+      onChange={onChange} locale={locale} className={`text-sm bg-white rounded-md ${props.className}`}/>
   );
 }
 P2RangePicker.propTypes = {
@@ -86,7 +89,8 @@ export function P2TimePicker(props) {
     }
   }
   return (
-    <TimePicker {...rest} value={value === "" ? null : moment(value, "HHmmss")} onChange={onChange} locale={locale} className="text-sm bg-white border border-gray-200 rounded-md"/>
+    <TimePicker {...rest} value={value === "" ? null : moment(value, "HHmmss")} 
+      onChange={onChange} locale={locale} className={`text-sm bg-white rounded-md ${props.className}`}/>
   );
 }
 P2TimePicker.propTypes = {
