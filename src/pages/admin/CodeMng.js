@@ -115,6 +115,15 @@ function CodeMng(props) {
         cellDataType: "combo",
       },
       { 
+        field: "upperGrpCd",
+        headerName: "부모\n그룹코드", 
+        editable: false, 
+        width: 120,
+        hide: true,
+        align: "left",
+        cellDataType: "combo",
+      },
+      { 
         field: "cdType",
         headerName: "코드 타입", 
         editable: true, 
@@ -261,8 +270,6 @@ function CodeMng(props) {
       setLoading(true);
       const res = await axios.put("/api/v1/code/saveCommonCodeList", {
         saveDatas: saveDatas,
-        parentGrpCd: selectedRow.grpCd,
-        parentCd: selectedRow.cd,
       });
 
       setLoading(false);
@@ -271,7 +278,9 @@ function CodeMng(props) {
           title: '저장이 완료 되었습니다.',
           onOk: () => {
             onSearch();
-            getCommonCodeList(selectionNode.selectedRow, selectionNode.e);
+            if (selectionNode.selectedRow) {
+              getCommonCodeList(selectionNode.selectedRow, selectionNode.e);
+            }
           }
         });
       }
@@ -295,10 +304,9 @@ function CodeMng(props) {
     grid.current.api.addRow({
       grpCd: selectedRow.cd,
       grpNm: selectedRow.cdNm,
-      parentGrpCd: selectedRow.grpCd,
-      parentCd: selectedRow.cd,
       useYn: "Y",
       cdType: selectedRow.cd === "ROOT" ? "G" : "C",
+      upperGrpCd: selectedRow.grpCd
     });
   }
 
@@ -309,6 +317,9 @@ function CodeMng(props) {
   async function getCommonCodeList(selectedCodeId, item) {
     try {
       grid.current.api.clear();
+      if (!item.node) {
+        return;
+      }
       const params = {
         grpCodeId: item.node.props.dataRef.grpCd,
         codeId: selectedCodeId[0],
@@ -398,25 +409,31 @@ function CodeMng(props) {
           <P2Input id="attribGrpId" name="attribGrpId" className="w-60"/>
         </div>
       </P2SearchArea>
-      <P2GridButtonBar title="코드관리" onAddRow={onAddRow} onDeleteRow={onDeleteRow} count={count} menuProps={props.menuProps}>
-      </P2GridButtonBar>
       <div className="w-full h-full">
-        <SplitterLayout split="vertical" percentage={true} primaryMinSize={20} secondaryMinSize={20} secondaryInitialSize={80}>
-          <P2Tree ref={tree} 
-            nodeKeyField={"cd"}
-            parentKeyField={"parentCd"}
-            nodeTitleField={nodeTitleFunc}
-            onSelect={onSelect}
-            defaultExpandedKeys={['ROOT']}
-          />
-          <P2AgGrid 
-            debug={true}
-            ref={grid}
-            columnDefs={colDefs}
-            showStatusColumn={true}
-            showCheckedColumn={true}
-            onGridReady={onGridReady}
-          />
+        <SplitterLayout customClassName="w-full h-full" split="vertical" percentage={true} primaryMinSize={20} secondaryMinSize={20} secondaryInitialSize={80}>
+          <div className="h-full flex flex-col gap-1">
+            <P2GridButtonBar title="그룹코드">
+            </P2GridButtonBar>
+            <P2Tree ref={tree} 
+              nodeKeyField={"cd"}
+              parentKeyField={"parentCd"}
+              nodeTitleField={nodeTitleFunc}
+              onSelect={onSelect}
+              defaultExpandedKeys={['ROOT']}
+            />
+          </div>
+          <div className="h-full flex flex-col gap-1">
+            <P2GridButtonBar title="코드" onAddRow={onAddRow} onDeleteRow={onDeleteRow} count={count} menuProps={props.menuProps}>
+            </P2GridButtonBar>
+            <P2AgGrid 
+              debug={true}
+              ref={grid}
+              columnDefs={colDefs}
+              showStatusColumn={true}
+              showCheckedColumn={true}
+              onGridReady={onGridReady}
+            />
+          </div>
         </SplitterLayout>
       </div>
       <SearchMappCodePopup className="w-[800px]"
