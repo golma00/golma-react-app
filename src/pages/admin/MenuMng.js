@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { P2Page, P2SearchArea, P2GridButtonBar, P2FormArea } from 'components/layout/index';
 import { P2Input, P2Checkbox, P2Tree, P2DatePicker, P2MessageBox, P2Select } from 'components/control/index';
-import { useCommonCode } from 'hooks/index'
+import { useCodeData } from 'hooks/index'
 import { Divider } from 'antd';
 import * as Utils from 'utils/Utils';
 import * as Validate from 'utils/Validate';
@@ -17,17 +17,17 @@ function MenuMng(props) {
   const [treeNode, setTreeNode] = useState(null);
   const [count, setCount] = useState(0);
 
-  const { getCodeDatas } = useCommonCode();
+  const { getCommonCodeDatas } = useCodeData();
   const [menuTypeCodeList, setMenuTypeCodeList] = useState([]);
 
   useEffect(() => {
-    async function getCommonCode() {
+    async function useCodeData() {
       const commonCodeParams = {
         menuType: {
           grpCd: "MENU_TYPE"
         }
       };
-      const codeDatas = await getCodeDatas(commonCodeParams);
+      const codeDatas = await getCommonCodeDatas(commonCodeParams);
       setMenuTypeCodeList(codeDatas.menuType);
     }
     // getCommonCode();

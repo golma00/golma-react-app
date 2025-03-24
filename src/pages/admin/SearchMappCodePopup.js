@@ -3,7 +3,7 @@ import { Modal, Button } from 'antd';
 import { P2Page, P2SearchArea, P2GridButtonBar } from 'components/layout/index';
 import { P2AgGrid } from 'components/grid/index';
 import { P2Input, P2MessageBox } from 'components/control/index';
-import { useCommonCode } from 'hooks/useCommonCode';
+import { useCodeData } from 'hooks/useCodeData';
 import axios from 'axios';
 
 const SearchMappCodePopup = ({ props, visible, onOk, onClose, params }) => {
@@ -15,7 +15,7 @@ const SearchMappCodePopup = ({ props, visible, onOk, onClose, params }) => {
   const [count, setCount] = useState(0);
   const [loading, setLoading] = useState(false);
 
-  const {getCodeDatas} = useCommonCode();
+  const {getCommonCodeDatas} = useCodeData();
 
   const colDefs = [
       { 
@@ -175,7 +175,7 @@ const SearchMappCodePopup = ({ props, visible, onOk, onClose, params }) => {
         cd : "G001",
       },
     };
-    const commonCodeCombo = await getCodeDatas(commonCodeParams);
+    const commonCodeCombo = await getCommonCodeDatas(commonCodeParams);
     grid.current.api.setColumnComboDatas("cdType", commonCodeCombo.cdType, "cd", "cdNm");
   }
 
