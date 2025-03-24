@@ -124,12 +124,11 @@ function App() {
           </div>
         </div>
         <div className='flex flex-row p-2 w-full h-[calc(100vh-var(--top-menu-bar-height))]'>
-          <OneGridPage menuProps={ { menuNm: '권한관리', menuId: 'auth', saveUseYn: 'Y' } }/>
-          {/* <TabNavigateContext.Provider value={[tabs, addTab, removeTab, setCurrentTab, findMenuByPath, menuData]}>
+          <TabNavigateContext.Provider value={[tabs, addTab, removeTab, setCurrentTab, findMenuByPath, menuData]}>
             <Tabs hideAdd activeKey={Utils.toString(currentTab)} onChange={onTabChange} onEdit={onTabEdit} type="editable-card">
               {tabs}
             </Tabs>
-          </TabNavigateContext.Provider> */}
+          </TabNavigateContext.Provider>
         </div>
       </div>
     </BrowserRouter>
