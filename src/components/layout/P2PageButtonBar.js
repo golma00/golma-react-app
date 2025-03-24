@@ -75,7 +75,7 @@ function P2PageButtonBar(props) {
         </button>
         <button className={`manual-btn ${Utils.isEmpty(props.manualUrl) ? "hidden" : ""}`} onClick={onManualClick}>
           <div className="flex flex-row items-center">
-            <ManualIcon width={22} height={22} fill="#4B5359"/>
+            <ManualIcon width={20} height={20} fill="#4B5359"/>
           </div>
         </button>
       </div>

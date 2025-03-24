@@ -8,7 +8,7 @@ function P2GridButtonBar(props) {
     <div className="flex flex-row w-full justify-between">
       <div className="flex flex-row w-full h-8 gap-1 justify-start">
         {props.title && (
-          <span className="text-base self-end text-ellipsis whitespace-nowrap">{props.title}</span>
+          <span className="text-base font-normal self-end text-ellipsis whitespace-nowrap">{props.title}</span>
         )}
         {props.count > 0 && (
           <span className="text-base self-end text-ellipsis whitespace-nowrap">({props.count.toLocaleString()} 건)</span>

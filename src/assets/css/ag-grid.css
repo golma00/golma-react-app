@@ -1,11 +1,11 @@
-:root {
+.ag-theme-params-1 {
   --ag-font-family: "NotoSansKorean";
-
+  --ag-header-font-weight: 400;
+  --ag-cell-text-color: #595959;
 }
 
 .ag-header-cell-label {
   justify-content: center;
-  font-weight: 300;
   color: #000;
   text-align: center;
   white-space: pre-wrap;
