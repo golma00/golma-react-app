@@ -27,7 +27,6 @@ function P2SearchArea(props, ref) {
   const [lables, setLables] = useState({});
   const [searchHidden, setSearchHidden] = useState({});
   const [searchDisabled, setSearchDisabled] = useState({});
-
   const [expanded, setExpanded] = useState(false);
 
   useImperativeHandle(ref, () => ({
