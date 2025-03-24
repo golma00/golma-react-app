@@ -5,7 +5,7 @@ import { P2Input, P2MessageBox, P2Tree } from 'components/control/index';
 import SplitterLayout from 'react-splitter-layout';
 import "react-splitter-layout/lib/index.css";
 import axios from 'axios';
-import { useCommonCode } from 'hooks/useCommonCode';
+import { useCodeData } from 'hooks/useCodeData';
 import SearchMappCodePopup from 'pages/admin/SearchMappCodePopup';
 import * as Utils from 'utils/Utils';
 import * as Validate from 'utils/Validate';
@@ -27,7 +27,7 @@ function CodeMng(props) {
   const [selectedAgGridRowData, setSelectedAgGridRowData] = useState(null);
 
   //코드 조회용 공통 function
-  const {getCodeDatas} = useCommonCode();
+  const {getCommonCodeDatas} = useCodeData();
 
   const colDefs = [
       { 
@@ -361,7 +361,6 @@ function CodeMng(props) {
 
   async function onGridReady() {
     onSearch();
-  
     //불러올 공통 코드 개수만큼 Object 생성
     const commonCodeParams = {
       cdType: {
@@ -373,7 +372,7 @@ function CodeMng(props) {
       },
     };
     //한번 조회로 모든 결과 불러오기
-    const commonCodeCombo = await getCodeDatas(commonCodeParams);
+    const commonCodeCombo = await getCommonCodeDatas(commonCodeParams);
     //불러온 조회값에서 각각 필요한 데이터 뽑아서 Combo 세팅
     console.log();
     grid.current.api.setColumnComboDatas("mappGrpCd", commonCodeCombo.mappGrpCd, "grpCd", "grpNm");
