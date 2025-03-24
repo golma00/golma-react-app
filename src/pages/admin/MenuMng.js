@@ -206,9 +206,9 @@ function MenuMng(props) {
     <P2Page menuProps={props.menuProps} onSearch={onSearch} onSave={onSave} loading={loading}>
       <P2SearchArea onSearch={onSearch} ref={searchArea}>
       </P2SearchArea>
-      <div className="w-full h-[600px]">
-        <SplitterLayout split="vertical" customClassName="w-full h-[600px]">
-          <div className="h-[600px] flex flex-col gap-1">
+      <div className="w-full h-full">
+        <SplitterLayout split="vertical" customClassName="w-full h-full">
+          <div className="h-full flex flex-col gap-1">
             <P2GridButtonBar title="메뉴 목록" count={count} menuProps={props.menuProps}>
               <button className="grid-btn" onClick={onAddTreeNode.bind(this, "after")} auth={"saveUseYn"}>
                 메뉴 추가
@@ -230,9 +230,9 @@ function MenuMng(props) {
               draggable={true}
             />
           </div>
-          <div className="h-[600px] flex flex-col gap-1">
+          <div className="h-full flex flex-col gap-1">
             <P2GridButtonBar title="메뉴 상세"/>
-            <P2FormArea ref={formArea} className="p2-form-area h-[550px] overflow-y-auto" treeNode={treeNode} >
+            <P2FormArea ref={formArea} className="p2-form-area h-full overflow-y-auto" treeNode={treeNode} >
               <div className="flex flex-row justify-stretch gap-5">
                 <div className="flex flex-row gap-2 w-1/3">
                   <label htmlFor='menuNm' className="w-28 self-center text-right">메뉴명</label>

@@ -107,15 +107,14 @@ function OneGridPage(props) {
         <div className="w-full flex flex-row gap-x-5 gap-y-2">
           <div className="flex flex-row gap-2">
             <label className="common-label" htmlFor='authGrpId'>권한그룹ID</label>
-            <P2Input id="authGrpId" name="authGrpId" />
+            <P2Input id="authGrpId" name="authGrpId" className="w-60"/>
           </div>
           <div className="w-full flex flex-row gap-2">
             <label className="common-label" htmlFor='authGrpNm'>권한그룹명</label>
-            <P2Select id="authGrpNm" name="authGrpNm" datas={authCodeList} isMulti={true} 
-              menuWidth={500} className="w-80 text-sm bg-white rounded-md"/>
+            <P2Input id="authGrpNm" name="authGrpNm" className="w-60"/>
           </div>
         </div>
-        <div className="flex flex-row gap-x-5 gap-y-2">
+        {/* <div className="flex flex-row gap-x-5 gap-y-2">
           <div className="flex flex-row gap-2">
             <label className="common-label" htmlFor='authGrpId2'>권한그룹ID2</label>
             <P2Input id="authGrpId2" name="authGrpId2" />
@@ -125,7 +124,7 @@ function OneGridPage(props) {
             <P2Select id="authGrpNm2" name="authGrpNm2" datas={authCodeList} isMulti={true} 
               menuWidth={500} className="w-80 text-sm bg-white rounded-md"/>
           </div>
-        </div>
+        </div> */}
       </P2SearchArea>
       <P2GridButtonBar menuProps={props.menuProps} title="권한그룹 목록" onAddRow={onAddRow} onDeleteRow={onDeleteRow} count={count}>
       </P2GridButtonBar>
