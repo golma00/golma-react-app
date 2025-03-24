@@ -149,6 +149,7 @@ function MenuMng(props) {
       menuType: "",
       menuIconVal: "",
       useYn: "Y",
+      displayYn: "Y",
       expoPeriodYn: "N",
       expoStarDt: "",
       expoEndDt: "",
