@@ -11,7 +11,7 @@ function P2Select(props, ref) {
   const [customClassName, setCustomClassName] = useState("");
 
   useEffect(() => {
-    setCustomClassName(`${props.className} ${Utils.isNotEmpty(props.menuWidth) ? "menu-width-auth" : ""}`);
+    setCustomClassName(`${props.className||''} ${Utils.isNotEmpty(props.menuWidth) ? "menu-width-auth" : ""}`);
   }, [props.className, props.menuWidth]);
 
   const checkboxOption = (props) => {
@@ -207,7 +207,7 @@ function P2Select(props, ref) {
     <Select {...rest} 
       options={options}
       classNamePrefix="P2Select" 
-      className={`text-sm bg-white rounded-md self-center ${customClassName}`}
+      className={`text-sm bg-white rounded-md self-center w-full ${customClassName}`}
       value={optionFindValue(value)}
       onChange={(e) => {
         if (props.onChange) {

@@ -17,7 +17,7 @@ export function P2Input(props) {
   }
 
   return (
-    <Input {...rest} value={value} onChange={onChange} className={`text-sm bg-white border border-gray-200 rounded-md ${props.className}`}/>
+    <Input {...rest} value={value} onChange={onChange} className={`text-sm bg-white border border-gray-200 rounded-md ${props.className||''}`}/>
   );
 }
 P2Input.propTypes = {
@@ -44,7 +44,7 @@ export function P2InputNumber(props) {
   }, []);
 
   return (
-    <InputNumber formatter={formatter} {...rest} value={value} onChange={onChange} className={`text-sm bg-white border border-gray-200 rounded-md ${props.className}`}/>
+    <InputNumber formatter={formatter} {...rest} value={value} onChange={onChange} className={`text-sm bg-white border border-gray-200 rounded-md ${props.className||''}`}/>
   );
 }
 P2InputNumber.propTypes = {
@@ -67,7 +67,7 @@ export function P2InputPassword(props) {
   } 
 
   return (
-    <Input.Password {...rest} value={value} onChange={onChange} className={`text-sm bg-white border border-gray-200 rounded-md ${props.className}`}/>
+    <Input.Password {...rest} value={value} onChange={onChange} className={`text-sm bg-white border border-gray-200 rounded-md ${props.className||''}`}/>
   );
 } 
 P2InputPassword.propTypes = {
@@ -90,7 +90,7 @@ export function P2InputTextArea(props) {
   }
 
   return (
-    <Input.TextArea {...rest} value={value} onChange={onChange} className={`text-sm bg-white border border-gray-200 rounded-md ${props.className}`}/>
+    <Input.TextArea {...rest} value={value} onChange={onChange} className={`text-sm bg-white border border-gray-200 rounded-md ${props.className||''}`}/>
   );
 }
 P2InputTextArea.propTypes = {

@@ -113,6 +113,28 @@ body, #root {
   @apply text-ellipsis overflow-hidden !important;
 }
 
+/* 모달 */
+.p2-modal .ant-modal-header {
+  @apply bg-primary-900 !important;
+}
+
+.p2-modal .ant-modal-header .ant-modal-title {
+  @apply text-white font-semibold text-lg !important;
+}
+
+.p2-modal .ant-modal-close-x {
+  @apply text-white !important;
+}
+
+.p2-modal .ant-modal-body {
+  @apply px-3 py-1 !important;
+}
+
+.p2-modal .p2-page {
+  @apply h-auto !important;
+}
+
+/* 메뉴 */
 .ant-menu-horizontal {
   @apply bg-primary-900 border-b-2 border-primary-900 !important;
 }
@@ -153,9 +175,6 @@ body, #root {
   @apply w-full h-full !important;
 }
 
-.p2-modal .ant-modal-body {
-  @apply px-3 !important;
-}
 .ant-status-error {
   border-color: red !important;
   box-shadow: 0 0 0 2px rgba(255, 0, 0, 0.2);

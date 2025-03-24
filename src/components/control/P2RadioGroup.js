@@ -17,7 +17,7 @@ export function P2RadioGroup(props) {
   };
 
   return (
-    <Radio.Group {...props} value={value} onChange={onChange} />
+    <Radio.Group {...props} value={value} onChange={onChange} className={`text-sm ${props.className||''}`}/>
   );
 }
 

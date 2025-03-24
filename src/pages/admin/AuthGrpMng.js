@@ -114,11 +114,11 @@ function OneGridPage(props) {
   return (
     <P2Page menuProps={props.menuProps} onSearch={onSearch} onSave={onSave} loading={loading}>
       <P2SearchArea onSearch={onSearch} ref={searchArea}>
-        <div className="flex flex-row gap-1">
+        <div className="flex flex-row gap-2">
           <label className="common-label" htmlFor='authGrpId'>권한그룹ID</label>
           <P2Input type="text" id="authGrpId" name="authGrpId" className="w-60"/>
         </div>
-        <div className="flex flex-row gap-1">
+        <div className="flex flex-row gap-2">
           <label className="common-label" htmlFor='authGrpNm'>권한그룹명</label>
           <P2Input type="text" id="authGrpNm" name="authGrpNm" className="w-60"/>
         </div>

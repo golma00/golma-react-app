@@ -17,6 +17,15 @@ const SearchMappCodePopup = ({ props, visible, onOk, onClose, params }) => {
 
   const {getCommonCodeDatas} = useCodeData();
 
+  const [menuProps] = useState({
+    saveUseYn: 'N',
+    extUseYn1: 'N',
+    extUseYn2: 'N',
+    extUseYn3: 'N',
+    extUseYn4: 'N',
+    extUseYn5: 'N',
+  });
+
   const colDefs = [
       { 
         field: "grpCd",
@@ -188,9 +197,9 @@ const SearchMappCodePopup = ({ props, visible, onOk, onClose, params }) => {
       P2MessageBox.confirm({
         title: '아래 Row를 선택하시겠습니까?',
         content: '* 속성그룹명: ' + selectedRow.grpNm + '\n' + 
-                 '* 속성그룹코드: ' + selectedRow.grpCd + '\n' + 
-                 '* 속성명: ' + selectedRow.cdNm + '\n' + 
-                 '* 속성코드: ' + selectedRow.cd,
+                '* 속성그룹코드: ' + selectedRow.grpCd + '\n' + 
+                '* 속성명: ' + selectedRow.cdNm + '\n' + 
+                '* 속성코드: ' + selectedRow.cd,
         onOk: () => {
           onOk(selectedRow);
           onClose();
@@ -211,7 +220,7 @@ const SearchMappCodePopup = ({ props, visible, onOk, onClose, params }) => {
       params={params}
       footer={[
         <>
-          <Button key="ok" onClick={selectionConfirm}>
+          <Button key="ok" type="primary" onClick={selectionConfirm}>
             선택
           </Button>
           <Button key="close" onClick={onClose}>
@@ -220,10 +229,10 @@ const SearchMappCodePopup = ({ props, visible, onOk, onClose, params }) => {
         </>
       ]}
     >
-      <P2Page menuProps={props.menuProps} onSearch={getUpperCodeList} loading={loading}>
+      <P2Page menuProps={menuProps} onSearch={getUpperCodeList} loading={loading}>
         <P2SearchArea onSearch={getUpperCodeList} ref={searchArea}>
-          <div className="flex flex-row gap-1">
-            <label className="text-xl" htmlFor='searchAttribGrpId'>속성그룹ID</label>
+          <div className="flex flex-row gap-2">
+            <label className="common-label" htmlFor='searchAttribGrpId'>속성그룹ID</label>
             <P2Input type="combo" id="searchAttribGrpId" name="searchAttribGrpId" className="text-sm bg-white border border-gray-200 rounded-md"/>
           </div>
         </P2SearchArea>

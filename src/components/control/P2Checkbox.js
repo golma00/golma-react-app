@@ -27,7 +27,7 @@ export function P2Checkbox(props) {
   }
 
   return (
-    <Checkbox {...props} checked={value === trueValue} onChange={onChange} />
+    <Checkbox {...props} checked={value === trueValue} onChange={onChange} className={`text-sm w-full self-center ${props.className||''}`}/>
   );
 }
 P2Checkbox.propTypes = {
@@ -60,7 +60,7 @@ export function P2Switch(props) {
   }
 
   return (
-    <Switch {...props} checked={value === trueValue} onChange={onChange} />
+    <Switch {...props} checked={value === trueValue} onChange={onChange} className={`text-sm w-full self-center ${props.className||''}`}/>
   );
 }
 P2Switch.propTypes = {
