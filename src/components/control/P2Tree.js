@@ -23,6 +23,7 @@ function P2Tree(props, ref) {
   const [allKeys, setAllKeys] = useState(null);
 
   const [keyByTreeNode, setKeyByTreeNode] = useState({});
+  const [expandDepth, setExpandDepth] = useState(props.depth || allKeys);
   
   // 플래그: 초기 로드 여부
   const initialLoad = useRef(true);
@@ -185,6 +186,10 @@ function P2Tree(props, ref) {
       let keyByTreeNodeMap = {};
       // 모든 노드의 키를 누적할 배열
       let allKeys = [];
+      
+      const expandedKeyList = [];
+      // 키 : 뎁스 맵 
+      const nodeDepthMap = {};
   
       data.forEach((item, index) => {
         if (!item["_status"]) {
@@ -192,6 +197,21 @@ function P2Tree(props, ref) {
           item["_oldStatus"] = "";
         }
 
+        const key = String(item[nodeKeyField]);
+        const parentKey = item[parentKeyField];
+        // 부모 키 값이 존재 할 경우 depth 값을 1 추가해서 지정 후 다시 대입
+        const depth = nodeDepthMap[parentKey] ? nodeDepthMap[parentKey] + 1 : 1;
+        nodeDepthMap[key] = depth;
+        
+        // depth 가 prop으로 주어지지 않으면 모두 펼쳐지도록
+        if (!expandDepth || depth <= expandDepth) {
+          if (parentKey && !expandedKeyList.includes(parentKey)) {
+            expandedKeyList.push(parentKey);
+          }
+          if (!expandedKeyList.includes(key)) {
+            expandedKeyList.push(key);
+          }
+        }
         let title = "";
         if (typeof nodeTitleField === "function") {
           title = nodeTitleField(item);
@@ -250,7 +270,7 @@ function P2Tree(props, ref) {
       setKeyByTreeNode(prev => ({ ...prev, ...keyByTreeNodeMap }));
       // 만약 expandedKeys 상태가 비어있는 경우에만 모든 키로 설정
       if (initialLoad.current) {
-        setExpandedKeys(allKeys);
+        setExpandedKeys(expandedKeyList);
         setAllKeys(allKeys);
         initialLoad.current = false;
       }
