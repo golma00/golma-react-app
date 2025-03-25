@@ -9,7 +9,7 @@
       "pages/*": ["pages/*"],
       "utils/*": ["utils/*"],
       "locales/*": ["locales/*"],
-      "hooks/*": ["hooks/*"],
+      "hooks/*": ["hooks/*"]
     }
   },
   "include": ["src"]
