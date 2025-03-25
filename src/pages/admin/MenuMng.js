@@ -20,7 +20,7 @@ function MenuMng(props) {
   const [menuTypeCodeList, setMenuTypeCodeList] = useState([]);
 
   useEffect(() => {
-    async function useCodeData() {
+    async function getCommonCode() {
       const commonCodeParams = {
         menuType: {
           grpCd: "MENU_TYPE"
@@ -29,7 +29,7 @@ function MenuMng(props) {
       const codeDatas = await getCommonCodeDatas(commonCodeParams);
       setMenuTypeCodeList(codeDatas.menuType);
     }
-    // getCommonCode();
+    getCommonCode();
 
     formArea.current.api.setValid({
       menuNm: (params) => Validate.validateRequired(params.value),
@@ -261,8 +261,8 @@ function MenuMng(props) {
                   <P2Checkbox id="useYn" name="useYn" className="text-sm self-center w-full" trueValue="Y" falseValue="N" />
                 </div>
                 <div className="flex flex-row gap-2 w-2/3">
-                  <label htmlFor='manualUrl' className="common-label w-28">매뉴얼URL</label>
-                  <P2Input id="manualUrl" name="manualUrl" className="text-sm bg-white border border-gray-200 rounded-md" />
+                  <label htmlFor='menuType' className="common-label w-28">메뉴타입</label>
+                  <P2Select id="menuType" name="menuType" datas={menuTypeCodeList} className="text-sm bg-white rounded-md w-full" />
                 </div>
               </div>
               <div className="flex flex-row justify-stretch gap-5">
@@ -271,8 +271,8 @@ function MenuMng(props) {
                   <P2Checkbox id="displayYn" name="displayYn" className="text-sm self-center w-full" trueValue="Y" falseValue="N" />
                 </div>
                 <div className="flex flex-row gap-2 w-2/3">
-                  <label htmlFor='menuType' className="common-label w-28">메뉴타입</label>
-                  <P2Select id="menuType" name="menuType" datas={menuTypeCodeList} className="text-sm bg-white rounded-md w-full" />
+                  <label htmlFor='manualUrl' className="common-label w-28">매뉴얼URL</label>
+                  <P2Input id="manualUrl" name="manualUrl" className="text-sm bg-white border border-gray-200 rounded-md" />
                 </div>
               </div>
               <Divider orientation="left" className="text-xs !my-2">공통 버튼</Divider>
