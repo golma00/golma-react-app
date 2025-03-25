@@ -42,6 +42,7 @@ function OneGridPage(props) {
       setLoading(false);
       if (res.data.code === "00") {
         grid.current.api.setGridOption("rowData", res.data.data.result);
+        grid.current.api.firstRowSelected();
         setCount(res.data.data.result.length);
       }
       else {
