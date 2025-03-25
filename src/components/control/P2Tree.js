@@ -132,9 +132,16 @@ function P2Tree(props, ref) {
       setSelectedTreeNode: (key) => {
         setSelectKeys([key]);
       },
-      firstNodeSelect: () => { // 동작 안함
+      // 처음 화면 들어올 때 최상단 선택
+      firstNodeSelect: () => {
         if (rowData && rowData.length > 0) {
-          setSelectKeys(prev => [...prev, rowData[0][nodeKeyField]]);
+          const key = String(rowData[0][nodeKeyField]);
+          const node = keyByTreeNode[key];
+          setSelectKeys([key]);
+          
+          if (props.onSelect && node) {
+            props.onSelect(key, { node, selected: true });
+          }
         }
       }
     }
