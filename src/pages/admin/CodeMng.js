@@ -402,7 +402,7 @@ function CodeMng(props) {
   return (
     <P2Page onSearch={onSearch} onSave={onSave} loading={loading}>
       <P2SearchArea onSearch={onSearch} ref={searchArea}>
-        <div className="flex flex-row gap-1">
+        <div className="flex flex-row gap-2">
           <label className="common-label" htmlFor='attribGrpId'>그룹코드ID</label>
           <P2Input id="attribGrpId" name="attribGrpId" className="w-60"/>
         </div>

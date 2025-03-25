@@ -236,7 +236,7 @@ const SearchMappCodePopup = ({ props, visible, onOk, onClose, params }) => {
             <P2Input type="combo" id="searchAttribGrpId" name="searchAttribGrpId" className="text-sm bg-white border border-gray-200 rounded-md"/>
           </div>
         </P2SearchArea>
-        <P2GridButtonBar title="상위 코드" count={count} />
+        <P2GridButtonBar title="상위 코드" count={count} menuProps={menuProps}/>
         <div className="w-full h-[500px]">
           <P2AgGrid 
             debug={true}

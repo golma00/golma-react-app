@@ -220,13 +220,13 @@ function MenuMng(props) {
                 메뉴 삭제
               </button>
             </P2GridButtonBar>
-            <P2Tree ref={tree} 
+            <P2Tree ref={tree}
+              editable={true}
               nodeKeyField={"menuId"}
               parentKeyField={"upperMenuId"}
               nodeTitleField={nodeTitleFunc}
               onSelect={onTreeSelect}
               onBeforeSelect={onBeforeTreeSelect}
-              //defaultExpandedKeys={['1']}
               draggable={true}
               expandDepth={2}
             />

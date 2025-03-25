@@ -24,6 +24,7 @@ function P2Tree(props, ref) {
 
   const [keyByTreeNode, setKeyByTreeNode] = useState({});
   const [expandDepth, setExpandDepth] = useState(props.expandDepth || allKeys);
+  const [editable, setEditable] = useState(props.editable || true);
   
   // 플래그: 초기 로드 여부
   const initialLoad = useRef(true);
@@ -248,22 +249,28 @@ function P2Tree(props, ref) {
           const parentNode = keyByTreeNodeMap[item[parentKeyField]];
           parentNode.props.children.push(node);
           keyByTreeNodeMap[item[nodeKeyField]] = node;
-          if (Utils.isEmpty(item[nodeSeqField])) {
-            item[nodeSeqField] = parentNode.props.children.length;
+          if (editable) {
+            if (Utils.isEmpty(item[nodeSeqField])) {
+              item[nodeSeqField] = parentNode.props.children.length;
+            }
           }
           else {
-            if (item[nodeSeqField] !== parentNode.props.children.length) {
-              if (Utils.isEmpty(item[statusField])) {
-                item[statusField] = updateStatus;
+            if (editable) {
+              if (item[nodeSeqField] !== parentNode.props.children.length) {
+                if (Utils.isEmpty(item[statusField])) {
+                  item[statusField] = updateStatus;
+                }
               }
+              item[nodeSeqField] = parentNode.props.children.length;
             }
-            item[nodeSeqField] = parentNode.props.children.length;
           }
         }
         else {
           treeNodes.push(node);
           keyByTreeNodeMap[item[nodeKeyField]] = node;
-          item[nodeSeqField] = 1;
+          if (editable) {
+            item[nodeSeqField] = 1;
+          }
         }
       });
   
