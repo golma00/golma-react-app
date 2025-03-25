@@ -23,8 +23,8 @@ function P2Tree(props, ref) {
   const [allKeys, setAllKeys] = useState(null);
 
   const [keyByTreeNode, setKeyByTreeNode] = useState({});
-  const [expandDepth, setExpandDepth] = useState(props.expandDepth || allKeys);
-  const [editable, setEditable] = useState(props.editable || true);
+  const [expandDepth] = useState(props.expandDepth || allKeys);
+  const [editable] = useState(props.editable || true);
   
   // 플래그: 초기 로드 여부
   const initialLoad = useRef(true);
