@@ -218,16 +218,16 @@ const SearchMappCodePopup = ({ props, visible, onOk, onClose, params }) => {
       visible={visible}
       onCancel={onClose}
       params={params}
-      footer={[
-        <>
+      footer={
+        <div className="flex justify-center">
           <Button key="ok" type="primary" onClick={selectionConfirm}>
             선택
           </Button>
           <Button key="close" onClick={onClose}>
             닫기
           </Button>
-        </>
-      ]}
+        </div>
+      }
     >
       <P2Popup menuProps={menuProps} onSearch={getUpperCodeList} loading={loading}>
         <P2SearchArea onSearch={getUpperCodeList} ref={searchArea}>
