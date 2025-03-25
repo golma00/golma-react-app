@@ -23,7 +23,7 @@ function MenuMng(props) {
     async function getCommonCode() {
       const commonCodeParams = {
         menuType: {
-          GrpCd: "MENU_TYPE"
+          grpCd: "MENU_TYPE"
         }
       };
       const codeDatas = await getCommonCodeDatas(commonCodeParams);
