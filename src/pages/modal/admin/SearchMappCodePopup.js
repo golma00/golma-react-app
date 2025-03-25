@@ -165,6 +165,7 @@ const SearchMappCodePopup = ({ props, visible, onOk, onClose, params }) => {
       setLoading(false);
       if (res.data.code === "00") {
         grid.current.api.setGridOption("rowData", structuredClone(res.data.data.result));
+        grid.current.api.firstRowSelected();
         setCount(grid.current.api.getDisplayedRowCount());
       }
     }

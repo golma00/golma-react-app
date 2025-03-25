@@ -132,8 +132,7 @@ function P2Tree(props, ref) {
       setSelectedTreeNode: (key) => {
         setSelectKeys([key]);
       },
-      // 처음 화면 들어올 때 최상단 선택
-      firstNodeSelect: () => {
+      firstNodeSelected: () => {
         if (rowData && rowData.length > 0) {
           const key = String(rowData[0][nodeKeyField]);
           const node = keyByTreeNode[key];

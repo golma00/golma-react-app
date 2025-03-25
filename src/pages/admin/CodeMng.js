@@ -10,14 +10,13 @@ import axios from 'axios';
 
 function CodeMng(props) {
   const searchArea = useRef(null);
-  const grid = useRef(0);
+  const grid = useRef(null);
   const tree = useRef(null);
 
   const [count, setCount] = useState(0);
   const [loading, setLoading] = useState(false);
 
   // Tree 영역 조회 데이터
-  //const [rowData, setRowData] = useState([]);
   const [selectedRow, setSelectedRow] = useState(null);
   const [selectionNode, setSectionNode] = useState({selectedRow: [], e: []});
 
@@ -214,8 +213,8 @@ function CodeMng(props) {
 
       setLoading(false);
       if (res.data.code === "00") {
-        //setRowData(res.data.data.result);
         tree.current.api.setRowData(res.data.data.result);
+        tree.current.api.firstNodeSelected();
         setCount(res.data.data.result.length);
       }
       else {
