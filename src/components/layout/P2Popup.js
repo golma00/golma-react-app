@@ -22,6 +22,7 @@ function P2Popup(props) {
         {showButtonBar && (
           <P2PageButtonBar 
             onSearch={props.onSearch}
+            searchBtnNm={props.searchBtnNm||""}
             onSave={props.onSave}
             onExtBtn1={props.onExtBtn1}
             onExtBtn2={props.onExtBtn2}
@@ -29,6 +30,7 @@ function P2Popup(props) {
             onExtBtn4={props.onExtBtn4}
             onExtBtn5={props.onExtBtn5}
             saveUseYn={props.menuProps.saveUseYn}
+            saveBtnNm={props.saveBtnNm||""}
             extUseYn1={props.menuProps.extUseYn1}
             extUseYn2={props.menuProps.extUseYn2}
             extUseYn3={props.menuProps.extUseYn3}
