@@ -1,12 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react'
-import { P2SearchArea } from 'components/layout/index';
+import { P2SearchArea, P2SplitterLayout } from 'components/layout/index';
 import { P2Select } from 'components/control/index';
 import { P2AgGrid } from 'components/grid/index';
 import { useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import axios from 'axios';
-import SplitterLayout from 'react-splitter-layout';
-import "react-splitter-layout/lib/index.css";
 
 function TwoGridPage(params) {
   console.log("params => ", params);
@@ -217,7 +215,7 @@ function TwoGridPage(params) {
         <input type="text" name="test" className="text-sm bg-white border border-gray-200 rounded-md"/>
       </P2SearchArea>
       <div className="w-full h-[500px]">
-        <SplitterLayout split="vertical" primaryMinSize={300} secondaryMinSize={300}>
+        <P2SplitterLayout primaryMinSize={300} secondaryMinSize={300}>
           <P2AgGrid 
             debug={true}
             columnDefs={colDefs}
@@ -232,7 +230,7 @@ function TwoGridPage(params) {
             showCheckedColumn={true}
             api={setGridApi2}
           />
-        </SplitterLayout>
+        </P2SplitterLayout>
       </div>
     </div>
   )

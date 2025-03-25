@@ -1,39 +1,65 @@
-.splitter-layout {
+.p2-splitter-layout {
   position: relative;
   display: flex;
   height: 100%;
 }
 
-.splitter-layout .layout-pane {
+.p2-splitter-layout .layout-pane {
   position: relative;
   flex: 0 0 auto;
   overflow: auto;
 }
 
-.splitter-layout .layout-pane.layout-pane-primary {
+.p2-splitter-layout .layout-pane.layout-pane-primary {
   flex: 1 1 auto;
 }
 
-.splitter-layout > .layout-splitter {
+.p2-splitter-layout > .layout-splitter {
   flex: 0 0 auto;
   width: 8px;
   height: 100%;
   cursor: col-resize;
-  background-color: #FFFFFF ;
+  background-color: transparent ;
 }
 
-.splitter-layout > .layout-splitter:hover {
-  background-color: #FFFFFF !important;
+.p2-splitter-layout > .layout-splitter::after {
+  content: "";
+  display: block;
+  width: 4px;
+  height: 25px;
+  top: 50%;
+  left: 20%;
+  position: relative;
+  border-left: 1px solid #D9D9DB;
+  border-right: 1px solid #D9D9DB;
 }
 
-.splitter-layout.layout-changing {
+.p2-splitter-layout.splitter-layout-vertical > .layout-splitter::after {
+  content: "";
+  display: block;
+  width: 25px;
+  height: 4px;
+  top: 50%;
+  left: 50%;
+  position: relative;
+  border-left: 0px;
+  border-right: 0px;
+  border-top: 1px solid #D9D9DB;
+  border-bottom: 1px solid #D9D9DB;
+}
+
+.p2-splitter-layout > .layout-splitter:hover {
+  background-color: transparent !important;
+}
+
+.p2-splitter-layout.layout-changing {
   cursor: col-resize;
 }
 
-.splitter-layout.splitter-layout-vertical {
+.p2-splitter-layout.p2-splitter-layout-vertical {
   flex-direction: column;
 }
 
-.splitter-layout.splitter-layout-vertical.layout-changing {
+.p2-splitter-layout.p2-splitter-layout-vertical.layout-changing {
   cursor: row-resize;
 }

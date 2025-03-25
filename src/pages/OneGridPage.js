@@ -102,7 +102,7 @@ function OneGridPage(props) {
   }
 
   return (
-    <P2Page menuProps={props.menuProps} onSearch={onSearch} onSave={onSave} loading={loading}>
+    <P2Page onSearch={onSearch} onSave={onSave} loading={loading}>
       <P2SearchArea onSearch={onSearch} ref={searchArea}>
         <div className="w-full flex flex-row gap-x-5 gap-y-2">
           <div className="flex flex-row gap-2">
@@ -126,7 +126,7 @@ function OneGridPage(props) {
           </div>
         </div> */}
       </P2SearchArea>
-      <P2GridButtonBar menuProps={props.menuProps} title="권한그룹 목록" onAddRow={onAddRow} onDeleteRow={onDeleteRow} count={count}>
+      <P2GridButtonBar title="권한그룹 목록" onAddRow={onAddRow} onDeleteRow={onDeleteRow} count={count}>
       </P2GridButtonBar>
       <div className="w-full h-full">
         <P2AgGrid  

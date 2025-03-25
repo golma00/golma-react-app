@@ -1,8 +1,7 @@
 import React, { useState, useRef } from 'react'
-import { P2Page, P2SearchArea, P2GridButtonBar, P2FormArea } from 'components/layout/index';
+import { P2Page, P2SearchArea, P2GridButtonBar, P2FormArea, P2SplitterLayout } from 'components/layout/index';
 import { P2AgGrid } from 'components/grid/index';
 import { P2Select, P2Input } from 'components/control/index';
-import SplitterLayout from 'react-splitter-layout';
 import axios from 'axios';
 
 function GridFormPage(props) {
@@ -60,7 +59,7 @@ function GridFormPage(props) {
   }
 
   return (
-    <P2Page menuProps={props.menuProps} onSearch={onSearch} onSave={onSave}>
+    <P2Page onSearch={onSearch} onSave={onSave}>
       <P2SearchArea onSearch={onSearch} ref={searchArea}>
         <div className="flex flex-row gap-2 justify-center">
           <label htmlFor='planYear'>계획연도</label>
@@ -88,7 +87,7 @@ function GridFormPage(props) {
         </div>
       </P2SearchArea>
       <div className="w-full">
-        <SplitterLayout split="vertical" customClassName="w-full h-[600px]">
+        <P2SplitterLayout split="vertical" customClassName="w-full h-[600px]">
           <div className="h-[550px]">
             <P2GridButtonBar title="그리드" count={count}/>
             <P2AgGrid 
@@ -133,7 +132,7 @@ function GridFormPage(props) {
               </div>
             </P2FormArea>
           </div>
-        </SplitterLayout>
+        </P2SplitterLayout>
       </div>
     </P2Page>
   )

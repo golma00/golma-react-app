@@ -130,8 +130,8 @@ body, #root {
   @apply px-3 py-1 !important;
 }
 
-.p2-modal .p2-page {
-  @apply h-auto !important;
+.p2-popup {
+  @apply flex flex-col w-full h-auto gap-1 px-2 py-1;
 }
 
 /* 메뉴 */

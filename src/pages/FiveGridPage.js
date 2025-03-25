@@ -98,7 +98,7 @@ function FiveGridPage(props) {
   }
 
   return (
-    <P2Page menuProps={props.menuProps} onSearch={onSearch} onSave={onSave} loading={loading}>
+    <P2Page onSearch={onSearch} onSave={onSave} loading={loading}>
       <P2SearchArea onSearch={onSearch} ref={searchArea}>
         <div className="flex flex-row gap-1">
           <label class="text-xl" htmlFor='authGrpId'>사원번호</label>

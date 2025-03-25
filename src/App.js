@@ -6,7 +6,6 @@ import { Menu, Tabs } from 'antd';
 import { TabNavigateContext } from 'hooks/useTabNavigate';
 import axios from 'axios';
 import * as Utils from 'utils/Utils';
-import OneGridPage from 'pages/OneGridPage';
 
 function App() {
 

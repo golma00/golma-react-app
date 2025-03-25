@@ -1,8 +1,7 @@
 import React, { useRef, useState, useEffect, useCallback } from 'react';
-import { P2Page, P2SearchArea, P2GridButtonBar } from 'components/layout/index';
+import { P2Page, P2SearchArea, P2GridButtonBar, P2SplitterLayout } from 'components/layout/index';
 import { P2Input, P2MessageBox } from 'components/control/index';
 import { P2AgGrid } from 'components/grid/index';
-import SplitterLayout from 'react-splitter-layout';
 import axios from 'axios';
 import * as Utils from 'utils/Utils';
 import * as Validate from 'utils/Validate';
@@ -174,7 +173,7 @@ function AuthGrpMenuMng(props) {
 
 
   return (
-    <P2Page menuProps={props.menuProps} onSearch={onSearch} onSave={onSave} loading={loading}>
+    <P2Page onSearch={onSearch} onSave={onSave} loading={loading}>
       <P2SearchArea onSearch={onSearch} ref={searchArea} >
         <div className="flex flex-row gap-2">
           <label className="common-label" htmlFor='authGrpId'>권한그룹ID</label>
@@ -186,7 +185,7 @@ function AuthGrpMenuMng(props) {
         </div>
       </P2SearchArea>
       <div className="w-full h-full">
-        <SplitterLayout split="vertical" customClassName="w-full h-full" percentage={true} primaryMinSize={20} secondaryMinSize={20} secondaryInitialSize={80} >
+        <P2SplitterLayout className="w-full h-full" percentage={true} primaryMinSize={20} secondaryMinSize={20} secondaryInitialSize={80} >
           <div className="h-full flex flex-col gap-1">
             <P2GridButtonBar title="권한 그룹 목록" count={countAuthGrp}/>
             <P2AgGrid  
@@ -205,7 +204,7 @@ function AuthGrpMenuMng(props) {
               onCellValueChanged={onCellValueChangedMenu}
             />
           </div>
-        </SplitterLayout>
+        </P2SplitterLayout>
       </div>
     </P2Page>
   );

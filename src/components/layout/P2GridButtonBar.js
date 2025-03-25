@@ -1,8 +1,10 @@
 import React, { Children } from "react";
 import { ReactComponent as AddRow } from "assets/icons/row_add.svg";
 import { ReactComponent as DeleteRow } from "assets/icons/row_delete.svg";
+import { useMenuAuth } from 'hooks/index';
 
 function P2GridButtonBar(props) {
+  const {menuProps: masterMenuProps} = useMenuAuth();
 
   return (
     <div className="flex flex-row w-full justify-between">
@@ -15,7 +17,7 @@ function P2GridButtonBar(props) {
         )}
       </div>
       <div className="flex flex-row w-full h-8 gap-1 justify-end">
-        {props.onAddRow && props.menuProps&& props.menuProps.saveUseYn === "Y" && (
+        {props.onAddRow && (props.menuProps || masterMenuProps) && (props.menuProps || masterMenuProps).saveUseYn === "Y" && (
           <button className="grid-btn" onClick={props.onAddRow}>
             <div className="flex flex-row gap-1 items-center">
               <AddRow width={24} height={24} fill="#4B5359"/>
@@ -23,7 +25,7 @@ function P2GridButtonBar(props) {
             </div>
           </button>
         )}
-        {props.onDeleteRow && props.menuProps && props.menuProps.saveUseYn === "Y" && (
+        {props.onDeleteRow && (props.menuProps || masterMenuProps) && (props.menuProps || masterMenuProps).saveUseYn === "Y" && (
           <button className="grid-btn" onClick={props.onDeleteRow}>
             <div className="flex flex-row gap-1 items-center">
               <DeleteRow width={24} height={24} fill="#4B5359"/>
@@ -36,7 +38,7 @@ function P2GridButtonBar(props) {
             return (
               <React.Fragment key={index}>
                 {
-                  child.props.auth && props.menuProps && props.menuProps[child.props.auth] === "Y" && child
+                  child.props.auth && (props.menuProps || masterMenuProps) && (props.menuProps || masterMenuProps)[child.props.auth] === "Y" && child
                 }
                 {
                   !child.props.auth && child

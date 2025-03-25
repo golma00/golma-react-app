@@ -1,9 +1,9 @@
 import { useState, useRef } from 'react';
 import { Modal, Button } from 'antd';
-import { P2Page, P2SearchArea, P2GridButtonBar } from 'components/layout/index';
+import { P2Popup, P2SearchArea, P2GridButtonBar } from 'components/layout/index';
 import { P2AgGrid } from 'components/grid/index';
 import { P2Input, P2MessageBox } from 'components/control/index';
-import { useCodeData } from 'hooks/useCodeData';
+import { useCodeData } from 'hooks/index';
 import axios from 'axios';
 
 const SearchMappCodePopup = ({ props, visible, onOk, onClose, params }) => {
@@ -229,7 +229,7 @@ const SearchMappCodePopup = ({ props, visible, onOk, onClose, params }) => {
         </>
       ]}
     >
-      <P2Page menuProps={menuProps} onSearch={getUpperCodeList} loading={loading}>
+      <P2Popup menuProps={menuProps} onSearch={getUpperCodeList} loading={loading}>
         <P2SearchArea onSearch={getUpperCodeList} ref={searchArea}>
           <div className="flex flex-row gap-2">
             <label className="common-label" htmlFor='searchAttribGrpId'>속성그룹ID</label>
@@ -246,7 +246,7 @@ const SearchMappCodePopup = ({ props, visible, onOk, onClose, params }) => {
             onRowClicked={onRowClicked}
           />
         </div>
-      </P2Page>
+      </P2Popup>
     </Modal>
   );
 };

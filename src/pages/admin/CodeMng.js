@@ -1,14 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react'
-import { P2Page, P2SearchArea, P2GridButtonBar } from 'components/layout/index';
+import { P2Page, P2SearchArea, P2GridButtonBar, P2SplitterLayout } from 'components/layout/index';
 import { P2AgGrid, onlyInsertRow } from 'components/grid/index';
 import { P2Input, P2MessageBox, P2Tree } from 'components/control/index';
-import SplitterLayout from 'react-splitter-layout';
-import "react-splitter-layout/lib/index.css";
-import axios from 'axios';
 import { useCodeData } from 'hooks/useCodeData';
-import SearchMappCodePopup from 'pages/admin/SearchMappCodePopup';
+import SearchMappCodePopup from 'pages/modal/admin/SearchMappCodePopup';
 import * as Utils from 'utils/Utils';
 import * as Validate from 'utils/Validate';
+import axios from 'axios';
 
 function CodeMng(props) {
   const searchArea = useRef(null);
@@ -402,7 +400,7 @@ function CodeMng(props) {
   }
   
   return (
-    <P2Page menuProps={props.menuProps} onSearch={onSearch} onSave={onSave} loading={loading}>
+    <P2Page onSearch={onSearch} onSave={onSave} loading={loading}>
       <P2SearchArea onSearch={onSearch} ref={searchArea}>
         <div className="flex flex-row gap-1">
           <label className="common-label" htmlFor='attribGrpId'>그룹코드ID</label>
@@ -410,7 +408,7 @@ function CodeMng(props) {
         </div>
       </P2SearchArea>
       <div className="w-full h-full">
-        <SplitterLayout customClassName="w-full h-full" split="vertical" percentage={true} primaryMinSize={20} secondaryMinSize={20} secondaryInitialSize={80}>
+        <P2SplitterLayout className="w-full h-full" percentage={true} primaryMinSize={20} secondaryMinSize={20} secondaryInitialSize={80}>
           <div className="h-full flex flex-col gap-1">
             <P2GridButtonBar title="그룹코드">
             </P2GridButtonBar>
@@ -423,7 +421,7 @@ function CodeMng(props) {
             />
           </div>
           <div className="h-full flex flex-col gap-1">
-            <P2GridButtonBar title="코드" onAddRow={onAddRow} onDeleteRow={onDeleteRow} count={count} menuProps={props.menuProps}>
+            <P2GridButtonBar title="코드" onAddRow={onAddRow} onDeleteRow={onDeleteRow} count={count}>
             </P2GridButtonBar>
             <P2AgGrid 
               debug={true}
@@ -434,7 +432,7 @@ function CodeMng(props) {
               onGridReady={onGridReady}
             />
           </div>
-        </SplitterLayout>
+        </P2SplitterLayout>
       </div>
       <SearchMappCodePopup className="w-[800px]"
         visible={isSearchMappCodePopupVisible}

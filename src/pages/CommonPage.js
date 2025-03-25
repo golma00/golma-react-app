@@ -91,7 +91,7 @@ function CommonPage(props) {
   }
   
   return (
-    <P2Page menuProps={props.menuProps} onSearch={onSearch} onSave={onSave} onExtBtn1={onExtBtn1} onExtBtn2={onExtBtn2}>
+    <P2Page onSearch={onSearch} onSave={onSave} onExtBtn1={onExtBtn1} onExtBtn2={onExtBtn2}>
       <P2SearchArea onSearch={onSearch} ref={searchArea}>
         <div className="flex flex-row gap-2 justify-center">
           <label htmlFor='planYear'>계획연도</label>

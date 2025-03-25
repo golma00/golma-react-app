@@ -1,11 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react'
-import { P2Page, P2SearchArea, P2GridButtonBar, P2FormArea } from 'components/layout/index';
+import { P2Page, P2SearchArea, P2GridButtonBar, P2FormArea, P2SplitterLayout } from 'components/layout/index';
 import { P2Input, P2Checkbox, P2Tree, P2DatePicker, P2MessageBox, P2Select } from 'components/control/index';
 import { useCodeData } from 'hooks/index'
 import { Divider } from 'antd';
 import * as Utils from 'utils/Utils';
 import * as Validate from 'utils/Validate';
-import SplitterLayout from 'react-splitter-layout';
 import axios from 'axios';
 
 function MenuMng(props) {
@@ -204,13 +203,13 @@ function MenuMng(props) {
   }
 
   return (
-    <P2Page menuProps={props.menuProps} onSearch={onSearch} onSave={onSave} loading={loading}>
+    <P2Page onSearch={onSearch} onSave={onSave} loading={loading}>
       <P2SearchArea onSearch={onSearch} ref={searchArea}>
       </P2SearchArea>
       <div className="w-full h-full">
-        <SplitterLayout split="vertical" customClassName="w-full h-full">
+        <P2SplitterLayout split="vertical" customClassName="w-full h-full">
           <div className="h-full flex flex-col gap-1">
-            <P2GridButtonBar title="메뉴 목록" count={count} menuProps={props.menuProps}>
+            <P2GridButtonBar title="메뉴 목록" count={count}>
               <button className="grid-btn" onClick={onAddTreeNode.bind(this, "after")} auth={"saveUseYn"}>
                 메뉴 추가
               </button>
@@ -362,7 +361,7 @@ function MenuMng(props) {
               </div>
             </P2FormArea>
           </div>
-        </SplitterLayout>
+        </P2SplitterLayout>
       </div>
     </P2Page>
   )

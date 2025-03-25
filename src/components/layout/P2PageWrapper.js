@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios';
 import { P2MessageBox } from 'components/control/index';
+import { MenuAuthContext } from 'hooks/useMenuAuth';
 
 function P2PageWrapper(props) {
   const [success, setSuccess] = useState(false);
@@ -37,7 +38,11 @@ function P2PageWrapper(props) {
 
   return (
     <>
-      { success && Page && <Page menuProps={menuProps}/> }
+      { success && Page && menuProps &&
+        <MenuAuthContext.Provider value={[menuProps]}>
+          <Page/> 
+        </MenuAuthContext.Provider>
+      }
     </>
   )
 }

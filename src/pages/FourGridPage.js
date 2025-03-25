@@ -1,7 +1,6 @@
 import React, {useEffect, useState, useRef } from 'react'
-import { P2Page, P2SearchArea, P2GridButtonBar, P2FormArea } from 'components/layout/index';
+import { P2Page, P2SearchArea, P2GridButtonBar, P2FormArea, P2SplitterLayout } from 'components/layout/index';
 import { P2AgGrid } from 'components/grid/index';
-import SplitterLayout from 'react-splitter-layout';
 import axios from 'axios';
 
 
@@ -97,7 +96,7 @@ function FourGridPage(props) {
 
   return (
 
-    <P2Page menuProps={props.menuProps} onSearch={onSearch} onSave={onSave}>
+    <P2Page onSearch={onSearch} onSave={onSave}>
       <P2SearchArea onSearch={onSearch} ref={searchArea}>
         <div className="flex flex-row gap-2 justify-center">
           <label htmlFor='inputEmpno'>사원번호</label>
@@ -105,7 +104,7 @@ function FourGridPage(props) {
         </div>
       </P2SearchArea>
       <div className="w-full">
-        <SplitterLayout split="vertical" customClassName="w-full h-[600px]">
+        <P2SplitterLayout split="vertical" className="w-full h-[600px]">
           <div className="h-[550px]">
             <P2GridButtonBar title="그리드" count={count}/>
             <P2AgGrid 
@@ -138,7 +137,7 @@ function FourGridPage(props) {
               </div>
             </P2FormArea>
           </div>
-        </SplitterLayout>
+        </P2SplitterLayout>
       </div>
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
         <p>{msg.msg}</p>

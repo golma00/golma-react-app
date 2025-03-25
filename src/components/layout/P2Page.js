@@ -1,14 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { P2PageButtonBar } from 'components/layout/index';
+import { useMenuAuth } from 'hooks/index';
 import { Spin } from 'antd';
 
 function P2Page(props) {
   const [loading, setLoading] = useState(false);
   const [showButtonBar, setShowButtonBar] = useState(true);
+  const {menuProps} = useMenuAuth();
 
-  if (props.showButtonBar === false) {
-    setShowButtonBar(false);
-  }
+  useEffect(() => {
+    if (props.showButtonBar === false) {
+      setShowButtonBar(false);
+    }
+  }, [props.showButtonBar]);
 
   useEffect(() => {
     setLoading(props.loading || false);
@@ -19,7 +23,7 @@ function P2Page(props) {
       <div className={`p2-page ${props.className||''}`}>
         {showButtonBar && (
           <P2PageButtonBar 
-            menuNm={props.menuProps.menuNm} 
+            menuNm={menuProps.menuNm} 
             onSearch={props.onSearch}
             onSave={props.onSave}
             onExtBtn1={props.onExtBtn1}
@@ -27,24 +31,24 @@ function P2Page(props) {
             onExtBtn3={props.onExtBtn3}
             onExtBtn4={props.onExtBtn4}
             onExtBtn5={props.onExtBtn5}
-            saveUseYn={props.menuProps.saveUseYn}
-            extUseYn1={props.menuProps.extUseYn1}
-            extUseYn2={props.menuProps.extUseYn2}
-            extUseYn3={props.menuProps.extUseYn3}
-            extUseYn4={props.menuProps.extUseYn4}
-            extUseYn5={props.menuProps.extUseYn5}
-            extBtnNm1={props.menuProps.extBtnNm1}
-            extBtnNm2={props.menuProps.extBtnNm2}
-            extBtnNm3={props.menuProps.extBtnNm3}
-            extBtnNm4={props.menuProps.extBtnNm4}
-            extBtnNm5={props.menuProps.extBtnNm5}
-            extBtnNm6={props.menuProps.extBtnNm6}
-            extBtnIconVal1={props.menuProps.extBtnIconVal1}
-            extBtnIconVal2={props.menuProps.extBtnIconVal2}
-            extBtnIconVal3={props.menuProps.extBtnIconVal3}
-            extBtnIconVal4={props.menuProps.extBtnIconVal4}
-            extBtnIconVal5={props.menuProps.extBtnIconVal5}
-            manualUrl={props.menuProps.manualUrl}
+            saveUseYn={menuProps.saveUseYn}
+            extUseYn1={menuProps.extUseYn1}
+            extUseYn2={menuProps.extUseYn2}
+            extUseYn3={menuProps.extUseYn3}
+            extUseYn4={menuProps.extUseYn4}
+            extUseYn5={menuProps.extUseYn5}
+            extBtnNm1={menuProps.extBtnNm1}
+            extBtnNm2={menuProps.extBtnNm2}
+            extBtnNm3={menuProps.extBtnNm3}
+            extBtnNm4={menuProps.extBtnNm4}
+            extBtnNm5={menuProps.extBtnNm5}
+            extBtnNm6={menuProps.extBtnNm6}
+            extBtnIconVal1={menuProps.extBtnIconVal1}
+            extBtnIconVal2={menuProps.extBtnIconVal2}
+            extBtnIconVal3={menuProps.extBtnIconVal3}
+            extBtnIconVal4={menuProps.extBtnIconVal4}
+            extBtnIconVal5={menuProps.extBtnIconVal5}
+            manualUrl={menuProps.manualUrl}
           />
         )}
         {props.children}
