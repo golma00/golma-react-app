@@ -27,7 +27,7 @@ function P2Tree(props, ref) {
   const [editable] = useState(props.editable || true);
   
   // 플래그: 초기 로드 여부
-  const initialLoad = useRef(true);
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
 
   useImperativeHandle(ref, () => ({
     api: {
@@ -281,10 +281,10 @@ function P2Tree(props, ref) {
   
       setKeyByTreeNode(prev => ({ ...prev, ...keyByTreeNodeMap }));
       // 만약 expandedKeys 상태가 비어있는 경우에만 모든 키로 설정
-      if (initialLoad.current) {
+      if (isInitialLoad) {
         setExpandedKeys(expandedKeyList);
         setAllKeys(allKeys);
-        initialLoad.current = false;
+        setIsInitialLoad(false);
       }
       return treeNodes;
     }
@@ -295,7 +295,7 @@ function P2Tree(props, ref) {
     else {
       setKeyByTreeNode({});
       setTreeData([]);
-      if (initialLoad.current) {
+      if (isInitialLoad) {
         setExpandedKeys([]);
       }
     }
