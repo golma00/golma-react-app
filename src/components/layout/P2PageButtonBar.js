@@ -31,13 +31,13 @@ function P2PageButtonBar(props) {
         <button className="common-btn" onClick={props.onSearch}>
           <div className="flex flex-row items-center">
             <SearchIcon width={22} height={22} fill="#4B5359"/>
-            <span className="tracking-wider">조회</span>
+            <span className="tracking-wider">{props.searchBtnNm || "조회"}</span>
           </div>
         </button>
         <button className={`common-btn ${props.saveUseYn === "Y" ? "" : "hidden"}`} onClick={props.onSave}>
           <div className="flex flex-row items-center">
             <SaveIcon width={22} height={22} fill="#4B5359"/>
-            <span className="tracking-wider">저장</span>
+            <span className="tracking-wider">{props.saveBtnNm || "저장"}</span>
           </div>
         </button>
         <button className={`common-btn ${props.extUseYn1 === "Y" ? "" : "hidden"}`} onClick={props.onExtBtn1}>

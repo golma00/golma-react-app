@@ -25,6 +25,7 @@ function P2Page(props) {
           <P2PageButtonBar 
             menuNm={menuProps.menuNm} 
             onSearch={props.onSearch}
+            searchBtnNm={props.searchBtnNm||""}
             onSave={props.onSave}
             onExtBtn1={props.onExtBtn1}
             onExtBtn2={props.onExtBtn2}
@@ -32,6 +33,7 @@ function P2Page(props) {
             onExtBtn4={props.onExtBtn4}
             onExtBtn5={props.onExtBtn5}
             saveUseYn={menuProps.saveUseYn}
+            saveBtnNm={props.saveBtnNm||""}
             extUseYn1={menuProps.extUseYn1}
             extUseYn2={menuProps.extUseYn2}
             extUseYn3={menuProps.extUseYn3}

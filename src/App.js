@@ -24,17 +24,19 @@ function App() {
 
           setMenuData(res.data.data.result);
           res.data.data.result.forEach(row => {
-            const menu = row.leaf ? 
-              <Menu.Item key={row.menuId} path={row.menuUrl} title={row.menuNm} menuId={row.menuId}>{row.menuNm}</Menu.Item> :
-              <Menu.SubMenu key={row.menuId} title={row.menuNm} menuId={row.menuId} children={[]}></Menu.SubMenu>;
-
-            if (keyByMenu.hasOwnProperty(row.upperMenuId)) {
-              keyByMenu[row.upperMenuId].props.children.push(menu);
-              keyByMenu[row.menuId] = menu;
-            }
-            else {
-              keyByMenu[row.menuId] = menu;
-              menus.push(menu);
+            if (row.displayYn === "Y") {
+              const menu = row.leaf ? 
+                <Menu.Item key={row.menuId} path={row.menuUrl} title={row.menuNm} menuId={row.menuId}>{row.menuNm}</Menu.Item> :
+                <Menu.SubMenu key={row.menuId} title={row.menuNm} menuId={row.menuId} children={[]}></Menu.SubMenu>;
+  
+              if (keyByMenu.hasOwnProperty(row.upperMenuId)) {
+                keyByMenu[row.upperMenuId].props.children.push(menu);
+                keyByMenu[row.menuId] = menu;
+              }
+              else {
+                keyByMenu[row.menuId] = menu;
+                menus.push(menu);
+              }
             }
           });
           setMenuList(menus);
