@@ -132,6 +132,11 @@ function P2Tree(props, ref) {
       setSelectedTreeNode: (key) => {
         setSelectKeys([key]);
       },
+      firstNodeSelect: () => { // 동작 안함
+        if (rowData && rowData.length > 0) {
+          setSelectKeys(prev => [...prev, rowData[0][nodeKeyField]]);
+        }
+      }
     }
   }));
 

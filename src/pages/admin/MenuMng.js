@@ -81,6 +81,7 @@ function MenuMng(props) {
       setLoading(false);
       if (res.data.code === "00") {
         tree.current.api.setRowData(res.data.data.result);
+        tree.current.api.firstNodeSelect();
         setCount(res.data.data.result.length);
       }
       else {
