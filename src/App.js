@@ -99,8 +99,7 @@ function App() {
     if (tab.length === 0) {
       setTabs(prev => [...prev, 
         <Tabs.TabPane tab={menu.title} key={menu.menuId} menuId={menu.menuId} menuPath={menu.path}>
-          <P2PageWrapper key={menu.menuId} menuId={menu.menuId} menuPath={menu.path}>
-          </P2PageWrapper>
+          <P2PageWrapper key={menu.menuId} menuId={menu.menuId} menuPath={menu.path}/>
         </Tabs.TabPane>,
       ]);
     }

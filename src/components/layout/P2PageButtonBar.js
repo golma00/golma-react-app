@@ -1,5 +1,4 @@
 import React from "react";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import * as Utils from 'utils/Utils';
 import { P2MessageBox } from 'components/control/index';
 import { ReactComponent as SearchIcon } from "assets/icons/search.svg";
@@ -23,7 +22,6 @@ function P2PageButtonBar(props) {
     <div className="flex flex-row w-full justify-between">
       {props.menuNm && (
         <div className="flex flex-row w-full h-8 gap-1 justify-start">
-          <FontAwesomeIcon icon="fa-circle" className="self-center pr-1" size="xs"/>
           <span className="text-xl self-center font-medium text-ellipsis whitespace-nowrap">{props.menuNm}</span>
         </div>
       )}

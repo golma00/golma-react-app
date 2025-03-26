@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react'
 import { P2Page, P2SearchArea, P2GridButtonBar } from 'components/layout/index';
 import { P2AgGrid } from 'components/grid/index';
 import { P2Input, P2MessageBox, P2Select } from 'components/control/index';
+import { useTabNavigate } from 'hooks/index';
 import axios from 'axios';
 
 function OneGridPage(props) {
@@ -9,6 +10,7 @@ function OneGridPage(props) {
   const grid = useRef(0);
   const [count, setCount] = useState(0);
   const [loading, setLoading] = useState(false);
+  const { addTab } = useTabNavigate();
 
   const colDefs = [
     { field: "authGrpId", headerName: "권한그룹ID", width: 150, align: "center" },
@@ -50,6 +52,10 @@ function OneGridPage(props) {
   }
 
   async function onSave() {
+
+    addTab({
+      path: 'pages/TwoGridPage',
+    });
 
     const saveDatas = await grid.current.api.getModifiedRows();
     if (saveDatas.length === 0) {

@@ -117,18 +117,17 @@ function OneGridPage(props) {
       <P2SearchArea onSearch={onSearch} ref={searchArea}>
         <div className="flex flex-row gap-2">
           <label className="common-label" htmlFor='authGrpId'>권한그룹ID</label>
-          <P2Input type="text" id="authGrpId" name="authGrpId" className="w-60"/>
+          <P2Input id="authGrpId" name="authGrpId" className="w-60"/>
         </div>
         <div className="flex flex-row gap-2">
           <label className="common-label" htmlFor='authGrpNm'>권한그룹명</label>
-          <P2Input type="text" id="authGrpNm" name="authGrpNm" className="w-60"/>
+          <P2Input id="authGrpNm" name="authGrpNm" className="w-60"/>
         </div>
       </P2SearchArea>
       <P2GridButtonBar title="권한그룹 목록" onAddRow={onAddRow} onDeleteRow={onDeleteRow} count={count}>
       </P2GridButtonBar>
       <div className="w-full h-full">
         <P2AgGrid  
-          debug={true}
           ref={grid}
           columnDefs={colDefs}
           showStatusColumn={true}
