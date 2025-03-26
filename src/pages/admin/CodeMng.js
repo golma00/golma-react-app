@@ -399,8 +399,8 @@ function CodeMng(props) {
     //한번 조회로 모든 결과 불러오기
     const commonCodeCombo = await getCommonCodeDatas(commonCodeParams);
     //불러온 조회값에서 각각 필요한 데이터 뽑아서 Combo 세팅
-    grid.current.api.setColumnComboDatas("mappGrpCd", commonCodeCombo.mappGrpCd, "grpCd", "mappGrpCd");
-    grid.current.api.setColumnComboDatas("mappCd", commonCodeCombo.mappGrpCd, "cd", "mappCd");
+    grid.current.api.setColumnComboDatas("mappGrpCd", commonCodeCombo.mappGrpCd, "grpCd", "grpNm");
+    grid.current.api.setColumnComboDatas("mappCd", commonCodeCombo.mappGrpCd, "cd", "cdNm");
     grid.current.api.setColumnComboDatas("cdType", commonCodeCombo.cdType, "cd", "cdNm");
   }
 
