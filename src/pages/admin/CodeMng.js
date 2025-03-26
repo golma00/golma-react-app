@@ -350,7 +350,6 @@ function CodeMng(props) {
 
       if (res.data.code === "00") {
         grid.current.api.setGridOption("rowData", structuredClone(res.data.data.result));
-        console.log("📦 getCommonCodeList 결과:", res.data.data.result);
         grid.current.api.firstRowSelected();
 
         setCount(grid.current.api.getDisplayedRowCount());

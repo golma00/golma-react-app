@@ -76,13 +76,13 @@ const SearchMappCodePopup = ({ props, visible, onOk, onClose, params }) => {
         cellDataType: "checkbox",
       },
       { 
-        field: "upperGrpCd",
+        field: "mappCd",
         headerName: "종속\n그룹", 
         width: 120,
         align: "left" 
       },
       { 
-        field: "upperCd",
+        field: "mappGrpCd",
         headerName: "종속\n그룹코드", 
         width: 120,
         align: "left" 
@@ -159,8 +159,16 @@ const SearchMappCodePopup = ({ props, visible, onOk, onClose, params }) => {
   async function getUpperCodeList() {
     try {
       setLoading(true);
-      grid.current.api.clear();
-      const res = await axios.post("/api/v1/code/getCommonCodeList", params);
+      grid.current.api.clear();    
+      const searchParams = searchArea.current.api.get();
+      if (searchParams.searchAttribGrpId) {
+        searchParams.searchAttribGrpId = searchParams.searchAttribGrpId.toUpperCase();
+      }
+      const requestParams = {
+        ...params,
+        ...searchParams,
+      };
+      const res = await axios.post("/api/v1/code/getCommonCodeList", requestParams);
 
       setLoading(false);
       if (res.data.code === "00") {
@@ -181,14 +189,17 @@ const SearchMappCodePopup = ({ props, visible, onOk, onClose, params }) => {
   
     const commonCodeParams = {
       cdType: {
-        grpCd : "ROOT",
-        cd : "G001",
+        grpCd : "G001",
+      },
+      mappGrpCd : {
+        //upperGrpCd : "ROOT",
       },
     };
     const commonCodeCombo = await getCommonCodeDatas(commonCodeParams);
-    grid.current.api.setColumnComboDatas("cdType", commonCodeCombo.cdType, "cd", "cdNm");
+    grid.current.api.setColumnComboDatas("mappGrpCd", commonCodeCombo.mappGrpCd, "grpCd", "grpNm");
+    grid.current.api.setColumnComboDatas("mappCd", commonCodeCombo.mappGrpCd, "cd", "cdNm");
   }
-
+  
   const onRowClicked = (params) => {
     setSelectedRow(params.data);
   };
@@ -233,7 +244,7 @@ const SearchMappCodePopup = ({ props, visible, onOk, onClose, params }) => {
       <P2Popup menuProps={menuProps} onSearch={getUpperCodeList} loading={loading}>
         <P2SearchArea onSearch={getUpperCodeList} ref={searchArea}>
           <div className="flex flex-row gap-2">
-            <label className="common-label" htmlFor='searchAttribGrpId'>속성그룹ID</label>
+            <label className="common-label" htmlFor='searchAttribGrpId'>그룹코드ID</label>
             <P2Input type="combo" id="searchAttribGrpId" name="searchAttribGrpId" className="text-sm bg-white border border-gray-200 rounded-md"/>
           </div>
         </P2SearchArea>
