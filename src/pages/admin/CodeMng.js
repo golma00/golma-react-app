@@ -341,7 +341,7 @@ function CodeMng(props) {
       }
       const params = {
         grpCodeId: item.node.props.dataRef.grpCd,
-        codeId: selectedCodeId[0],
+        codeId: item.node.props.dataRef.cd,
       }
       if (item.node.props.dataRef) {
         setSelectedRow(item.node.props.dataRef);
@@ -367,14 +367,8 @@ function CodeMng(props) {
   }
 
   async function onSelect(selectedRow, e) {
-    console.log("onSelect 호출됨:", selectedRow, e);
-    if (e.selectedNodes) {
-      setSectionNode({selectedRow: selectedRow, e: e});
-      getCommonCodeList(selectedRow, e);
-    }
-    else {
-      getCommonCodeList(selectionNode.selectedRow, selectionNode.e);
-    }
+    setSectionNode({selectedRow: selectedRow, e: e});
+    getCommonCodeList(selectedRow, e);
     setGridHeaderName(e.node.props.dataRef);
   }
 
