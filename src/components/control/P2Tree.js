@@ -139,7 +139,7 @@ function P2Tree(props, ref) {
           setSelectKeys([key]);
           
           if (props.onSelect && node) {
-            props.onSelect(key, { node, selected: true });
+            props.onSelect([key], { node, selected: true });
           }
         }
       }

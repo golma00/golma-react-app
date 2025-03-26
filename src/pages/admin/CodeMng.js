@@ -206,24 +206,46 @@ function CodeMng(props) {
       tree.current.api.clear();
       grid.current.api.clear();
       setSelectedRow(null);
-      setSectionNode({selectedRow: [], e: []});
-
+      setSectionNode({ selectedRow: [], e: [] });
+  
       const searchData = searchArea.current.api.get();
+      if (searchData.attribGrpId) {
+        searchData.attribGrpId = searchData.attribGrpId.toUpperCase();
+      }
+  
       const res = await axios.post("/api/v1/code/getGrpCodeList", searchData);
-
+  
       setLoading(false);
       if (res.data.code === "00") {
-        tree.current.api.setRowData(res.data.data.result);
-        tree.current.api.firstNodeSelected();
-        setCount(res.data.data.result.length);
+        const treeData = res.data.data.result;
+        tree.current.api.setRowData(treeData);
+        setCount(treeData.length);
+  
+        if (treeData.length > 0) {
+          const firstNode = treeData[0];
+  
+          tree.current.api.setSelectedTreeNode(firstNode.cd);
+  
+          const treeFirstNode = {
+            node: {
+              props: {
+                dataRef: firstNode,
+              },
+            },
+            selectedNodes: [firstNode],
+            selected: true,
+          };
+  
+          requestAnimationFrame(() => {
+            onSelect([firstNode.cd], treeFirstNode);
+          });
+        }
+      } else {
+        P2MessageBox.error(res.data.message || "시스템 오류가 발생했습니다.");
       }
-      else {
-        P2MessageBox.error(res.data.message || '시스템 오류가 발생했습니다.');
-      }
-    }
-    catch (error) {
+    } catch (error) {
       setLoading(false);
-      P2MessageBox.error('시스템 오류가 발생했습니다.');
+      P2MessageBox.error("시스템 오류가 발생했습니다.");
       console.log(error);
     }
   }
@@ -303,7 +325,7 @@ function CodeMng(props) {
       grpNm: selectedRow.cdNm,
       useYn: "Y",
       cdType: selectedRow.cd === "ROOT" ? "G" : "C",
-      upperGrpCd: selectedRow.grpCd
+      upperGrpCd: selectedRow.upperGrpCd
     });
   }
 
@@ -328,6 +350,7 @@ function CodeMng(props) {
 
       if (res.data.code === "00") {
         grid.current.api.setGridOption("rowData", structuredClone(res.data.data.result));
+        console.log("📦 getCommonCodeList 결과:", res.data.data.result);
         grid.current.api.firstRowSelected();
 
         setCount(grid.current.api.getDisplayedRowCount());
@@ -344,7 +367,8 @@ function CodeMng(props) {
   }
 
   async function onSelect(selectedRow, e) {
-    if (e.selectedNodes.length > 0) {
+    console.log("onSelect 호출됨:", selectedRow, e);
+    if (e.selectedNodes) {
       setSectionNode({selectedRow: selectedRow, e: e});
       getCommonCodeList(selectedRow, e);
     }
@@ -381,8 +405,8 @@ function CodeMng(props) {
     //한번 조회로 모든 결과 불러오기
     const commonCodeCombo = await getCommonCodeDatas(commonCodeParams);
     //불러온 조회값에서 각각 필요한 데이터 뽑아서 Combo 세팅
-    grid.current.api.setColumnComboDatas("mappGrpCd", commonCodeCombo.mappGrpCd, "grpCd", "grpNm");
-    grid.current.api.setColumnComboDatas("mappCd", commonCodeCombo.mappGrpCd, "cd", "cdNm");
+    grid.current.api.setColumnComboDatas("mappGrpCd", commonCodeCombo.mappGrpCd, "grpCd", "mappGrpCd");
+    grid.current.api.setColumnComboDatas("mappCd", commonCodeCombo.mappGrpCd, "cd", "mappCd");
     grid.current.api.setColumnComboDatas("cdType", commonCodeCombo.cdType, "cd", "cdNm");
   }
 
