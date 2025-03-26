@@ -76,20 +76,22 @@ const SearchMappCodePopup = ({ props, visible, onOk, onClose, params }) => {
         cellDataType: "checkbox",
       },
       { 
-        field: "mappCd",
-        headerName: "종속\n그룹", 
-        width: 120,
-        align: "left" 
-      },
-      { 
         field: "mappGrpCd",
         headerName: "종속\n그룹코드", 
         width: 120,
-        align: "left" 
+        align: "left",
+        cellDataType: "combo"
+      },
+      { 
+        field: "mappCd",
+        headerName: "종속\n그룹", 
+        width: 120,
+        align: "left",
+        cellDataType: "combo",
       },
       { 
         field: "cdType",
-        headerName: "종속 코드", 
+        headerName: "코드 타입", 
         width: 110,
         align: "center",
         cellDataType: "combo",
@@ -185,7 +187,6 @@ const SearchMappCodePopup = ({ props, visible, onOk, onClose, params }) => {
   }
 
   async function onGridReady() {
-    getUpperCodeList();
   
     const commonCodeParams = {
       cdType: {
@@ -198,6 +199,8 @@ const SearchMappCodePopup = ({ props, visible, onOk, onClose, params }) => {
     const commonCodeCombo = await getCommonCodeDatas(commonCodeParams);
     grid.current.api.setColumnComboDatas("mappGrpCd", commonCodeCombo.mappGrpCd, "grpCd", "grpNm");
     grid.current.api.setColumnComboDatas("mappCd", commonCodeCombo.mappGrpCd, "cd", "cdNm");
+    grid.current.api.setColumnComboDatas("cdType", commonCodeCombo.cdType, "cd", "cdNm");
+    getUpperCodeList();
   }
   
   const onRowClicked = (params) => {
