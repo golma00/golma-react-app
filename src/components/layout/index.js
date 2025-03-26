@@ -6,3 +6,4 @@ export { default as P2PageButtonBar } from "components/layout/P2PageButtonBar";
 export { default as P2GridButtonBar } from "components/layout/P2GridButtonBar";
 export { default as P2PageWrapper } from "components/layout/P2PageWrapper";
 export { default as P2SplitterLayout } from "components/layout/P2SplitterLayout";
+export { default as P2Pagination } from "components/layout/P2Pagination";
