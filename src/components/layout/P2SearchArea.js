@@ -29,6 +29,17 @@ function P2SearchArea(props, ref) {
   const [searchDisabled, setSearchDisabled] = useState({});
   const [expanded, setExpanded] = useState(false);
 
+  const minLine = props.minLine || "";
+  const maxLine = props.maxLine || "";
+  const lineHeight = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--p2-search-area-height'));
+
+  const minHeight =  minLine === 2 ? (lineHeight * minLine - 10) : 
+    minLine === 3 ? (lineHeight * minLine - 15) : 
+    minLine === 4 ? (lineHeight * minLine - 20) : 
+    minLine === 5 ? (lineHeight * minLine - 25) : 
+    lineHeight * minLine;
+  const expandedHeight = maxLine * lineHeight;
+  const height = expanded ? expandedHeight : minHeight;
   useImperativeHandle(ref, () => ({
     api: {
       get() {
@@ -638,14 +649,14 @@ function P2SearchArea(props, ref) {
 
   return (
     <div className="flex flex-col gap-0 items-center z-50">
-      <div style={{ height: `var(--p2-search-area-height)`, display: expanded ? "flex" : "none" }} />
-      <div className={`p2-search-area ${className} ${expanded ? "expanded" : ""}`} style={{ height: expanded ? (props.expandedHeight||100) : `var(--p2-search-area-height)`}}>
+      <div style={{ height: minHeight, display: expanded ? "flex" : "none" }} />
+      <div className={`p2-search-area ${className} ${expanded ? "expanded" : ""}`} style={{ height, overflow: expanded ? 'visible' : 'hidden' }}>
         {Children.map(props.children, (child, index) => {
           return recursiveRender(child, index);
         })}
       </div>
       <div className={`items-center absolute ${props.canExpanded ? "" : "hidden"}`}>
-        <div className="p2-search-area-expand-thumb" style={{ top: expanded ? `calc(${(props.expandedHeight||100)}px - 1px)` : `calc(var(--p2-search-area-height) - 1px)` }} onClick={toggleExpanded}>
+        <div className="p2-search-area-expand-thumb" style={{ top: `${height}px` }} onClick={toggleExpanded}>
           <Icon type={expanded ? "up" : "down"} style={{ fontSize: 12, color: '#4B5359' }} />
         </div>
       </div>

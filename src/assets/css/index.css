@@ -116,7 +116,7 @@ body, #root {
 }
 
 .P2Select__menu {
-  z-index: 10 !important;
+  z-index: 60 !important;
 }
 
 .P2Select__option {
