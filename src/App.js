@@ -27,7 +27,7 @@ function App() {
           res.data.data.result.forEach(row => {
             if (row.displayYn === "Y") {
               const menu = row.leaf ? 
-                <Menu.Item key={row.menuId} path={row.menuUrl} title={row.menuNm} menuId={row.menuId}>{row.menuNm}</Menu.Item> :
+                <Menu.Item key={row.menuId} menuPath={row.menuPath} title={row.menuNm} menuId={row.menuId}>{row.menuNm}</Menu.Item> :
                 <Menu.SubMenu key={row.menuId} title={row.menuNm} menuId={row.menuId} children={[]}></Menu.SubMenu>;
   
               if (keyByMenu.hasOwnProperty(row.upperMenuId)) {
@@ -63,6 +63,10 @@ function App() {
     }
   }
 
+  /**
+   * 탭 제거
+   * @param {string} key 탭 키
+   */
   function removeTab(key) {
     const index = tabs.findIndex(tab => Utils.toString(tab.key) === Utils.toString(key));
     if (index > -1) {
@@ -77,43 +81,60 @@ function App() {
     addTab({
       menuId: menuInfo.item.props.menuId,
       title: menuInfo.item.props.title,
-      path: menuInfo.item.props.path,
+      menuPath: menuInfo.item.props.menuPath,
     });
   }
 
+  /**
+   * 탭 추가
+   * @param {
+   *   menuId: 메뉴ID
+   *   title: 메뉴명
+   *   menuPath: 메뉴경로
+   *   closeAfterOpen: 닫고 나서 열지 여부
+   *   params: 파라미터
+   * } menu 
+   */
   function addTab(menu) {
-    if (Utils.isEmpty(menu.menuId) && Utils.isNotEmpty(menu.path)) {
-      const m = findMenuByPath(menu.path);
-      if (m) {
-        menu.menuId = m.menuId;
-        menu.title  = m.menuNm;
+    if (Utils.isEmpty(menu.menuId) && Utils.isNotEmpty(menu.menuPath)) {
+      const findMenu = findMenuByPath(menu.menuPath);
+      if (findMenu) {
+        menu.menuId = findMenu.menuId;
+        menu.title  = findMenu.menuNm;
+        menu.menuPath = findMenu.menuPath;
       }
       else {
         return;
       }
     }
-    if (Utils.isEmpty(menu.path)) {
+    if (Utils.isEmpty(menu.menuPath)) {
       return;
     }
 
+    if (menu.closeAfterOpen === true) {
+      removeTab(menu.menuId);
+    }
+
     const tab = tabs.filter(tab => Utils.toString(tab.key) === Utils.toString(menu.menuId));
-    if (tab.length === 0) {
+    if (menu.closeAfterOpen || tab.length === 0) {
       setTabs(prev => [...prev, 
-        <Tabs.TabPane tab={menu.title} key={menu.menuId} menuId={menu.menuId} menuPath={menu.path}>
-          <P2PageWrapper key={menu.menuId} menuId={menu.menuId} menuPath={menu.path} params={menu.params||{}}/>
+        <Tabs.TabPane tab={menu.title} key={menu.menuId} menuId={menu.menuId} menuPath={menu.menuPath}>
+          <PageContext.Provider value={[menu.params||{}]}>
+            <P2PageWrapper key={menu.menuId} menuId={menu.menuId} menuPath={menu.menuPath} params={menu.params||{}}/>
+          </PageContext.Provider>
         </Tabs.TabPane>,
       ]);
-    }
-    else {
-      if (tab[0].props.children && tab[0].props.children.type === P2PageWrapper) {
-      }
     }
     setCurrentTab(menu.menuId);
   }
 
-
-  function findMenuByPath(path) {
-    return menuData.find(menu => menu.menuUrl === path);
+  /**
+   * 메뉴 경로로 메뉴 찾기
+   * @param {string} menuPath 메뉴 경로
+   * @returns {object} 메뉴 객체
+   */
+  function findMenuByPath(menuPath) {
+    return menuData.find(menu => menu.menuPath === menuPath);
   }
 
   return (

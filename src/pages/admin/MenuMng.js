@@ -143,7 +143,7 @@ function MenuMng(props) {
     const newNode = {
       menuNm: "신규 메뉴",
       menuCd: "",
-      menuUrl: "",
+      menuPath: "",
       menuIcon: "",
       menuDesc: "",
       menuType: "MAIN",
@@ -238,8 +238,8 @@ function MenuMng(props) {
                   <P2Input id="menuNm" name="menuNm" className="text-sm bg-white border border-gray-200 rounded-md" />
                 </div>
                 <div className="flex flex-row gap-2 w-2/3">
-                  <label htmlFor='menuUrl' className="common-label w-28">메뉴PATH</label>
-                  <P2Input id="menuUrl" name="menuUrl" className="text-sm bg-white border border-gray-200 rounded-md" />
+                  <label htmlFor='menuPath' className="common-label w-28">메뉴경로</label>
+                  <P2Input id="menuPath" name="menuPath" className="text-sm bg-white border border-gray-200 rounded-md" />
                 </div>
               </div>
               <div className="flex flex-row justify-stretch gap-5">
