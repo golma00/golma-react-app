@@ -137,7 +137,7 @@ function P2FormArea(props, ref) {
     let initDisabled = {};
     function recursiveSearch(children) {
       if (children) {
-        children.forEach((child) => {
+        Children.forEach(children, (child) => {
           if (child.type === "input") {
             switch (child.props.type) {
               case "text":
@@ -251,7 +251,7 @@ function P2FormArea(props, ref) {
       }
     }
 
-    if (props.children && props.children.length > 0) {
+    if (props.children && (props.children instanceof Object || props.children instanceof Array)) {
       recursiveSearch(props.children);
     }
     setFormData(initData);
