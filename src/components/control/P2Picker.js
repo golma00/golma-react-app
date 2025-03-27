@@ -44,7 +44,7 @@ export function P2MonthPicker(props) {
   }
   return (
     <DatePicker.MonthPicker {...rest} value={value === "" ? null : moment(value, "YYYYMM")} 
-      onChange={onChange} locale={locale} className={`text-sm bg-white rounded-md ${props.className||''}`}/>
+      onChange={onChange} locale={locale} className={`text-sm ${props.className||''}`}/>
   );
 }
 P2MonthPicker.propTypes = {
@@ -67,7 +67,7 @@ export function P2RangePicker(props) {
   }
   return (
     <DatePicker.RangePicker {...rest} value={value.length === 0 ? [] : [moment(value[0], "YYYYMMDD"), moment(value[1], "YYYYMMDD")]} 
-      onChange={onChange} locale={locale} className={`text-sm bg-white rounded-md ${props.className||''}`}/>
+      onChange={onChange} locale={locale} className={`text-sm ${props.className||''}`}/>
   );
 }
 P2RangePicker.propTypes = {
