@@ -104,3 +104,20 @@ export function toString(value) {
   }
   return value.toString();  
 }
+
+/**
+ * 오늘 날짜 반환
+ * @returns {yyyyMMdd}
+ */
+export function getToday() {
+  return "";
+}
+
+/**
+ * 날짜 반환
+ * @param {number} gap 
+ * @returns {yyyyMMdd}
+ */
+export function getDate(gap) {
+  return "";
+}
