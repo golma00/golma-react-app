@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { P2Page, P2SearchArea, P2GridButtonBar } from 'components/layout/index';
 import { P2AgGrid } from 'components/grid/index';
-import { P2Input, P2MessageBox, P2Select } from 'components/control/index';
+import { P2Input, P2MessageBox, P2Select, P2RangePicker } from 'components/control/index';
 import { useTabNavigate } from 'hooks/index';
 import axios from 'axios';
 
@@ -54,7 +54,8 @@ function OneGridPage(props) {
   async function onSave() {
 
     addTab({
-      id: 'pages/TwoGridPage',
+      menuPath: 'pages/TwoGridPage',
+      closeAfterOpen: true,
       params: {
         authGrpId: 'test',
       },
@@ -121,6 +122,10 @@ function OneGridPage(props) {
           <div className="w-full flex flex-row gap-2">
             <label className="common-label" htmlFor='authGrpNm'>권한그룹명</label>
             <P2Input id="authGrpNm" name="authGrpNm" className="w-60"/>
+          </div>
+          <div className="w-full flex flex-row gap-2">
+            <label className="common-label" htmlFor='crtDt'>기간</label>
+            <P2RangePicker id="crtDt" name="crtDt" value={["20250227", "20250327"]} className="w-80"/>
           </div>
         </div>
         <div className="flex flex-row gap-x-5 gap-y-2">
