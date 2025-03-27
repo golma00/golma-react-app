@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect } from 'react'
 import axios from 'axios';
 import { P2MessageBox } from 'components/control/index';
 import { MenuAuthContext } from 'hooks/useMenuAuth';
@@ -7,8 +7,9 @@ import root from 'react-shadow/emotion';
 function P2PageWrapper(props) {
   const [success, setSuccess] = useState(false);
   const [menuProps, setMenuProps] = useState({});
-  const [Page, setPage] = useState(null);
   const [stylesheets, setStylesheets] = useState([]);
+  const [Page, setPage] = useState(null);
+  const [params, setParams] = useState(props.params||{});
 
   useEffect(() => {
     setStylesheets(Array.from(document.styleSheets).map(x => {
@@ -45,14 +46,18 @@ function P2PageWrapper(props) {
 
   }, []);
 
+  useEffect(() => {
+    setParams(props.params||{});
+  }, [props.params]);
+
   return (
     <>
       { success && Page && menuProps &&
-        <MenuAuthContext.Provider value={[menuProps]}>
-          <root.div styleSheets={stylesheets}>
-            <Page/>
-          </root.div>
-        </MenuAuthContext.Provider>
+        <root.div styleSheets={stylesheets}>
+          <MenuAuthContext.Provider value={[menuProps]}>
+            <Page params={params}/>
+          </MenuAuthContext.Provider>
+        </root.div>
       }
     </>
   );

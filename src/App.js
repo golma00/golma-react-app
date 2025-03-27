@@ -4,6 +4,7 @@ import { P2MessageBox } from 'components/control/index';
 import { BrowserRouter } from 'react-router-dom';
 import { Menu, Tabs } from 'antd';
 import { TabNavigateContext } from 'hooks/useTabNavigate';
+import { PageContext } from 'hooks/usePage';
 import axios from 'axios';
 import * as Utils from 'utils/Utils';
 
@@ -99,12 +100,17 @@ function App() {
     if (tab.length === 0) {
       setTabs(prev => [...prev, 
         <Tabs.TabPane tab={menu.title} key={menu.menuId} menuId={menu.menuId} menuPath={menu.path}>
-          <P2PageWrapper key={menu.menuId} menuId={menu.menuId} menuPath={menu.path}/>
+          <P2PageWrapper key={menu.menuId} menuId={menu.menuId} menuPath={menu.path} params={menu.params||{}}/>
         </Tabs.TabPane>,
       ]);
     }
+    else {
+      if (tab[0].props.children && tab[0].props.children.type === P2PageWrapper) {
+      }
+    }
     setCurrentTab(menu.menuId);
   }
+
 
   function findMenuByPath(path) {
     return menuData.find(menu => menu.menuUrl === path);

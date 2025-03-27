@@ -6,8 +6,7 @@ import { useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 
-function TwoGridPage(params) {
-  console.log("params => ", params);
+function TwoGridPage(props) {
   const searchArea = useRef(null);
   const selectCeGroup = useRef(null);
   const selectCeGroup2 = useRef(null);
@@ -17,7 +16,7 @@ function TwoGridPage(params) {
   const [textValue, setTextValue] = useState("test");
 
   const [codeList, setCodeList] = useState([]);
-  
+
   // modal 팝업
   const [modalOpen, setModalOpen] = useState(false);
   // new window 팝업
@@ -58,6 +57,10 @@ function TwoGridPage(params) {
   useEffect(() => {
     getCodeList();
     hasLanguageCd();
+
+    if (props.params) {
+      alert(props.params.authGrpId);
+    }
   }, []);
 
   useEffect(() => {
