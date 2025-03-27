@@ -60,13 +60,13 @@ export function P2RangePicker(props) {
   }, [props.value]);
 
   const onChange = (e, formatString) => {
-    setValue(formatString?.map(item => item.replace(/-/g, "")));
+    setValue(e.length === 0 ? [] : formatString?.map(item => item.replace(/-/g, "")));
     if (props.onChange) {
       props.onChange(e, formatString?.map(item => item.replace(/-/g, "")));
     }
   }
   return (
-    <DatePicker.RangePicker {...rest} value={value.length === 0 ? [null, null] : [moment(value[0], "YYYYMMDD"), moment(value[1], "YYYYMMDD")]} 
+    <DatePicker.RangePicker {...rest} value={value.length === 0 ? [] : [moment(value[0], "YYYYMMDD"), moment(value[1], "YYYYMMDD")]} 
       onChange={onChange} locale={locale} className={`text-sm bg-white rounded-md ${props.className||''}`}/>
   );
 }
