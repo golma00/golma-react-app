@@ -49,9 +49,6 @@ function P2Select(props, ref) {
   const menuList = (props) => {
     const onAllChecked = () => {
       const values = datas.map((item) => item[valueField || "cd"]);
-      if(values) {
-
-      }
       setValue(values);
     }
     const onAllUnchecked = () => {
