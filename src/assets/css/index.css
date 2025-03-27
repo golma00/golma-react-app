@@ -118,6 +118,12 @@ body, #root {
 .P2Select__menu {
   z-index: 60 !important;
 }
+.P2Select__menu-list {
+  padding-top: 0 !important;
+}
+.P2Select__header {
+  background-color: #dfdfdf !important;
+}
 
 .P2Select__option {
   @apply text-ellipsis overflow-hidden !important;

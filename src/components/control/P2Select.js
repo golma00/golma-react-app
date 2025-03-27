@@ -49,6 +49,9 @@ function P2Select(props, ref) {
   const menuList = (props) => {
     const onAllChecked = () => {
       const values = datas.map((item) => item[valueField || "cd"]);
+      if(values) {
+
+      }
       setValue(values);
     }
     const onAllUnchecked = () => {
@@ -56,7 +59,7 @@ function P2Select(props, ref) {
     }
     return (
       <components.MenuList {...props}>
-        <div className="flex flex-row gap-3 justify-center items-center border-b border-gray-200 p-1">
+        <div className="flex flex-row gap-3 justify-center items-center border-b border-gray-200 p-1 P2Select__header">
           <div className="flex flex-row gap-1 items-center">
             <Icon type="check" className="cursor-pointer" onClick={onAllChecked} />
             <button className="text-sm hover:text-primary-600" onClick={onAllChecked}>전체 선택</button>
@@ -217,6 +220,12 @@ function P2Select(props, ref) {
       }}
       closeMenuOnSelect={props.isMulti ? props.closeMenuOnSelect || false : props.closeMenuOnSelect || true}
       hideSelectedOptions={false}
+      classNames={{
+        menuList: () =>{
+          const hasHeader = props.isMulti && datas && datas.length > 0;
+          return hasHeader ? 'pt-0' : 'rounded-t-md';
+        }
+      }}
       {
         ...(props.isMulti && {
           components: {

@@ -661,7 +661,7 @@ function P2SearchArea(props, ref) {
         })}
       </div>
       <div className={`items-center absolute ${props.canExpanded ? "" : "hidden"}`}>
-        <div className="p2-search-area-expand-thumb" style={{ top: `${height}px` }} onClick={toggleExpanded}>
+        <div className="p2-search-area-expand-thumb" style={{ top: `${height - 1 }px` }} onClick={toggleExpanded}>
           <Icon type={expanded ? "up" : "down"} style={{ fontSize: 12, color: '#4B5359' }} />
         </div>
       </div>
