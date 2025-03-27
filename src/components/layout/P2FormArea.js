@@ -234,6 +234,12 @@ function P2FormArea(props, ref) {
             initDisabled[child.props.name] = child.props.disabled || false;
             setChildrenMap(prev => ({ ...prev, [child.props.name]: child }));
           }
+          else if (child.type === P2RangePicker) {
+            initData[child.props.name] = child.props.value || [];
+            initHide[child.props.name] = child.props.hide || false;
+            initDisabled[child.props.name] = child.props.disabled || false;
+            setChildrenMap(prev => ({ ...prev, [child.props.name]: child }));
+          }
 
           if (child.props.children && child.props.children instanceof Array) {
             recursiveSearch(child.props.children);
@@ -567,7 +573,7 @@ function P2FormArea(props, ref) {
           <Tooltip key={index} title={tooltipText} placement="bottom">
             {React.cloneElement(child, {
               className: `${child.props.className || ""} ${errorClass || ""}`.trim(),
-              value: formData[child.props.name] || [null, null],
+              value: formData[child.props.name] || [],
               hidden: formHidden[child.props.name] || false,
               disabled: formDisabled[child.props.name] || false,
               onChange: (e, formatStrings) => {
