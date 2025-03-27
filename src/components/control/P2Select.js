@@ -220,7 +220,7 @@ function P2Select(props, ref) {
       classNames={{
         menuList: () =>{
           const hasHeader = props.isMulti && datas && datas.length > 0;
-          return hasHeader ? 'pt-0' : 'rounded-t-md';
+          return hasHeader ? 'pt-0' : 'rounded-md';
         }
       }}
       {
