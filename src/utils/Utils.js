@@ -110,7 +110,7 @@ export function toString(value) {
  * @returns {yyyyMMdd}
  */
 export function getToday() {
-  return "";
+  return  getDate(0);
 }
 
 /**
@@ -119,5 +119,14 @@ export function getToday() {
  * @returns {yyyyMMdd}
  */
 export function getDate(gap) {
-  return "";
+  const date = new Date();
+
+  date.setDate(date.getDate() + gap);
+
+  const year = date.getFullYear().toString().padStart(4, "0");
+  const month = (date.getMonth() + 1).toString().padStart(2, "0");
+  const day = date.getDate().toString().padStart(2, "0");
+
+  const today = year + month + day;
+  return today;
 }
