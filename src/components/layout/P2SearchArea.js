@@ -205,6 +205,11 @@ function P2SearchArea(props, ref) {
             initHide[child.props.name] = child.props.hide || false;
             initDisabled[child.props.name] = child.props.disabled || false;
           }
+          else if (child.type === P2RangePicker) {
+            initData[child.props.name] = child.props.value || [];
+            initHide[child.props.name] = child.props.hide || false;
+            initDisabled[child.props.name] = child.props.disabled || false;
+          }
 
           if (child.props.children && child.props.children instanceof Array) {
             recursiveSearch(child.props.children);
@@ -525,7 +530,7 @@ function P2SearchArea(props, ref) {
           <Tooltip key={index} title={tooltipText} placement="bottom">
             {React.cloneElement(child, {
               className: `${child.props.className || ""} ${errorClass || ""}`.trim(),
-              value: searchData[child.props.name] || [null, null],
+              value: searchData[child.props.name] || [],
               hidden: searchHidden[child.props.name] || false,
               disabled: searchDisabled[child.props.name] || false,
               onChange: (e, formatStrings) => {
