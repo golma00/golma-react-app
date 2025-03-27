@@ -4,7 +4,7 @@ import { P2AgGrid } from 'components/grid/index';
 import { P2Input, P2MessageBox, P2Select, P2RangePicker } from 'components/control/index';
 import { useTabNavigate } from 'hooks/index';
 import axios from 'axios';
-
+import * as Utils from 'utils/Utils';
 function OneGridPage(props) {
   const searchArea = useRef(null);
   const grid = useRef(0);
@@ -114,7 +114,7 @@ function OneGridPage(props) {
   return (
     <P2Page onSearch={onSearch} onSave={onSave} loading={loading}>
       <P2SearchArea onSearch={onSearch} ref={searchArea} canExpanded={true} minLine={1} maxLine={2}>
-        <div className="w-full flex flex-row gap-x-5 gap-y-2">
+        <div className="w-full flex flex-row gap-x-5 gap-y-2 justify-start">
           <div className="flex flex-row gap-2">
             <label className="common-label" htmlFor='authGrpId'>권한그룹ID</label>
             <P2Input id="authGrpId" name="authGrpId" className="w-60"/>
@@ -125,7 +125,7 @@ function OneGridPage(props) {
           </div>
           <div className="w-full flex flex-row gap-2">
             <label className="common-label" htmlFor='crtDt'>기간</label>
-            <P2RangePicker id="crtDt" name="crtDt" value={["20250227", "20250327"]} className="w-80"/>
+            <P2RangePicker id="crtDt" name="crtDt" value={[Utils.getDate(-1), Utils.getToday()]} className="w-60"/>
           </div>
         </div>
         <div className="flex flex-row gap-x-5 gap-y-2">
