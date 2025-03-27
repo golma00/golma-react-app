@@ -113,7 +113,7 @@ function OneGridPage(props) {
 
   return (
     <P2Page onSearch={onSearch} onSave={onSave} loading={loading}>
-      <P2SearchArea onSearch={onSearch} ref={searchArea} canExpanded={true}>
+      <P2SearchArea onSearch={onSearch} ref={searchArea} canExpanded={true} minLine={1} maxLine={2}>
         <div className="w-full flex flex-row gap-x-5 gap-y-2">
           <div className="flex flex-row gap-2">
             <label className="common-label" htmlFor='authGrpId'>권한그룹ID</label>
