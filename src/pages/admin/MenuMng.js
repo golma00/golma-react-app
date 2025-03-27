@@ -209,10 +209,10 @@ function MenuMng(props) {
           <div className="h-full flex flex-col gap-1">
             <P2GridButtonBar title="메뉴 목록" count={count}>
               <button className="grid-btn" onClick={onAddTreeNode.bind(this, "after")} auth={"saveUseYn"}>
-                메뉴 추가
+                동일 레벨 추가
               </button>
               <button className="grid-btn" onClick={onAddTreeNode.bind(this, "child")} auth={"saveUseYn"}>
-                자식 추가
+                자식 레벨 추가
               </button>
               <button className="grid-btn" onClick={onDeleteTreeNode} auth={"saveUseYn"}>
                 메뉴 삭제
