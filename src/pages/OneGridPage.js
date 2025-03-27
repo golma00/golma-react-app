@@ -136,7 +136,7 @@ function OneGridPage(props) {
           <div className="flex flex-row gap-2">
             <label className="common-label" htmlFor='authGrpNm2'>권한그룹명2</label>
             <P2Select id="authGrpNm2" name="authGrpNm2" datas={authCodeList} isMulti={true} 
-              menuWidth={500} className="w-80 text-sm bg-white rounded-md"/>
+              menuWidth={300} className="w-80 text-sm bg-white rounded-md"/>
           </div>
         </div>
       </P2SearchArea>
