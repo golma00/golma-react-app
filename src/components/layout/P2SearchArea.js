@@ -548,7 +548,7 @@ function P2SearchArea(props, ref) {
                 if (child.props.onChange) {
                   child.props.onChange(e, formatStrings);
                 }
-                const targetValue = formatStrings;
+                const targetValue = e.length === 0 ? [] : formatStrings;
                 setSearchData((prev) => ({
                   ...prev,
                   [child.props.name]: targetValue,
