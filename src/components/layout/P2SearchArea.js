@@ -644,7 +644,7 @@ function P2SearchArea(props, ref) {
           return recursiveRender(child, index);
         })}
       </div>
-      <div className={`items-center absolute ${props.isExpanded ? "" : "hidden"}`}>
+      <div className={`items-center absolute ${props.canExpanded ? "" : "hidden"}`}>
         <div className="p2-search-area-expand-thumb" style={{ top: expanded ? `calc(${(props.expandedHeight||100)}px - 1px)` : `calc(var(--p2-search-area-height) - 1px)` }} onClick={toggleExpanded}>
           <Icon type={expanded ? "up" : "down"} style={{ fontSize: 12, color: '#4B5359' }} />
         </div>
@@ -658,6 +658,7 @@ P2SearchArea.propTypes = {
   className: PropTypes.string,
   onSearch: PropTypes.func,
   expandedHeight: PropTypes.number,
+  canExpanded: PropTypes.bool,
   ref: PropTypes.object,
 };
 
