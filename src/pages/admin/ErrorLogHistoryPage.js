@@ -76,6 +76,10 @@ function ErrorLogHistoryPage(props) {
     });
   }, []);
 
+  useEffect(() => {
+    getErrorLogDetails(rowNode);
+  }, [rowNode]);
+
   // 조회
   async function onSearch() {
     try {
@@ -120,12 +124,41 @@ function ErrorLogHistoryPage(props) {
     setRowNode(await e.api.getSelectedNode());
   }, []);
 
+  async function getErrorLogDetails(rowNode) {
+    try {
+      if (Utils.isEmpty(rowNode)) {
+        return;
+      }
+      setLoading(true);
+      const seqNo = rowNode.data.seq;
+      formArea.current.api?.clear();
+
+      const res = await axios.post("/api/v1/errorLogHistory/getErrorLogDetails", {seq: seqNo});
+
+      setLoading(false);
+      if (res.data.code === "00") {
+        if (Utils.isNotEmpty(res.data.data.result.errCntn)) {
+          formArea.current.api?.set("paramVal", res.data.data.result.paramVal);
+          formArea.current.api?.set("errCntn",  res.data.data.result.errCntn);
+        }
+      }
+      else {
+        P2MessageBox.error(res.data.message || '시스템 오류가 발생했습니다.');
+      }
+    }
+    catch (error) {
+      setLoading(false);
+      P2MessageBox.error('시스템 오류가 발생했습니다.');
+      console.log(error);
+    }
+  }
+
   return (
     <P2Page onSearch={onSearch} loading={loading}>
       <P2SearchArea onSearch={onSearch} ref={searchArea}>
         <div className="flex flex-row gap-2">
           <label className="common-label" htmlFor='crtDt'>생성일시</label>
-          <P2RangePicker id="crtDt" name="crtDt" className="w-80"/>
+          <P2RangePicker id="crtDt" name="crtDt" value={[Utils.getDate(-7), Utils.getToday()]} className="w-80"/>
         </div>
       </P2SearchArea>
       <div className="w-full">
@@ -146,11 +179,13 @@ function ErrorLogHistoryPage(props) {
             <P2GridButtonBar title="에러 로그 상세">
             </P2GridButtonBar>
             <P2SplitterLayout vertical={true} className="w-full h-full" percentage={true} primaryMinSize={20} secondaryMinSize={20} secondaryInitialSize={80} >
-            <P2FormArea ref={formArea} className="p2-form-area h-[550px]" rowNode={rowNode}>
-              <div className="flex flex-col gap-2 w-full h-full">
-                <label htmlFor='paramVal' className="common-label w-20">파라미터값</label>
+            <P2FormArea ref={formArea} className="p2-form-area h-[550px]">
+              <div className="flex flex-col gap-2 w-full h-[20%]">
+                <label for='paramVal' className="common-label w-full">파라미터값</label>
                 <P2InputTextArea id="paramVal" name="paramVal" className="w-full grow"/>
-                <label htmlFor='errCntn' className="common-label w-20">에러내용</label>
+              </div>
+              <div className="flex flex-col gap-2 w-full h-full">
+                <label for='errCntn' className="common-label w-full">에러내용</label>
                 <P2InputTextArea id="errCntn" name="errCntn" className="w-full grow"/>
               </div>
             </P2FormArea>
