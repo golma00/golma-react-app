@@ -52,10 +52,7 @@ function CodeMng(props) {
         width: 120,
         align: "left",
         pinned: "left",
-        valid: (params) => {
-          console.log("params", params);
-          return params._status ? Validate.validateRequired(params.value) : ""
-        }
+        valid: (params) => params._status ? Validate.validateRequired(params.value) : ""
       },
       { 
         field: "cdNm",
