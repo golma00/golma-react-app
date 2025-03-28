@@ -115,14 +115,13 @@ function ErrorLogHistoryPage(props) {
         limit: pageSize,
       };
 
-      console.log("params =? ", params);
       const res = await axios.post("/api/v1/errorLogHistory/errorLogHistoryList", params);
 
       setLoading(false);
       if (res.data.code === "00") {
-        grid.current.api.setGridOption("rowData", res.data.data.result);
+        grid.current.api.setGridOption("rowData", res.data.data.result.list);
         grid.current.api.firstRowSelected();
-        setCount(res.data.data.count);
+        setCount(res.data.data.result.count);
       }
       else {
         P2MessageBox.error(res.data.message || '시스템 오류가 발생했습니다.');
