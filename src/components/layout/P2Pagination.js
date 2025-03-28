@@ -7,7 +7,7 @@ const P2Pagination = ({ current, pageSize, total, onPageChange }) => {
   };
 
   return (
-    <Pagination
+    <Pagination className="flex self-center"
       current={current}
       pageSize={pageSize}
       total={total}
