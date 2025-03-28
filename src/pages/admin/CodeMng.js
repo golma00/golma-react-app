@@ -52,7 +52,7 @@ function CodeMng(props) {
         width: 120,
         align: "left",
         pinned: "left",
-        valid: (params) => params.data._status ? Validate.validateRequired(params.value) : ""
+        valid: (params) => params._status ? Validate.validateRequired(params.value) : ""
       },
       { 
         field: "cdNm",
@@ -62,7 +62,7 @@ function CodeMng(props) {
         width: 150,
         align: "left",
         pinned: "left",
-        valid: (params) => params.data._status ? Validate.validateRequired(params.value) : ""
+        valid: (params) => params._status ? Validate.validateRequired(params.value) : ""
       },
       { 
         field: "cdDesc",

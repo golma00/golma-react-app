@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react'
-import { P2Page, P2SearchArea, P2GridButtonBar, P2FormArea, P2SplitterLayout } from 'components/layout/index';
-import { P2AgGrid, onlyInsertRow, InvalidFunction } from 'components/grid/index';
+import { P2Page, P2SearchArea, P2GridButtonBar, P2FormArea, P2SplitterLayout, P2Pagination } from 'components/layout/index';
+import { P2AgGrid } from 'components/grid/index';
 import { P2InputTextArea, P2RangePicker, P2MessageBox } from 'components/control/index';
 import axios from 'axios';
 import * as Utils from 'utils/Utils';
@@ -21,6 +21,11 @@ function ErrorLogHistoryPage(props) {
   const [count, setCount] = useState(0);
   const [loading, setLoading] = useState(false);
   const [rowNode, setRowNode] = useState();
+  
+  //Pagination
+  const [rowData, setRowData] = useState([]);
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(100);
 
   const colDefs = [
     {
@@ -76,6 +81,22 @@ function ErrorLogHistoryPage(props) {
     });
   }, []);
 
+  
+
+  useEffect(() => {
+    onSearch();
+  }, [page, pageSize]);
+  
+  useEffect(() => {
+    if (rowData.length > 0) {
+      grid.current.api.setGridOption("rowData", rowData);
+    }
+  }, [rowData]);
+
+  useEffect(() => {
+    getErrorLogDetails(rowNode);
+  }, [rowNode]);
+
   // 조회
   async function onSearch() {
     try {
@@ -84,17 +105,23 @@ function ErrorLogHistoryPage(props) {
       }
 
       setLoading(true);
-      grid.current.api.clear();
+      grid.current.api?.clear();
       formArea.current.api?.clear();
 
       const searchData = searchArea.current.api.get();
-      const res = await axios.post("/api/v1/errorLogHistory/errorLogHistoryList", searchData);
+      const params = {
+        ...searchData,
+        offset: (page === 0 ? 1 : page - 1) * pageSize,
+        limit: pageSize,
+      };
+
+      const res = await axios.post("/api/v1/errorLogHistory/errorLogHistoryList", params);
 
       setLoading(false);
       if (res.data.code === "00") {
-        grid.current.api.setGridOption("rowData", res.data.data.result);
+        grid.current.api.setGridOption("rowData", res.data.data.result.list);
         grid.current.api.firstRowSelected();
-        setCount(res.data.data.result.length);
+        setCount(res.data.data.result.count);
       }
       else {
         P2MessageBox.error(res.data.message || '시스템 오류가 발생했습니다.');
@@ -106,7 +133,6 @@ function ErrorLogHistoryPage(props) {
       console.log(error);
     }
   }
-
 
   const onGridReady = useCallback((e) => {
     onSearch();
@@ -120,12 +146,41 @@ function ErrorLogHistoryPage(props) {
     setRowNode(await e.api.getSelectedNode());
   }, []);
 
+  async function getErrorLogDetails(rowNode) {
+    try {
+      if (Utils.isEmpty(rowNode)) {
+        return;
+      }
+      setLoading(true);
+      const seqNo = rowNode.data.seq;
+      formArea.current.api?.clear();
+
+      const res = await axios.post("/api/v1/errorLogHistory/getErrorLogDetails", {seq: seqNo});
+
+      setLoading(false);
+      if (res.data.code === "00") {
+        if (Utils.isNotEmpty(res.data.data.result.errCntn)) {
+          formArea.current.api?.set("paramVal", res.data.data.result.paramVal);
+          formArea.current.api?.set("errCntn",  res.data.data.result.errCntn);
+        }
+      }
+      else {
+        P2MessageBox.error(res.data.message || '시스템 오류가 발생했습니다.');
+      }
+    }
+    catch (error) {
+      setLoading(false);
+      P2MessageBox.error('시스템 오류가 발생했습니다.');
+      console.log(error);
+    }
+  }
+
   return (
     <P2Page onSearch={onSearch} loading={loading}>
       <P2SearchArea onSearch={onSearch} ref={searchArea}>
         <div className="flex flex-row gap-2">
           <label className="common-label" htmlFor='crtDt'>생성일시</label>
-          <P2RangePicker id="crtDt" name="crtDt" className="w-80"/>
+          <P2RangePicker id="crtDt" name="crtDt" value={[Utils.getDate(-7), Utils.getToday()]} className="w-80"/>
         </div>
       </P2SearchArea>
       <div className="w-full">
@@ -141,16 +196,24 @@ function ErrorLogHistoryPage(props) {
               onBeforeSelectionChanged={onBeforeSelectionChanged}
               onSelectionChanged={onSelectionChanged}
             />
+            <P2Pagination
+              current={page}
+              pageSize={pageSize}
+              total={count}
+              onPageChange={(page) => setPage(page)}
+            />
           </div>
           <div className="h-full flex flex-col gap-1">
             <P2GridButtonBar title="에러 로그 상세">
             </P2GridButtonBar>
             <P2SplitterLayout vertical={true} className="w-full h-full" percentage={true} primaryMinSize={20} secondaryMinSize={20} secondaryInitialSize={80} >
-            <P2FormArea ref={formArea} className="p2-form-area h-[550px]" rowNode={rowNode}>
-              <div className="flex flex-col gap-2 w-full h-full">
-                <label htmlFor='paramVal' className="common-label w-20">파라미터값</label>
+            <P2FormArea ref={formArea} className="p2-form-area h-[550px]">
+              <div className="flex flex-col gap-2 w-full h-[20%]">
+                <label className="common-label w-full">파라미터값</label>
                 <P2InputTextArea id="paramVal" name="paramVal" className="w-full grow"/>
-                <label htmlFor='errCntn' className="common-label w-20">에러내용</label>
+              </div>
+              <div className="flex flex-col gap-2 w-full h-full">
+                <label className="common-label w-full">에러내용</label>
                 <P2InputTextArea id="errCntn" name="errCntn" className="w-full grow"/>
               </div>
             </P2FormArea>
@@ -163,125 +226,3 @@ function ErrorLogHistoryPage(props) {
 }
 
 export default ErrorLogHistoryPage;
-
-// import React, { useState, useRef, useEffect } from 'react'
-// import { P2Page, P2SearchArea, P2GridButtonBar, P2Pagination } from 'components/layout/index';
-// import { P2AgGrid } from 'components/grid/index';
-// import { P2MessageBox } from 'components/control/index';
-// import axios from 'axios';
-
-// function PaginationGridPage(props) {
-//   const searchArea = useRef(null);
-//   const grid = useRef(0);
-//   const [count, setCount] = useState(0);
-//   const [loading, setLoading] = useState(false);
-  
-//   const [rowData, setRowData] = useState([]);
-//   const [currentData, setCurrentData] = useState([]);
-//   const [page, setPage] = useState(1);
-//   const [pageSize, setPageSize] = useState(10);
-
-//   useEffect(() => {
-//     const start = (page - 1) * pageSize;
-//     const end = start + pageSize;
-//     setCurrentData(rowData.slice(start, end));
-//   }, [rowData, page, pageSize]);
-  
-
-//   useEffect(() => {
-//     if (currentData.length > 0) {
-//       console.log("바뀜!");
-//       grid.current.api.setGridOption("rowData", currentData);
-//     }
-//   }, [currentData]);
-
-//   const colDefs = [
-//     { 
-//       field: "column01", 
-//       headerName: "컬럼01", 
-//       width: 150, 
-//       align: "left"
-//     },
-//     { 
-//       field: "column02", 
-//       headerName: "컬럼02", 
-//       width: 150, 
-//       align: "left"
-//     },
-//     { 
-//       field: "column03", 
-//       headerName: "컬럼03", 
-//       width: 150, 
-//       align: "left"
-//     },
-//   ];
-
-//   async function onSearch() {
-//     try {
-//       setLoading(true);
-//       grid.current.api.clear();
-
-//       //const searchData = searchArea.current.api.get();
-//       //const res = await axios.post("", searchData);
-
-//       const data = [];
-//       for (let i = 1; i <= 101; i++) {
-//         data.push({
-//           column01: `Data ${i} - Col01`,
-//           column02: `Data ${i} - Col02`,
-//           column03: `Data ${i} - Col03`,
-//         });
-//       }
-//       setRowData(data);
-
-//       //await grid.current.api.setGridOption("rowData", data);
-
-//       setLoading(false);
-//       //if (res.data.code === "00") {
-//         //grid.current.api.setGridOption("rowData", res.data.data.result);
-//         setCount(data.length);
-//       //}
-//       //else {
-//       //  P2MessageBox.error(res.data.message || '시스템 오류가 발생했습니다.');
-//       //}
-//     }
-//     catch (error) {
-//       setLoading(false);
-//       P2MessageBox.error('시스템 오류가 발생했습니다.');
-//       console.log(error);
-//     }
-//   }
-
-//   function onGridReady() {
-//     onSearch();
-//   }
-
-//   return (
-//     <P2Page onSearch={onSearch} loading={loading}>
-//       <P2SearchArea onSearch={onSearch} ref={searchArea}>
-//       </P2SearchArea>
-//       <P2GridButtonBar title="샘플 데이터" count={count}>
-//       </P2GridButtonBar>
-//       <div className="w-full h-full">
-//         <P2AgGrid  
-//           debug={true}
-//           ref={grid}
-//           columnDefs={colDefs}
-//           showStatusColumn={true}
-//           showCheckedColumn={true}
-//           onGridReady={onGridReady}
-//         />
-//       </div>
-//       <div>
-//         <P2Pagination
-//           current={page}
-//           pageSize={pageSize}
-//           total={rowData.length}
-//           onPageChange={(page) => setPage(page)}
-//         />
-//       </div>
-//     </P2Page>
-//   )
-// }
-
-// export default PaginationGridPage;
