@@ -6,6 +6,14 @@ import { P2Input, P2MessageBox } from 'components/control/index';
 import { useCodeData } from 'hooks/index';
 import axios from 'axios';
 
+/**
+  <SearchMappCodePopup
+    visible={visiblePopup}
+    onOk={onOkPopup}
+    onClose={onClosePopup}
+    params={popupParams}
+  />
+ */
 const SearchMappCodePopup = ({ props, visible, onOk, onClose, params }) => {
   const searchArea = useRef(null);
   const grid = useRef(0);
@@ -232,7 +240,6 @@ const SearchMappCodePopup = ({ props, visible, onOk, onClose, params }) => {
       title="상위 코드 검색"
       visible={visible}
       onCancel={onClose}
-      params={params}
       footer={
         <div className="flex justify-center">
           <Button key="ok" type="primary" onClick={selectionConfirm}>

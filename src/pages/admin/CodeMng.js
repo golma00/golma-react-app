@@ -3,7 +3,7 @@ import { P2Page, P2SearchArea, P2GridButtonBar, P2SplitterLayout } from 'compone
 import { P2AgGrid, onlyInsertRow } from 'components/grid/index';
 import { P2Input, P2MessageBox, P2Tree } from 'components/control/index';
 import { useCodeData } from 'hooks/useCodeData';
-import SearchMappCodePopup from 'pages/modal/admin/SearchMappCodePopup';
+import SearchMappCodePopup from 'popups/admin/SearchMappCodePopup';
 import * as Utils from 'utils/Utils';
 import * as Validate from 'utils/Validate';
 import axios from 'axios';
