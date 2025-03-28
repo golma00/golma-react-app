@@ -28,13 +28,13 @@ function ErrorLogHistoryPage(props) {
   const [pageSize, setPageSize] = useState(100);
 
   const colDefs = [
-    {
-      field: "seq",
-      headerName: "순서",
-      width: 80,
-      editable: false,
-      align: "left",
-    },
+    // {
+    //   field: "seq",
+    //   headerName: "순서",
+    //   width: 80,
+    //   editable: false,
+    //   align: "left",
+    // },
     {
       field: "crtDt",
       headerName: "생성일시",
@@ -152,10 +152,10 @@ function ErrorLogHistoryPage(props) {
         return;
       }
       setLoading(true);
-      const seqNo = rowNode.data.seq;
+      const traceId = rowNode.data.traceId;
       formArea.current.api?.clear();
 
-      const res = await axios.post("/api/v1/errorLogHistory/getErrorLogDetails", {seq: seqNo});
+      const res = await axios.post("/api/v1/errorLogHistory/getErrorLogDetails", {traceId: traceId});
 
       setLoading(false);
       if (res.data.code === "00") {
@@ -183,9 +183,9 @@ function ErrorLogHistoryPage(props) {
           <P2RangePicker id="crtDt" name="crtDt" value={[Utils.getDate(-7), Utils.getToday()]} className="w-80"/>
         </div>
       </P2SearchArea>
-      <div className="w-full">
+      <div className="w-full h-full">
         <P2SplitterLayout vertical={false} className="w-full h-full" percentage={true} primaryMinSize={20} secondaryMinSize={20} secondaryInitialSize={50} >
-          <div className="h-full flex flex-col gap-1">
+          <div className="h-full flex flex-col gap-1 overflow-hidden">
             <P2GridButtonBar title="에러 로그 목록" count={count}>
             </P2GridButtonBar>
             <P2AgGrid
@@ -206,9 +206,8 @@ function ErrorLogHistoryPage(props) {
           <div className="h-full flex flex-col gap-1">
             <P2GridButtonBar title="에러 로그 상세">
             </P2GridButtonBar>
-            <P2SplitterLayout vertical={true} className="w-full h-full" percentage={true} primaryMinSize={20} secondaryMinSize={20} secondaryInitialSize={80} >
-            <P2FormArea ref={formArea} className="p2-form-area h-[550px]">
-              <div className="flex flex-col gap-2 w-full h-[20%]">
+            <P2FormArea ref={formArea} className="p2-form-area h-full">
+              <div className="flex flex-col gap-2 w-full h-[10%]">
                 <label className="common-label w-full">파라미터값</label>
                 <P2InputTextArea id="paramVal" name="paramVal" className="w-full grow"/>
               </div>
@@ -217,7 +216,6 @@ function ErrorLogHistoryPage(props) {
                 <P2InputTextArea id="errCntn" name="errCntn" className="w-full grow"/>
               </div>
             </P2FormArea>
-            </P2SplitterLayout>
           </div>
         </P2SplitterLayout>
       </div>
