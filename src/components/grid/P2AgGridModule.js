@@ -386,7 +386,7 @@ const P2AgGridModule = {
     * value : 컬럼이 보유한 값
     * data : node가 보유한 data
     * _status : node의 상태 (I, U, D)
-    * _modified : _status가 I이거나 U인 경우에만 true, D이면 false
+    * _iu : _status가 I이거나 U인 경우에만 true, D이면 false
     */
     validate: async function (beans) {
       let message = "";
@@ -401,7 +401,7 @@ const P2AgGridModule = {
                                                          value: params.node.data[params.colDef.field], 
                                                          data: params.node.data, 
                                                          _status: params.node.data._status,
-                                                         _modified: (params.node.data._status === "I" || params.node.data._status === "U") ? true : false
+                                                         _iu: (params.node.data._status === "I" || params.node.data._status === "U") ? true : false
                                                         }));
           }
           return false;
@@ -418,7 +418,7 @@ const P2AgGridModule = {
               value: node.data[col.field],
               data: node.data,
               _status: node.data._status,
-              _modified: (node.data._status === "I" || node.data._status === "U") ? true : false,
+              _iu: (node.data._status === "I" || node.data._status === "U") ? true : false,
             });
             if (result) {
               //헤더에 * 을 붙이는 로직이 변경됨에 따라 아래 치환로직 주석처리
